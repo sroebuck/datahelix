@@ -26,8 +26,16 @@ public class NumericLimit<T extends Number> {
         if (!NumberUtils.isInteger(decimalLimit.limit))
             throw new IllegalArgumentException("Can't convert limit: " + decimalLimit.limit + " to integer");
 
+        Integer value;
+
+        if (decimalLimit.limit.doubleValue() > Integer.MAX_VALUE) {
+            value = Integer.MAX_VALUE;
+        } else {
+            value = decimalLimit.limit.intValue();
+        }
+
         return new NumericLimit<>(
-            decimalLimit.limit.intValue(),
+            value,
             decimalLimit.isInclusive);
     }
 

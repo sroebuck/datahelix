@@ -103,7 +103,14 @@ public class RegexStringGenerator implements StringGenerator {
     @Override
     public Iterable<String> generateInterestingValues() {
         String shortestString = AutomationUtils.getShortestExample(automaton);
-        String longestString = AutomationUtils.getLongestExample(automaton);
+        String longestString;
+
+        try {
+            // TODO this is important, but i don't remember why am i doing this
+            longestString = AutomationUtils.getLongestExample(automaton);
+        } catch (ArrayIndexOutOfBoundsException e){
+            return new ArrayList<>();
+        }
 
         return shortestString.equals(longestString)
             ? Collections.singleton(shortestString)

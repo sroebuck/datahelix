@@ -9,10 +9,7 @@ import com.scottlogic.deg.generator.fieldspecs.FieldSpecFactory;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
 import com.scottlogic.deg.generator.restrictions.Nullness;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReductiveDecisionTreeReducer {
@@ -35,7 +32,8 @@ public class ReductiveDecisionTreeReducer {
         ConstraintNode node = reduce(rootNode, fixedFields, context);
 
         if (!context.isValid() || node == null){
-            return null;
+            //WHAT TO DO WHEN THE VIOLATION KILLS IT
+            return new ReductiveConstraintNode(new TreeConstraintNode(), new HashSet<>());
         }
 
         return new ReductiveConstraintNode(
@@ -51,7 +49,8 @@ public class ReductiveDecisionTreeReducer {
 
         return context.isValid()
             ? this.simplifier.simplify(node)
-            : null;
+            //WHAT TO DO WHEN THE VIOLATION KILLS IT
+            : new ReductiveConstraintNode(new TreeConstraintNode(), new HashSet<>());
     }
 
     private DecisionNode reduce(DecisionNode decision, ReductiveState fixedFields, AdapterContext context){
