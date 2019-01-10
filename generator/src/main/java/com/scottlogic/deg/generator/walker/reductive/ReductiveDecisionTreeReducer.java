@@ -9,7 +9,10 @@ import com.scottlogic.deg.generator.fieldspecs.FieldSpecFactory;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
 import com.scottlogic.deg.generator.restrictions.Nullness;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ReductiveDecisionTreeReducer {
@@ -33,7 +36,6 @@ public class ReductiveDecisionTreeReducer {
 
         if (!context.isValid() || node == null){
             return null;
-            //WHAT TO DO WHEN THE VIOLATION KILLS IT
         }
 
         return new ReductiveConstraintNode(
@@ -142,9 +144,14 @@ public class ReductiveDecisionTreeReducer {
         Set<Object> mergedFieldSpecWhitelist = mergedFieldSpec.getSetRestrictions().getWhitelist();
 
         if (mergedFieldSpecWhitelist == null || !mergedFieldSpecWhitelist.contains(fixedField.getCurrentValue())) {
-            if(mergedFieldSpec.getNullRestrictions()!=null && mergedFieldSpec.getNullRestrictions().nullness != Nullness.MUST_NOT_BE_NULL){
+            if(mergedFieldSpec.getNullRestrictions() == null){
+                return false; // the fixedField is not in the whitelist but there are no null restrictions so it can be null
+            }
+
+            if((mergedFieldSpec.getNullRestrictions() != null && mergedFieldSpec.getNullRestrictions().nullness == Nullness.MUST_BE_NULL)){
                 return false; // the fixedField is not in the whitelist but can be null
             }
+
             return true; //the fixedField value has been removed from the whitelist and the field cannot be null
         }
 
