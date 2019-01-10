@@ -38,6 +38,8 @@ public class TestCaseGenerationResultWriter {
                 ? this.profileFileNameWithoutExtension
                 : intFormatter.format(index);
 
+            updateManifest(directoryPath, testCaseDtos, dataset, filenameWithoutExtension);
+
             write(result.profile.fields,
                 dataset.stream(),
                 directoryPath,
@@ -47,25 +49,25 @@ public class TestCaseGenerationResultWriter {
                 System.out.println("Valid cases generated, starting violation generation...");
             }
 
-            testCaseDtos.add(
-                new TestCaseDTO(
-                    filenameWithoutExtension,
-                    dataset.violation == null
-                        ? Collections.emptyList()
-                        : Collections.singleton(dataset.violation.getDescription())));
-
             index++;
         }
 
-        ManifestDTO manifestDto = new ManifestDTO(testCaseDtos);
+        System.out.println("Complete");
+    }
 
-        System.out.println("Writing manifest");
+    private void updateManifest(Path directoryPath, List<TestCaseDTO> testCaseDtos, TestCaseDataSet dataset, String filenameWithoutExtension) throws IOException {
+        testCaseDtos.add(
+            new TestCaseDTO(
+                filenameWithoutExtension,
+                dataset.violation == null
+                    ? Collections.emptyList()
+                    : Collections.singleton(dataset.violation.getDescription())));
+
+        ManifestDTO manifestDto = new ManifestDTO(testCaseDtos);
         this.manifestWriter.write(
             manifestDto,
             directoryPath.resolve(
                 "manifest.json"));
-
-        System.out.println("Complete");
     }
 
     private void write(ProfileFields fields, Stream<GeneratedObject> dataSet, Path directory, String filenameWithoutExtension) throws IOException {
