@@ -32,8 +32,8 @@ public class ReductiveDecisionTreeReducer {
         ConstraintNode node = reduce(rootNode, fixedFields, context);
 
         if (!context.isValid() || node == null){
+            return null;
             //WHAT TO DO WHEN THE VIOLATION KILLS IT
-            return new ReductiveConstraintNode(new TreeConstraintNode(), new HashSet<>());
         }
 
         return new ReductiveConstraintNode(
@@ -49,8 +49,7 @@ public class ReductiveDecisionTreeReducer {
 
         return context.isValid()
             ? this.simplifier.simplify(node)
-            //WHAT TO DO WHEN THE VIOLATION KILLS IT
-            : new ReductiveConstraintNode(new TreeConstraintNode(), new HashSet<>());
+            : null;
     }
 
     private DecisionNode reduce(DecisionNode decision, ReductiveState fixedFields, AdapterContext context){
