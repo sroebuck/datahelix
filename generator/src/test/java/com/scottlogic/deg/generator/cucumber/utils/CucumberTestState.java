@@ -108,13 +108,11 @@ public class CucumberTestState {
         ConstraintDTO dto = new ConstraintDTO();
         dto.field = fieldName;
         dto.is = this.extractConstraint(constraintName);
-        if (value != null){
             if (value instanceof Collection){
                 dto.values = (Collection<Object>) value;
             } else {
                 dto.value = value;
             }
-        }
         return dto;
     }
 

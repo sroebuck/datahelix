@@ -5,6 +5,7 @@ import com.scottlogic.deg.generator.cucumber.utils.*;
 import com.scottlogic.deg.generator.generation.GenerationConfig;
 import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 import com.scottlogic.deg.schemas.v3.AtomicConstraintType;
+import com.scottlogic.deg.schemas.v3.ConstraintDTO;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.*;
 import org.hamcrest.Matcher;
@@ -80,12 +81,12 @@ public class GeneralTestStep {
 
     @And("^(.+) is null$")
     public void fieldIsNull(String fieldName) throws Exception{
-        this.state.addConstraint(fieldName, "null", null);
+        this.state.addConstraint(fieldName, "null", ConstraintDTO.undefined);
     }
 
     @And("^(.+) is anything but null$")
     public void fieldIsNotNull(String fieldName) throws Exception{
-        this.state.addNotConstraint(fieldName, "null", null);
+        this.state.addNotConstraint(fieldName, "null", ConstraintDTO.undefined);
     }
 
     @Then("^the profile is invalid$")
