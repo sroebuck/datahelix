@@ -31,6 +31,10 @@ public class MainConstraintReader implements ConstraintReader {
             throw new InvalidProfileException("Couldn't recognise 'is' property, it must be set to a value");
         }
 
+        if (dto.value == null) {
+            throw new InvalidProfileException("Couldn't recognise 'value' property, it must be set to a value");
+        }
+
         if (dto.is != ConstraintDTO.undefined) {
             ConstraintReader subReader = this.atomicConstraintReaderLookup.getByTypeCode((String) dto.is);
 

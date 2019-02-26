@@ -18,7 +18,7 @@ public class ConstraintDTO {
     public String field;
 
     /** a constant value - eg, used in isEqualTo or isGreaterThan */
-    public Object value;
+    public Object value = undefined;
 
     /** a set of values - eg, used in isInSet */
     public Collection<Object> values;
