@@ -38,6 +38,7 @@ public class TypingRequiredPerFieldValidator implements ProfileValidator {
 
     private boolean validateForField(ConstraintNode node, Field field) {
         List<AtomicConstraint> constraintsForField = getConstraintsForField(node.getAtomicConstraints(), field);
+
         if (doesAnyConstraintEnforceType(constraintsForField)) {
             return true;
         }
@@ -55,7 +56,8 @@ public class TypingRequiredPerFieldValidator implements ProfileValidator {
     private boolean doesAnyDecisionFullyEnforceType(Collection<DecisionNode> decisionNodes, Field field) {
         for (DecisionNode decision : decisionNodes) {
             if (decision.getOptions().stream()
-                .allMatch(subtree -> validateForField(subtree, field))) {
+                .allMatch(subtree ->
+                    validateForField(subtree, field))) {
                 return true;
             }
         }
