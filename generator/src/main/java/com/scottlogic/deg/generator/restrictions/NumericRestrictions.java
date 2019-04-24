@@ -3,24 +3,29 @@ package com.scottlogic.deg.generator.restrictions;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.scottlogic.deg.generator.utils.NumberUtils.coerceToBigDecimal;
-
 public class NumericRestrictions {
     public static final int DEFAULT_NUMERIC_SCALE = 20;
     private final int numericScale;
+    private final boolean negateGranularity;
     public NumericLimit<BigDecimal> min;
     public NumericLimit<BigDecimal> max;
 
     public NumericRestrictions(){
-        numericScale = DEFAULT_NUMERIC_SCALE;
+        this(DEFAULT_NUMERIC_SCALE, false);
     }
 
     public NumericRestrictions(int numericScale){
-        this.numericScale = numericScale;
+        this(numericScale, false);
     }
 
-    public NumericRestrictions(ParsedGranularity granularity) {
+    public NumericRestrictions(int numericScale, boolean negateGranularity){
+        this.numericScale = numericScale;
+        this.negateGranularity = negateGranularity;
+    }
+
+    public NumericRestrictions(ParsedGranularity granularity, boolean negateGranularity) {
         numericScale = granularity.getNumericGranularity().scale();
+        this.negateGranularity = negateGranularity;
     }
 
     public int getNumericScale() {
@@ -60,17 +65,22 @@ public class NumericRestrictions {
     }
 
     private boolean isCorrectScale(BigDecimal inputNumber) {
-        return inputNumber.stripTrailingZeros().scale() <= numericScale;
+        //noinspection SimplifiableConditionalExpression
+        return negateGranularity
+            ? inputNumber.stripTrailingZeros().scale() > numericScale
+            : inputNumber.stripTrailingZeros().scale() <= numericScale;
     }
 
     @Override
     public String toString() {
         return String.format(
-            "%s%s%s%s",
+            "%s%s%s%s%s%s",
             min != null ? min.toString(">") : "",
             min != null && max != null ? " and " : "",
             max != null ? max.toString("<") : "",
-            numericScale != 20 ? "granular-to " + numericScale : "");
+            negateGranularity ? "not(" : "",
+            numericScale != 20 ? "granular-to " + numericScale : "",
+            negateGranularity ? ")" : "");
     }
 
     @Override
@@ -80,11 +90,16 @@ public class NumericRestrictions {
         NumericRestrictions that = (NumericRestrictions) o;
         return Objects.equals(min, that.min) &&
             Objects.equals(max, that.max) &&
-            Objects.equals(numericScale, that.numericScale);
+            Objects.equals(numericScale, that.numericScale) &&
+            Objects.equals(negateGranularity, that.negateGranularity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(min, max, numericScale);
+        return Objects.hash(min, max, numericScale, negateGranularity);
+    }
+
+    public boolean isGranularityNegated() {
+        return negateGranularity;
     }
 }

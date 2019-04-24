@@ -571,7 +571,8 @@ public class NumericRestrictionsTests {
 
     private static NumericRestrictions restrictions(double numericScale){
         NumericRestrictions restrictions = new NumericRestrictions(
-            ParsedGranularity.parse(BigDecimal.valueOf(numericScale))
+            ParsedGranularity.parse(BigDecimal.valueOf(numericScale)),
+            false
         );
 
         return restrictions;

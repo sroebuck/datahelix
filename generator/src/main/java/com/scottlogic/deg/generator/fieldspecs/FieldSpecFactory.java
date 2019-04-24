@@ -190,14 +190,9 @@ public class FieldSpecFactory {
     }
 
     private FieldSpec construct(IsGranularToConstraint constraint, boolean negate, boolean violated) {
-        if (negate) {
-            // it's not worth much effort to figure out how to negate a formatting constraint - let's just make it a no-op
-            return FieldSpec.Empty;
-        }
-
         return FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions(constraint.granularity),
-            FieldSpecSource.fromConstraint(constraint, false, violated));
+            new NumericRestrictions(constraint.granularity, negate),
+            FieldSpecSource.fromConstraint(constraint, negate, violated));
     }
 
     private FieldSpec construct(IsAfterConstantDateTimeConstraint constraint, boolean negate, boolean violated) {
