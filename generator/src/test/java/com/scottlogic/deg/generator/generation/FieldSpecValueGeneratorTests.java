@@ -90,10 +90,10 @@ class FieldSpecValueGeneratorTests {
         FieldSpec rootFieldSpec = FieldSpec.Empty
             .withNullRestrictions(notNull, fieldSpecSource)
             .withNumericRestrictions(
-                new NumericRestrictions() {{
-                    min = new NumericLimit<>(new BigDecimal(10), false);
-                    max = new NumericLimit<>(new BigDecimal(30), false);
-                }},
+                NumericRestrictions.unrestrictive
+                    .withRange(
+                        new NumericLimit<>(new BigDecimal(10), false),
+                        new NumericLimit<>(new BigDecimal(30), false)),
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(Collections.singletonList(
@@ -329,15 +329,13 @@ class FieldSpecValueGeneratorTests {
     void generate_fieldSpecMustContainRestrictionNullAndNumericRestrictionApplied_returnsExpectedDataBagsForNumericRestriction() {
         FieldSpec fieldSpec = FieldSpec.Empty
             .withNumericRestrictions(
-                new NumericRestrictions() {{
-                    min = new NumericLimit<>(new BigDecimal(10), false);
-                    max = new NumericLimit<>(new BigDecimal(30), false);
-                }},
+                NumericRestrictions.unrestrictive.withRange(
+                    new NumericLimit<>(new BigDecimal(10), false),
+                    new NumericLimit<>(new BigDecimal(30), false)),
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(
-                    Collections.singletonList(IsOfTypeConstraint.Types.NUMERIC)
-                ),
+                    Collections.singletonList(IsOfTypeConstraint.Types.NUMERIC)),
                 fieldSpecSource);
         GenerationConfig generationConfig = new GenerationConfig(
             new TestGenerationConfigSource(
@@ -385,10 +383,10 @@ class FieldSpecValueGeneratorTests {
         //Arrange
         FieldSpec rootFieldSpec = FieldSpec.Empty
             .withNumericRestrictions(
-                new NumericRestrictions() {{
-                    min = new NumericLimit<>(new BigDecimal("1E-19"), false);
-                    max = new NumericLimit<>(new BigDecimal("2E-19"), false);
-                }},
+                NumericRestrictions.unrestrictive
+                    .withRange(
+                        new NumericLimit<>(new BigDecimal("1E-19"), false),
+                        new NumericLimit<>(new BigDecimal("2E-19"), false)),
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(
@@ -443,10 +441,10 @@ class FieldSpecValueGeneratorTests {
         //Arrange
         FieldSpec rootFieldSpec = FieldSpec.Empty
             .withNumericRestrictions(
-                new NumericRestrictions() {{
-                    min = new NumericLimit<>(new BigDecimal("1E-19"), false);
-                    max = new NumericLimit<>(new BigDecimal("2E-19"), false);
-                }},
+                NumericRestrictions.unrestrictive
+                    .withRange(
+                        new NumericLimit<>(new BigDecimal("1E-19"), false),
+                        new NumericLimit<>(new BigDecimal("2E-19"), false)),
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(

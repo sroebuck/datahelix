@@ -96,7 +96,7 @@ public class StandardFieldValueSourceEvaluator implements FieldValueSourceEvalua
 
     private FieldValueSource getNumericSource(FieldSpec fieldSpec) {
         NumericRestrictions restrictions = fieldSpec.getNumericRestrictions() == null
-            ? new NumericRestrictions()
+            ? NumericRestrictions.unrestrictive
             : fieldSpec.getNumericRestrictions();
 
         return new RealNumberFieldValueSource(

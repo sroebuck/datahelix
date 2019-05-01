@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NumericConstraintValidator implements ConstraintValidatorAlerts {
-
-
     public final ValidationType validationType = ValidationType.NUMERIC;
     private final List<ValidationAlert> alerts;
     private NumericRestrictions currentRestrictions;
@@ -21,12 +19,12 @@ public class NumericConstraintValidator implements ConstraintValidatorAlerts {
     }
 
     public void IsLessThan(Field field, Number referenceValue, boolean inclusive) {
-
         BigDecimal referenceBigDecimal = new BigDecimal(referenceValue.toString());
-        NumericRestrictions candidateRestrictions = new NumericRestrictions();
-        candidateRestrictions.max = new NumericLimit<>(
-            referenceBigDecimal,
-            inclusive);
+
+        NumericRestrictions candidateRestrictions = NumericRestrictions.unrestrictive
+            .withMaximum(new NumericLimit<>(
+                referenceBigDecimal,
+                inclusive));
 
         NumericRestrictionsMerger merger = new NumericRestrictionsMerger();
         MergeResult<NumericRestrictions> result = merger.merge(currentRestrictions, candidateRestrictions);
@@ -38,17 +36,16 @@ public class NumericConstraintValidator implements ConstraintValidatorAlerts {
 
                 logInformation(field,referenceBigDecimal);
             }
-
         }
     }
 
     public void IsGreaterThan(Field field, Number referenceValue, boolean inclusive) {
-
         BigDecimal referenceBigDecimal = new BigDecimal(referenceValue.toString());
-        NumericRestrictions candidateRestrictions = new NumericRestrictions();
-        candidateRestrictions.min = new NumericLimit<>(
-            referenceBigDecimal,
-            inclusive);
+
+        NumericRestrictions candidateRestrictions = NumericRestrictions.unrestrictive
+            .withMaximum(new NumericLimit<>(
+                referenceBigDecimal,
+                inclusive));
 
         NumericRestrictionsMerger merger = new NumericRestrictionsMerger();
         MergeResult<NumericRestrictions> result = merger.merge(currentRestrictions, candidateRestrictions);

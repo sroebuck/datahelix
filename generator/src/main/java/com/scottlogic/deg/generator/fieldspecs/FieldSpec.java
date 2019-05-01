@@ -226,6 +226,22 @@ public class FieldSpec {
         return true;
     }
 
+    public boolean cannotEmitAnyData() {
+        if (nullRestrictions == null || nullRestrictions.nullness.equals(Nullness.MUST_BE_NULL)) {
+            return false; // we can emit null
+        }
+
+        if (typeRestrictions != null && typeRestrictions.getAllowedTypes().isEmpty()) {
+            return true; // we can't emit null (per above) and no types are allowed
+        }
+
+        if (setRestrictions != null && setRestrictions.getWhitelist() != null && setRestrictions.getWhitelist().isEmpty()) {
+            return true; // we can't emit null (per above) and no values are allowed
+        }
+
+        return false;
+    }
+
     public int hashCode(){
         return Arrays.hashCode(getPropertiesToCompare(this));
     }

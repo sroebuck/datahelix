@@ -145,17 +145,19 @@ public class FieldSpecFactory {
     }
 
     private FieldSpec constructGreaterThanConstraint(Number limitValue, boolean inclusive, boolean negate, AtomicConstraint constraint, boolean violated) {
-        final NumericRestrictions numericRestrictions = new NumericRestrictions();
+        final NumericRestrictions numericRestrictions;
 
         final BigDecimal limit = NumberUtils.coerceToBigDecimal(limitValue);
         if (negate) {
-            numericRestrictions.max = new NumericLimit<>(
-                limit,
-                !inclusive);
+            numericRestrictions = NumericRestrictions.unrestrictive.withMaximum(
+                new NumericLimit<>(
+                    limit,
+                    !inclusive));
         } else {
-            numericRestrictions.min = new NumericLimit<>(
-                limit,
-                inclusive);
+            numericRestrictions = NumericRestrictions.unrestrictive.withMinimum(
+                new NumericLimit<>(
+                    limit,
+                    inclusive));
         }
 
         return FieldSpec.Empty.withNumericRestrictions(
@@ -172,16 +174,19 @@ public class FieldSpecFactory {
     }
 
     private FieldSpec constructLessThanConstraint(Number limitValue, boolean inclusive, boolean negate, AtomicConstraint constraint, boolean violated) {
-        final NumericRestrictions numericRestrictions = new NumericRestrictions();
+        final NumericRestrictions numericRestrictions;
+
         final BigDecimal limit = NumberUtils.coerceToBigDecimal(limitValue);
         if (negate) {
-            numericRestrictions.min = new NumericLimit<>(
-                limit,
-                !inclusive);
+            numericRestrictions = NumericRestrictions.unrestrictive.withMinimum(
+                new NumericLimit<>(
+                    limit,
+                    !inclusive));
         } else {
-            numericRestrictions.max = new NumericLimit<>(
-                limit,
-                inclusive);
+            numericRestrictions = NumericRestrictions.unrestrictive.withMaximum(
+                new NumericLimit<>(
+                    limit,
+                    inclusive));
         }
 
         return FieldSpec.Empty.withNumericRestrictions(
@@ -196,7 +201,7 @@ public class FieldSpecFactory {
         }
 
         return FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions(constraint.granularity),
+            NumericRestrictions.unrestrictive.withGranularity(constraint.granularity),
             FieldSpecSource.fromConstraint(constraint, false, violated));
     }
 

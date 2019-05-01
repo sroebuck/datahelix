@@ -20,10 +20,11 @@ public class NumericRestrictionsMerger {
             return new MergeResult<>(left);
 
         int granularity = Math.min(left.getNumericScale(), right.getNumericScale());
-        final NumericRestrictions merged = new NumericRestrictions(granularity);
-
-        merged.min = getMergedLimitStructure(MergeLimit.MIN, left.min, right.min);
-        merged.max = getMergedLimitStructure(MergeLimit.MAX, left.max, right.max);
+        final NumericRestrictions merged = NumericRestrictions.unrestrictive
+            .withDecimalScale(granularity)
+            .withRange(
+                getMergedLimitStructure(MergeLimit.MIN, left.min, right.min),
+                getMergedLimitStructure(MergeLimit.MAX, left.max, right.max));
 
         if (!canEmitSomeNumericValues(merged)){
             return MergeResult.UNSUCCESSFUL;

@@ -14,6 +14,14 @@ public class NumericLimit<T extends Number> {
         this.isInclusive = isInclusive;
     }
 
+    public static NumericLimit<BigDecimal> inclusive(BigDecimal value) {
+        return new NumericLimit<>(value, true);
+    }
+
+    public static NumericLimit<BigDecimal> exclusive(BigDecimal value) {
+        return new NumericLimit<>(value, false);
+    }
+
     public T getLimit() {
         return limit;
     }

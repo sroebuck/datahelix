@@ -76,10 +76,10 @@ public class StandardFieldValueSourceEvaluatorTests {
     public void shouldReturnNullSourceLastWithTypedNumericRestrictionsAndNullNotDisallowed() {
         StandardFieldValueSourceEvaluator evaluator = new StandardFieldValueSourceEvaluator();
         FieldSpecSource fieldSpecSource = FieldSpecSource.Empty;
-        NumericRestrictions numericRestrictions = new NumericRestrictions() {{
-            min = new NumericLimit<>(new BigDecimal(10), false);
-            max = new NumericLimit<>(new BigDecimal(30), false);
-        }};
+        NumericRestrictions numericRestrictions = NumericRestrictions.unrestrictive
+            .withRange(
+                new NumericLimit<>(new BigDecimal(10), false),
+                new NumericLimit<>(new BigDecimal(30), false));
         TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(
             IsOfTypeConstraint.Types.NUMERIC
         ));
@@ -157,10 +157,10 @@ public class StandardFieldValueSourceEvaluatorTests {
         FieldSpecSource fieldSpecSource = FieldSpecSource.Empty;
 
         NullRestrictions nullRestrictions = new NullRestrictions(Nullness.MUST_BE_NULL);
-        NumericRestrictions numericRestrictions = new NumericRestrictions() {{
-            min = new NumericLimit<>(new BigDecimal(10), false);
-            max = new NumericLimit<>(new BigDecimal(30), false);
-        }};
+        NumericRestrictions numericRestrictions = NumericRestrictions.unrestrictive
+            .withRange(
+                new NumericLimit<>(new BigDecimal(10), false),
+                new NumericLimit<>(new BigDecimal(30), false));
         FieldSpec fieldSpecMustBeNull = FieldSpec.Empty
             .withNullRestrictions(nullRestrictions, fieldSpecSource)
             .withNumericRestrictions(numericRestrictions, fieldSpecSource);
@@ -178,10 +178,10 @@ public class StandardFieldValueSourceEvaluatorTests {
     @Test
     void getFieldValueSources_fieldSpecContainsNumericRestrictionsWithValueTooLargeForInteger_generatesExpectedValues() {
         FieldSpec fieldSpec = FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions() {{
-                min = new NumericLimit<>(new BigDecimal(0), false);
-                max = new NumericLimit<>(new BigDecimal("1E+18"), false);
-            }},
+            NumericRestrictions.unrestrictive
+                .withRange(
+                    new NumericLimit<>(new BigDecimal(0), false),
+                    new NumericLimit<>(new BigDecimal("1E+18"), false)),
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
@@ -215,10 +215,9 @@ public class StandardFieldValueSourceEvaluatorTests {
     @Test
     void getFieldValueSources_fieldSpecContainsNumericRestrictionsWithDecimalValues_generatesDecimalValues() {
         FieldSpec fieldSpec = FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions() {{
-                min = new NumericLimit<>(new BigDecimal("15.00000000000000000001"), false);
-                max = new NumericLimit<>(new BigDecimal("15.00000000000000000010"), false);
-            }},
+            NumericRestrictions.unrestrictive.withRange(
+                new NumericLimit<>(new BigDecimal("15.00000000000000000001"), false),
+                new NumericLimit<>(new BigDecimal("15.00000000000000000010"), false)),
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
@@ -256,10 +255,11 @@ public class StandardFieldValueSourceEvaluatorTests {
     @Test
     void getFieldValueSources_fieldSpecContainsNumericRestrictionsWithNoScaleAndGranularityHasRestrictionOfTwo_generatesValuesWithTwoDecimalPlaces() {
         FieldSpec fieldSpec = FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions(new ParsedGranularity(new BigDecimal(new BigInteger("0"), 2, new MathContext(1)))) {{
-                min = new NumericLimit<>(new BigDecimal("15"), false);
-                max = new NumericLimit<>(new BigDecimal("16"), false);
-            }},
+            NumericRestrictions.unrestrictive
+                .withGranularity(new ParsedGranularity(new BigDecimal(new BigInteger("0"), 2, new MathContext(1))))
+                .withRange(
+                    new NumericLimit<>(new BigDecimal("15"), false),
+                    new NumericLimit<>(new BigDecimal("16"), false)),
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
@@ -293,7 +293,7 @@ public class StandardFieldValueSourceEvaluatorTests {
     @Test
     void getFieldValueSources_fieldSpecContainsNumericRestrictionsWithMinAndMaxNull_generatesBoundaryValues() {
         FieldSpec fieldSpec = FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions(),
+            NumericRestrictions.unrestrictive,
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
@@ -328,9 +328,8 @@ public class StandardFieldValueSourceEvaluatorTests {
     @Test
     void getFieldValueSources_fieldSpecContainsNumericRestrictionWithNullMinAndMaxIsDecimal_generatesDecimalValues() {
         FieldSpec fieldSpec = FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions() {{
-                max = new NumericLimit<>(new BigDecimal("150.5"), false);
-            }},
+            NumericRestrictions.unrestrictive.withMaximum(
+                new NumericLimit<>(new BigDecimal("150.5"), false)),
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
@@ -359,10 +358,9 @@ public class StandardFieldValueSourceEvaluatorTests {
     @Test
     void getFieldValueSources_fieldSpecContainsNumericRestrictionWithHighGranularity_generates20DecimalGranularity() {
         FieldSpec fieldSpec = FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions() {{
-                min = new NumericLimit<>(new BigDecimal("1.1E-30"), false);
-                max = new NumericLimit<>(new BigDecimal("1.5E-20"), false);
-            }},
+            NumericRestrictions.unrestrictive.withRange(
+                new NumericLimit<>(new BigDecimal("1.1E-30"), false),
+                new NumericLimit<>(new BigDecimal("1.5E-20"), false)),
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
@@ -391,10 +389,10 @@ public class StandardFieldValueSourceEvaluatorTests {
     @Test
     void getFieldValueSources_fieldSpecContainsNegativeMinAndPositiveMax_generatesExpectedNegativeToPositiveValues() {
         FieldSpec fieldSpec = FieldSpec.Empty.withNumericRestrictions(
-            new NumericRestrictions() {{
-                min = new NumericLimit<>(new BigDecimal("-3E-20"), false);
-                max = new NumericLimit<>(new BigDecimal("3E-20"), false);
-            }},
+            NumericRestrictions.unrestrictive
+                .withRange(
+                    new NumericLimit<>(new BigDecimal("-3E-20"), false),
+                    new NumericLimit<>(new BigDecimal("3E-20"), false)),
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(

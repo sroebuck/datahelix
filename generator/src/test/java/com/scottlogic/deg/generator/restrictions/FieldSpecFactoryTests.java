@@ -16,10 +16,10 @@ import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
 
 class FieldSpecFactoryTests {
-    FieldSpecFactory fieldSpecFactory = new FieldSpecFactory(new FieldSpecMerger());
-    TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(IsOfTypeConstraint.Types.STRING));
-    StringRestrictions longerThanRestriction = new StringRestrictions(new StringConstraintsCollection(Collections.singleton(new IsStringLongerThanConstraint(null, 2 , null))));
-    StringRestrictions shorterThanRestriction = new StringRestrictions(new StringConstraintsCollection(Collections.singleton(new IsStringShorterThanConstraint(null, 5 , null))));
+    private final FieldSpecFactory fieldSpecFactory = new FieldSpecFactory(new FieldSpecMerger());
+    private final TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(IsOfTypeConstraint.Types.STRING));
+    private final StringRestrictions longerThanRestriction = new StringRestrictions(new StringConstraintsCollection(Collections.singleton(new IsStringLongerThanConstraint(null, 2 , null))));
+    private final StringRestrictions shorterThanRestriction = new StringRestrictions(new StringConstraintsCollection(Collections.singleton(new IsStringShorterThanConstraint(null, 5 , null))));
 
     @Test
     void toMustContainRestrictionFieldSpec_constraintsContainsNotConstraint_returnsMustContainsRestrictionWithNotConstraint() {
@@ -29,15 +29,14 @@ class FieldSpecFactoryTests {
 
         FieldSpec expectedFieldSpec = FieldSpec.Empty.withMustContainRestriction(
             new MustContainRestriction(
-                new HashSet<FieldSpec>() {{
-                    add(
-                        FieldSpec.Empty.withNullRestrictions(
-                            new NullRestrictions(Nullness.MUST_NOT_BE_NULL), FieldSpecSource.Empty)
-                        .withTypeRestrictions(DataTypeRestrictions.ALL_TYPES_PERMITTED, null)
-                    );
-                }}
-            )
-        );
+                Collections.singleton(
+                    FieldSpec.Empty
+                        .withNullRestrictions(
+                            new NullRestrictions(Nullness.MUST_NOT_BE_NULL),
+                            FieldSpecSource.Empty)
+                        .withTypeRestrictions(
+                            DataTypeRestrictions.ALL_TYPES_PERMITTED,
+                            FieldSpecSource.Empty))));
 
         Assert.assertEquals(expectedFieldSpec, actualFieldSpec);
     }

@@ -1,5 +1,7 @@
 package com.scottlogic.deg.generator.restrictions;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -7,20 +9,47 @@ import static com.scottlogic.deg.generator.utils.NumberUtils.coerceToBigDecimal;
 
 public class NumericRestrictions {
     public static final int DEFAULT_NUMERIC_SCALE = 20;
-    private final int numericScale;
-    public NumericLimit<BigDecimal> min;
-    public NumericLimit<BigDecimal> max;
 
-    public NumericRestrictions(){
+    private final int numericScale;
+    @Nullable public final NumericLimit<BigDecimal> min;
+    @Nullable public final NumericLimit<BigDecimal> max;
+
+    protected NumericRestrictions() {
         numericScale = DEFAULT_NUMERIC_SCALE;
+        min = null;
+        max = null;
     }
 
-    public NumericRestrictions(int numericScale){
+    protected NumericRestrictions(
+            @Nullable NumericLimit<BigDecimal> min,
+            @Nullable NumericLimit<BigDecimal> max,
+            int numericScale) {
+        this.min = min;
+        this.max = max;
         this.numericScale = numericScale;
     }
 
-    public NumericRestrictions(ParsedGranularity granularity) {
-        numericScale = granularity.getNumericGranularity().scale();
+    public final static NumericRestrictions unrestrictive = new NumericRestrictions();
+
+    public NumericRestrictions withGranularity(ParsedGranularity granularity) {
+        return new NumericRestrictions(this.min, this.max, granularity.getNumericGranularity().scale());
+    }
+
+    // ideally we'd remove this method (to hide the temporary connection between granularity and decimal scale)
+    public NumericRestrictions withDecimalScale(int decimalScale) {
+        return new NumericRestrictions(this.min, this.max, decimalScale);
+    }
+
+    public NumericRestrictions withMinimum(NumericLimit<BigDecimal> min) {
+        return new NumericRestrictions(min, this.max, this.numericScale);
+    }
+
+    public NumericRestrictions withMaximum(NumericLimit<BigDecimal> max) {
+        return new NumericRestrictions(this.min, max, this.numericScale);
+    }
+
+    public NumericRestrictions withRange(NumericLimit<BigDecimal> min, NumericLimit<BigDecimal> max) {
+        return new NumericRestrictions(min, max, this.numericScale);
     }
 
     public int getNumericScale() {
