@@ -13,19 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegexStringGenerator implements StringGenerator {
-    private static final Map<String, String> PREDEFINED_CHARACTER_CLASSES;
-
-    static {
-        Map<String, String> characterClasses = new HashMap<>();
-        characterClasses.put("\\\\d", "[0-9]");
-        characterClasses.put("\\\\D", "[^0-9]");
-        characterClasses.put("\\\\s", "[ \t\n\f\r]");
-        characterClasses.put("\\\\S", "[^ \t\n\f\r]");
-        characterClasses.put("\\\\w", "[a-zA-Z_0-9]");
-        characterClasses.put("\\\\W", "[^a-zA-Z_0-9]");
-        PREDEFINED_CHARACTER_CLASSES = Collections.unmodifiableMap(characterClasses);
-    }
-
     private Automaton automaton;
     private Node rootNode;
     private boolean isRootNodeBuilt;
@@ -33,17 +20,11 @@ public class RegexStringGenerator implements StringGenerator {
     private final String regexRepresentation;
 
     public RegexStringGenerator(String regexStr, boolean matchFullString) {
-        final String anchoredStr = convertEndAnchors(regexStr, matchFullString);
-        final String requotedStr = escapeCharacters(anchoredStr);
-        final RegExp bricsRegExp = expandShorthandClasses(requotedStr);
-
-        Automaton generatedAutomaton = bricsRegExp.toAutomaton();
-        generatedAutomaton.expandSingleton();
+        this.automaton = RegexToAutomatonParser.parse(regexStr, matchFullString);
 
         String prefix = matchFullString ? "" : "*";
         String suffix = matchFullString ? "" : "*";
         this.regexRepresentation = String.format("%s/%s/%s", prefix, regexStr, suffix);
-        this.automaton = generatedAutomaton;
     }
 
     private RegexStringGenerator(Automaton automaton, String regexRepresentation) {
@@ -174,7 +155,7 @@ public class RegexStringGenerator implements StringGenerator {
 
         buildRootNode();
 
-        if (rootNode.nextNodes.isEmpty()) {
+        if (rootNode.getNextNodes().isEmpty()) {
             return 0;
         }
 
@@ -183,52 +164,10 @@ public class RegexStringGenerator implements StringGenerator {
 
     @Override
     public boolean match(String subject) {
-
         return automaton.run(subject);
-
     }
 
-    private String escapeCharacters(String regex) {
-        final Pattern patternRequoted = Pattern.compile("\\\\Q(.*?)\\\\E");
-        final Pattern patternSpecial = Pattern.compile("[.^$*+?(){|\\[\\\\@]");
-        StringBuilder sb = new StringBuilder(regex);
-        Matcher matcher = patternRequoted.matcher(sb);
-        while (matcher.find()) {
-            sb.replace(matcher.start(), matcher.end(), patternSpecial.matcher(matcher.group(1)).replaceAll("\\\\$0"));
-        }
-        return sb.toString();
-    }
 
-    private String convertEndAnchors(String regexStr, boolean matchFullString) {
-        final Matcher startAnchorMatcher = Pattern.compile("^\\^").matcher(regexStr);
-
-        if (startAnchorMatcher.find()) {
-            regexStr = startAnchorMatcher.replaceAll(""); // brics.RegExp doesn't use anchors - they're treated as literal ^/$ characters
-        } else if (!matchFullString) {
-            regexStr = ".*" + regexStr; // brics.RegExp only supports full string matching, so add .* to simulate it
-        }
-
-        final Matcher endAnchorMatcher = Pattern.compile("\\$$").matcher(regexStr);
-
-        if (endAnchorMatcher.find()) {
-            regexStr = endAnchorMatcher.replaceAll("");
-        } else if (!matchFullString) {
-            regexStr = regexStr + ".*";
-        }
-
-        return regexStr;
-    }
-
-    /*
-     * As the Briks regex parser doesn't recognise shorthand classes we need to convert them to character groups
-     */
-    private RegExp expandShorthandClasses(String regex) {
-        String finalRegex = regex;
-        for (Map.Entry<String, String> charClass : PREDEFINED_CHARACTER_CLASSES.entrySet()) {
-            finalRegex = finalRegex.replaceAll(charClass.getKey(), charClass.getValue());
-        }
-        return new RegExp(finalRegex);
-    }
 
     private String generateRandomStringInternal(
         String strMatch,
@@ -308,7 +247,7 @@ public class RegexStringGenerator implements StringGenerator {
         return transitions.size() == 0;
     }
 
-    private String buildStringFromNode(RegexStringGenerator.Node node, int indexOrder) {
+    private String buildStringFromNode(Node node, int indexOrder) {
         String result = "";
         long passedStringNbr = 0;
         long step = node.getMatchedStringIdx() / node.getNbrChar();
@@ -324,7 +263,7 @@ public class RegexStringGenerator implements StringGenerator {
         long passedStringNbrInChildNode = 0;
         if (result.length() == 0)
             passedStringNbrInChildNode = passedStringNbr;
-        for (RegexStringGenerator.Node childN : node.getNextNodes()) {
+        for (Node childN : node.getNextNodes()) {
             passedStringNbrInChildNode += childN.getMatchedStringIdx();
             if (passedStringNbrInChildNode >= indexOrder) {
                 passedStringNbrInChildNode -= childN.getMatchedStringIdx();
@@ -342,22 +281,22 @@ public class RegexStringGenerator implements StringGenerator {
             return;
         isRootNodeBuilt = true;
 
-        rootNode = new RegexStringGenerator.Node();
-        List<RegexStringGenerator.Node> nextNodes = prepareTransactionNodes(automaton.getInitialState());
+        rootNode = new Node();
+        List<Node> nextNodes = prepareTransactionNodes(automaton.getInitialState());
         rootNode.setNextNodes(nextNodes);
         rootNode.updateMatchedStringIdx();
     }
 
-    private List<RegexStringGenerator.Node> prepareTransactionNodes(State state) {
+    private List<Node> prepareTransactionNodes(State state) {
 
-        List<RegexStringGenerator.Node> transactionNodes = new ArrayList<>();
+        List<Node> transactionNodes = new ArrayList<>();
         if (preparedTransactionNode == Integer.MAX_VALUE / 2) {
             return transactionNodes;
         }
         ++preparedTransactionNode;
 
         if (state.isAccept()) {
-            RegexStringGenerator.Node acceptedNode = new RegexStringGenerator.Node();
+            Node acceptedNode = new Node();
             acceptedNode.setNbrChar(1);
             transactionNodes.add(acceptedNode);
         }
@@ -369,77 +308,16 @@ public class RegexStringGenerator implements StringGenerator {
 //        }
 
         for (Transition transition : transitions) {
-            RegexStringGenerator.Node trsNode = new RegexStringGenerator.Node();
+            Node trsNode = new Node();
             int nbrChar = transition.getMax() - transition.getMin() + 1;
             trsNode.setNbrChar(nbrChar);
             trsNode.setMaxChar(transition.getMax());
             trsNode.setMinChar(transition.getMin());
-            List<RegexStringGenerator.Node> nextNodes = prepareTransactionNodes(transition.getDest());
+            List<Node> nextNodes = prepareTransactionNodes(transition.getDest());
             trsNode.setNextNodes(nextNodes);
             transactionNodes.add(trsNode);
         }
         return transactionNodes;
-    }
-
-    private class Node {
-        private int nbrChar = 1;
-        private List<RegexStringGenerator.Node> nextNodes = new ArrayList<>();
-        private boolean isNbrMatchedStringUpdated;
-        private long matchedStringIdx = 0;
-        private char minChar;
-        private char maxChar;
-
-        int getNbrChar() {
-            return nbrChar;
-        }
-
-        void setNbrChar(int nbrChar) {
-            this.nbrChar = nbrChar;
-        }
-
-        List<RegexStringGenerator.Node> getNextNodes() {
-            return nextNodes;
-        }
-
-        void setNextNodes(List<RegexStringGenerator.Node> nextNodes) {
-            this.nextNodes = nextNodes;
-        }
-
-        void updateMatchedStringIdx() {
-            if (isNbrMatchedStringUpdated) {
-                return;
-            }
-            if (nextNodes.size() == 0) {
-                matchedStringIdx = nbrChar;
-            } else {
-                for (RegexStringGenerator.Node childNode : nextNodes) {
-                    childNode.updateMatchedStringIdx();
-                    long childNbrChar = childNode.getMatchedStringIdx();
-                    matchedStringIdx += nbrChar * childNbrChar;
-                }
-            }
-            isNbrMatchedStringUpdated = true;
-        }
-
-        long getMatchedStringIdx() {
-            return matchedStringIdx;
-        }
-
-        char getMinChar() {
-            return minChar;
-        }
-
-        void setMinChar(char minChar) {
-            this.minChar = minChar;
-        }
-
-        char getMaxChar() {
-            return maxChar;
-        }
-
-        void setMaxChar(char maxChar) {
-            this.maxChar = maxChar;
-        }
     }
 
     private class FiniteStringAutomatonIterator implements Iterator<String> {
