@@ -5,7 +5,6 @@ import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSourc
 import com.scottlogic.deg.generator.generation.fieldvaluesources.RealNumberFieldValueSource;
 import com.scottlogic.deg.generator.restrictions.NumericRestrictions;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +34,6 @@ public class NumericFieldValueSourceFactory implements FieldValueSourceFactory {
 
     @Override
     public Class getUnderlyingDataType() {
-        return BigDecimal.class;
+        return Number.class;
     }
 }

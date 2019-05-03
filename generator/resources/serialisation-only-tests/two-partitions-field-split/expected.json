@@ -59,7 +59,7 @@
       "field" : {
         "name" : "EventType"
       },
-      "requiredType" : "java.math.BigDecimal"
+      "requiredType" : "java.lang.Number"
     }, {
       "type" : "IsInSetConstraint",
       "field" : {
