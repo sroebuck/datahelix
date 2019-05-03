@@ -3,6 +3,7 @@ package com.scottlogic.deg.generator.restrictions;
 import com.scottlogic.deg.generator.generation.TypeDefinition;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DataTypeRestrictions implements TypeRestrictions {
 
@@ -26,8 +27,10 @@ public class DataTypeRestrictions implements TypeRestrictions {
         if (types.length == 0)
             return this;
 
-        ArrayList<TypeDefinition> allowedTypes = new ArrayList<>(this.allowedTypes);
-        allowedTypes.removeAll(Arrays.asList(types));
+        List<TypeDefinition> allowedTypes = this.allowedTypes
+            .stream()
+            .filter(allowedType -> Arrays.stream(types).noneMatch(t -> allowedType.getType().equals(t.getType())))
+            .collect(Collectors.toList());
 
         if (allowedTypes.isEmpty()){
             return NO_TYPES_PERMITTED;
