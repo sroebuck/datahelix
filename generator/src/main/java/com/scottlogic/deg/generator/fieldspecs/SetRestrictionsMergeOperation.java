@@ -1,10 +1,7 @@
 package com.scottlogic.deg.generator.fieldspecs;
 
 import com.scottlogic.deg.generator.generation.TypeDefinition;
-import com.scottlogic.deg.generator.restrictions.MergeResult;
-import com.scottlogic.deg.generator.restrictions.SetRestrictions;
-import com.scottlogic.deg.generator.restrictions.SetRestrictionsMerger;
-import com.scottlogic.deg.generator.restrictions.TypeRestrictions;
+import com.scottlogic.deg.generator.restrictions.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,10 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.scottlogic.deg.generator.restrictions.DateTimeRestrictions.isDateTime;
-import static com.scottlogic.deg.generator.restrictions.NumericRestrictions.isNumeric;
-import static com.scottlogic.deg.generator.restrictions.StringRestrictions.isString;
 
 public class SetRestrictionsMergeOperation implements RestrictionMergeOperation {
     private static final SetRestrictionsMerger setRestrictionsMerger = new SetRestrictionsMerger();
@@ -41,29 +34,13 @@ public class SetRestrictionsMergeOperation implements RestrictionMergeOperation 
             Stream<?> filterStream = setRestrictions.getWhitelist().stream();
             TypeRestrictions typeRestrictions = merging.getTypeRestrictions();
 
-            if (!typeRestrictions.isTypeAllowed(TypeDefinition.Numeric)) {
-                filterStream = filterStream.filter(x -> !isNumeric(x));
-            }
-
-            if (!typeRestrictions.isTypeAllowed(TypeDefinition.String)) {
-                filterStream = filterStream.filter(x -> !isString(x));
-            }
-
-            if (!typeRestrictions.isTypeAllowed(TypeDefinition.Temporal)) {
-                filterStream = filterStream.filter(x -> !isDateTime(x));
-            }
-
-            if(merging.getStringRestrictions() != null){
-                filterStream = filterStream.filter(x -> !isString(x) || merging.getStringRestrictions().match(x));
-            }
-
-            if(merging.getNumericRestrictions() != null){
-                filterStream = filterStream.filter(x -> !isNumeric(x) || merging.getNumericRestrictions().match(x));
-            }
-
-            if(merging.getDateTimeRestrictions() != null){
-                filterStream = filterStream.filter(x -> !isDateTime(x) || merging.getDateTimeRestrictions().match(x));
-            }
+            /* use the type-factory to do this filtering */
+            filterStream = typeRestrictions.getAllowedTypes()
+                .stream()
+                .reduce(
+                    filterStream,
+                    (values, typeDefinition) -> removeInvalidValues(merging, values, typeDefinition),
+                    (prev, td) -> null);
 
             Set<Object> whitelist = filterStream.collect(Collectors.toCollection(HashSet::new));
             SetRestrictions newSetRestrictions = new SetRestrictions(whitelist,
@@ -75,6 +52,37 @@ public class SetRestrictionsMergeOperation implements RestrictionMergeOperation 
         return Optional.of(merging.withSetRestrictions(
             setRestrictions,
             FieldSpecSource.fromFieldSpecs(left, right)));
+    }
+
+    private <T> Stream<T> removeInvalidValues(FieldSpec fieldSpec, Stream<T> prev, TypeDefinition td) {
+        return prev
+            .filter(value -> td.getType().isInstance(value))
+            .filter(value -> valueMatches(fieldSpec, td, value));
+    }
+
+    private <T> boolean valueMatches(FieldSpec fieldSpec, TypeDefinition typeDefinition, T value) {
+        StringRestrictions stringRestrictions = fieldSpec.getStringRestrictions();
+
+        //typeof(value) will be the same as typeDefinition.getType()
+
+        //either ask the typeDefinition if the value matches
+        //or eject values based on their string restrictions
+
+        if (typeDefinition.getType() == TypeDefinition.String.getType() && stringRestrictions != null){
+            return stringRestrictions.match(value);
+        }
+
+        NumericRestrictions numericRestrictions = fieldSpec.getNumericRestrictions();
+        if (typeDefinition.getType() == TypeDefinition.Numeric.getType() && numericRestrictions != null){
+            return numericRestrictions.match(value);
+        }
+
+        DateTimeRestrictions temporalRestrictions = fieldSpec.getDateTimeRestrictions();
+        if (typeDefinition.getType() == TypeDefinition.Temporal.getType() && temporalRestrictions != null){
+            return temporalRestrictions.match(value);
+        }
+
+        return true;
     }
 }
 
