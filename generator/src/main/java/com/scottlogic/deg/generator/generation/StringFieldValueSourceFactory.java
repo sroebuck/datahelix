@@ -1,16 +1,11 @@
 package com.scottlogic.deg.generator.generation;
 
+import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
-import com.scottlogic.deg.generator.generation.fieldvaluesources.RealNumberFieldValueSource;
-import com.scottlogic.deg.generator.generation.fieldvaluesources.datetime.DateTimeFieldValueSource;
-import com.scottlogic.deg.generator.restrictions.DateTimeRestrictions;
-import com.scottlogic.deg.generator.restrictions.NumericRestrictions;
 import com.scottlogic.deg.generator.restrictions.StringRestrictions;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,8 +43,8 @@ public class StringFieldValueSourceFactory implements FieldValueSourceFactory {
     }
 
     @Override
-    public Class getUnderlyingDataType() {
-        return String.class;
+    public DataGeneratorBaseTypes getUnderlyingDataType() {
+        return DataGeneratorBaseTypes.STRING;
     }
 
     @Override

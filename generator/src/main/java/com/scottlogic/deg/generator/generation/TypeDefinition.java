@@ -6,6 +6,7 @@ import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.time.OffsetDateTime;
 
 public class TypeDefinition {
     public static final TypeDefinition String = StringFieldValueSourceFactory.getTypeDefinition();
@@ -50,7 +51,16 @@ public class TypeDefinition {
     }
 
     public Class getType() {
-        return factory.getUnderlyingDataType();
+        switch (factory.getUnderlyingDataType()){
+            case STRING:
+                return java.lang.String.class;
+            case NUMERIC:
+                return Number.class;
+            case TEMPORAL:
+                return OffsetDateTime.class;
+        }
+
+        throw new UnsupportedOperationException("Invalid underlying DataType: " + factory.getUnderlyingDataType());
     }
 
     public FieldValueSource getFieldValueSource(FieldSpec fieldSpec){

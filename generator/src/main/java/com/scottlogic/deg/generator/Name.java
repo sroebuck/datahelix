@@ -21,8 +21,8 @@ public class Name implements FieldValueSourceFactory {
     }
 
     @Override
-    public Class getUnderlyingDataType() {
-        return String.class;
+    public DataGeneratorBaseTypes getUnderlyingDataType() {
+        return DataGeneratorBaseTypes.STRING;
     }
 
     @Override
@@ -30,3 +30,4 @@ public class Name implements FieldValueSourceFactory {
         return names.contains(value);
     }
 }
+

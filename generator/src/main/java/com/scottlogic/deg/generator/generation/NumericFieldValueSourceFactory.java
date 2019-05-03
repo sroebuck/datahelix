@@ -1,5 +1,6 @@
 package com.scottlogic.deg.generator.generation;
 
+import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.RealNumberFieldValueSource;
@@ -33,8 +34,8 @@ public class NumericFieldValueSourceFactory implements FieldValueSourceFactory {
     }
 
     @Override
-    public Class getUnderlyingDataType() {
-        return Number.class;
+    public DataGeneratorBaseTypes getUnderlyingDataType() {
+        return DataGeneratorBaseTypes.NUMERIC;
     }
 
     @Override
