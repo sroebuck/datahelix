@@ -176,7 +176,7 @@ class AtomicConstraintReaderLookup {
                                 "Please use one of \"decimal\" or \"integer\"");
 
                         default:
-                            throw new InvalidProfileException("Unrecognised type in type constraint: " + dto.value);
+                            type = TypeDefinition.parse(typeString);
                     }
 
                     return new IsOfTypeConstraint(
