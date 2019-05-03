@@ -36,4 +36,10 @@ public class NumericFieldValueSourceFactory implements FieldValueSourceFactory {
     public Class getUnderlyingDataType() {
         return Number.class;
     }
+
+    @Override
+    public boolean isValid(Object value, FieldSpec fieldSpec) {
+        NumericRestrictions numericRestrictions = fieldSpec.getNumericRestrictions();
+        return numericRestrictions == null || numericRestrictions.match(value);
+    }
 }

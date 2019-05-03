@@ -35,4 +35,10 @@ public class TemporalFieldValueSourceFactory implements FieldValueSourceFactory 
     public Class getUnderlyingDataType() {
         return OffsetDateTime.class;
     }
+
+    @Override
+    public boolean isValid(Object value, FieldSpec fieldSpec) {
+        DateTimeRestrictions temporalRestrictions = fieldSpec.getDateTimeRestrictions();
+        return temporalRestrictions == null || temporalRestrictions.match(value);
+    }
 }

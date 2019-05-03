@@ -6,4 +6,5 @@ import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSourc
 public interface FieldValueSourceFactory {
     FieldValueSource createValueSource(FieldSpec fieldSpec);
     Class getUnderlyingDataType();
+    boolean isValid(Object value, FieldSpec fieldSpec);
 }

@@ -671,7 +671,6 @@ Feature: User can specify that a field value belongs to a set of predetermined o
       | typeValue                |
       | 1                        |
       | 2018-01-01T00:00:00.000Z |
-      | true                     |
 
   Scenario: 'InSet' alongside a contradicting 'matchingRegex' constraint should produce null
     Given there is a field foo
@@ -764,7 +763,6 @@ Feature: User can specify that a field value belongs to a set of predetermined o
       | typeValue                |
       | 1                        |
       | 2018-01-01T00:00:00.000Z |
-      | true                     |
 
   Scenario: 'InSet' alongside a contradicting 'containingRegex' constraint should produce null
     Given there is a field foo

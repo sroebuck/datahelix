@@ -361,22 +361,6 @@ Feature: User can specify that a value is equalTo a required value
     Then the profile is invalid because "Field \[foo\]: Date string '2010-01-01T55:00:00.000Z' must be in ISO-8601 format: yyyy-MM-ddTHH:mm:ss.SSS\[Z\] between \(inclusive\) 0001-01-01T00:00:00.000Z and 9999-12-31T23:59:59.999Z"
     And no data is created
 
-  Scenario: Running an 'equalTo' request that includes a boolean value e.g. true should be successful
-    Given there is a field foo
-    And foo is equal to true
-    And foo is anything but null
-    Then the following data should be generated:
-      | foo  |
-      | true |
-
-  Scenario: Running an 'equalTo' request that includes a boolean value e.g. false should be successful
-    Given there is a field foo
-    And foo is equal to false
-    And foo is anything but null
-    Then the following data should be generated:
-      | foo   |
-      | false |
-
 ### EqualTo ###
 
   Scenario: Two non-contradictory 'equalTo' statements should be successful

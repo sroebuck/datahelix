@@ -34,13 +34,7 @@ public class SetRestrictionsMergeOperation implements RestrictionMergeOperation 
             Stream<?> filterStream = setRestrictions.getWhitelist().stream();
             TypeRestrictions typeRestrictions = merging.getTypeRestrictions();
 
-            /* use the type-factory to do this filtering */
-            filterStream = typeRestrictions.getAllowedTypes()
-                .stream()
-                .reduce(
-                    filterStream,
-                    (values, typeDefinition) -> removeInvalidValues(merging, values, typeDefinition),
-                    (prev, td) -> null);
+            filterStream = restrictSetValues(merging, filterStream, typeRestrictions);
 
             Set<Object> whitelist = filterStream.collect(Collectors.toCollection(HashSet::new));
             SetRestrictions newSetRestrictions = new SetRestrictions(whitelist,
@@ -54,35 +48,11 @@ public class SetRestrictionsMergeOperation implements RestrictionMergeOperation 
             FieldSpecSource.fromFieldSpecs(left, right)));
     }
 
-    private <T> Stream<T> removeInvalidValues(FieldSpec fieldSpec, Stream<T> prev, TypeDefinition td) {
-        return prev
-            .filter(value -> td.getType().isInstance(value))
-            .filter(value -> valueMatches(fieldSpec, td, value));
-    }
+    private Stream<?> restrictSetValues(FieldSpec fieldSpec, Stream<?> values, TypeRestrictions typeRestrictions) {
+        Set<TypeDefinition> allowedTypes = typeRestrictions.getAllowedTypes();
 
-    private <T> boolean valueMatches(FieldSpec fieldSpec, TypeDefinition typeDefinition, T value) {
-        StringRestrictions stringRestrictions = fieldSpec.getStringRestrictions();
-
-        //typeof(value) will be the same as typeDefinition.getType()
-
-        //either ask the typeDefinition if the value matches
-        //or eject values based on their string restrictions
-
-        if (typeDefinition.getType() == TypeDefinition.String.getType() && stringRestrictions != null){
-            return stringRestrictions.match(value);
-        }
-
-        NumericRestrictions numericRestrictions = fieldSpec.getNumericRestrictions();
-        if (typeDefinition.getType() == TypeDefinition.Numeric.getType() && numericRestrictions != null){
-            return numericRestrictions.match(value);
-        }
-
-        DateTimeRestrictions temporalRestrictions = fieldSpec.getDateTimeRestrictions();
-        if (typeDefinition.getType() == TypeDefinition.Temporal.getType() && temporalRestrictions != null){
-            return temporalRestrictions.match(value);
-        }
-
-        return true;
+        return values.filter(value ->
+            allowedTypes.stream().anyMatch(td -> td.getType().isInstance(value) && td.isValid(value, fieldSpec)));
     }
 }
 

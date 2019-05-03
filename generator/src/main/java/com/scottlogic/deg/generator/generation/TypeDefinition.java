@@ -70,4 +70,8 @@ public class TypeDefinition {
 
         return false;
     }
+
+    public boolean isValid(Object value, FieldSpec fieldSpec) {
+        return factory.isValid(value, fieldSpec);
+    }
 }
