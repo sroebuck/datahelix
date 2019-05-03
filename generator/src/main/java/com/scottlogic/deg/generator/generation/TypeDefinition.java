@@ -74,4 +74,9 @@ public class TypeDefinition {
     public boolean isValid(Object value, FieldSpec fieldSpec) {
         return factory.isValid(value, fieldSpec);
     }
+
+    @Override
+    public String toString(){
+        return "Type: " + getType().getSimpleName();
+    }
 }
