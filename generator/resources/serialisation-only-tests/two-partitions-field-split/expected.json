@@ -39,7 +39,7 @@
       "field" : {
         "name" : "User"
       },
-      "requiredType" : "string"
+      "requiredType" : "java.lang.String"
     }, {
       "type" : "NotConstraint",
       "negatedConstraint" : {
@@ -59,7 +59,7 @@
       "field" : {
         "name" : "EventType"
       },
-      "requiredType" : "numeric"
+      "requiredType" : "java.math.BigDecimal"
     }, {
       "type" : "IsInSetConstraint",
       "field" : {

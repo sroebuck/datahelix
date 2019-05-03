@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 import com.scottlogic.deg.generator.restrictions.*;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class NumericRestrictionsMergeOperation implements RestrictionMergeOperation {
@@ -27,7 +28,7 @@ public class NumericRestrictionsMergeOperation implements RestrictionMergeOperat
 
             return Optional.of(merging
                 .withTypeRestrictions(
-                    typeRestrictions.except(IsOfTypeConstraint.Types.NUMERIC),
+                    typeRestrictions.except(BigDecimal.class),
                     left.getFieldSpecSource().combine(right.getFieldSpecSource())));
         }
 

@@ -101,7 +101,7 @@ class FieldSpecValueGeneratorTests {
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(Collections.singletonList(
-                    IsOfTypeConstraint.Types.NUMERIC
+                    BigDecimal.class
                 )),
                 fieldSpecSource);
 
@@ -179,7 +179,7 @@ class FieldSpecValueGeneratorTests {
             .withTypeRestrictions(
                 new DataTypeRestrictions(
                     Collections.singletonList(
-                        IsOfTypeConstraint.Types.STRING
+                        String.class
                     )
                 ),
                 fieldSpecSource)
@@ -240,7 +240,7 @@ class FieldSpecValueGeneratorTests {
             .withTypeRestrictions(
                 new DataTypeRestrictions(
                     Collections.singletonList(
-                        IsOfTypeConstraint.Types.STRING
+                        String.class
                     )
                 ),
                 fieldSpecSource)
@@ -349,7 +349,7 @@ class FieldSpecValueGeneratorTests {
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(
-                    Collections.singletonList(IsOfTypeConstraint.Types.NUMERIC)
+                    Collections.singletonList(BigDecimal.class)
                 ),
                 fieldSpecSource);
         GenerationConfig generationConfig = new GenerationConfig(
@@ -405,7 +405,7 @@ class FieldSpecValueGeneratorTests {
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(
-                    Collections.singletonList(IsOfTypeConstraint.Types.NUMERIC)
+                    Collections.singletonList(BigDecimal.class)
                 ),
                 fieldSpecSource)
             .withNullRestrictions(new NullRestrictions(Nullness.MUST_NOT_BE_NULL), fieldSpecSource);
@@ -463,7 +463,7 @@ class FieldSpecValueGeneratorTests {
                 fieldSpecSource)
             .withTypeRestrictions(
                 new DataTypeRestrictions(
-                    Collections.singletonList(IsOfTypeConstraint.Types.NUMERIC)
+                    Collections.singletonList(BigDecimal.class)
                 ),
                 fieldSpecSource)
             .withNullRestrictions(new NullRestrictions(Nullness.MUST_NOT_BE_NULL), fieldSpecSource);

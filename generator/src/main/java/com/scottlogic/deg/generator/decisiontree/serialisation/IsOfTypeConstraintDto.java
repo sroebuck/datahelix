@@ -1,7 +1,6 @@
 package com.scottlogic.deg.generator.decisiontree.serialisation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 
 public class IsOfTypeConstraintDto implements ConstraintDto {
     public FieldDto field;
@@ -10,7 +9,11 @@ public class IsOfTypeConstraintDto implements ConstraintDto {
 
     public String rule;
 
-    public IsOfTypeConstraint.Types getTypesFromTypesDto() {
-        return IsOfTypeConstraint.Types.valueOf(requiredTypeString.toUpperCase());
+    public Class getTypesFromTypesDto() {
+        try {
+            return Class.forName(requiredTypeString);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

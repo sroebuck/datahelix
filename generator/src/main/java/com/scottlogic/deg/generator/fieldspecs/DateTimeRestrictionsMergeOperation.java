@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 import com.scottlogic.deg.generator.restrictions.*;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 public class DateTimeRestrictionsMergeOperation implements RestrictionMergeOperation {
@@ -29,7 +30,7 @@ public class DateTimeRestrictionsMergeOperation implements RestrictionMergeOpera
 
             return Optional.of(merging
                 .withTypeRestrictions(
-                    typeRestrictions.except(IsOfTypeConstraint.Types.DATETIME),
+                    typeRestrictions.except(OffsetDateTime.class),
                     left.getFieldSpecSource().combine(right.getFieldSpecSource())));
         }
 

@@ -8,6 +8,8 @@ import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.inputs.validation.validators.*;
 import com.scottlogic.deg.generator.restrictions.Nullness;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsAfterConstantDateTimeConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.DATETIME);
+        state.typeConstraintValidator.isOfType(constraint.getField(), OffsetDateTime.class);
         state.dateTimeConstraintValidator.isAfter(constraint.getField(), constraint.referenceValue, false);
     }
 
@@ -38,7 +40,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsBeforeConstantDateTimeConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.DATETIME);
+        state.typeConstraintValidator.isOfType(constraint.getField(), OffsetDateTime.class);
         state.dateTimeConstraintValidator.isBefore(constraint.getField(), constraint.referenceValue, false);
     }
 
@@ -46,7 +48,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsAfterOrEqualToConstantDateTimeConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.DATETIME);
+        state.typeConstraintValidator.isOfType(constraint.getField(), OffsetDateTime.class);
         state.dateTimeConstraintValidator.isAfter(constraint.getField(), constraint.referenceValue, true);
     }
 
@@ -54,7 +56,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsBeforeOrEqualToConstantDateTimeConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.DATETIME);
+        state.typeConstraintValidator.isOfType(constraint.getField(), OffsetDateTime.class);
         state.dateTimeConstraintValidator.isBefore(constraint.getField(), constraint.referenceValue, true);
     }
 
@@ -69,7 +71,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsStringShorterThanConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.STRING);
+        state.typeConstraintValidator.isOfType(constraint.getField(), String.class);
         state.stringConstraintValidator.isShorterThan(constraint.getField(), constraint.referenceValue);
     }
 
@@ -77,7 +79,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsStringLongerThanConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.STRING);
+        state.typeConstraintValidator.isOfType(constraint.getField(), String.class);
         state.stringConstraintValidator.isLongerThan(constraint.getField(), constraint.referenceValue);
     }
 
@@ -106,14 +108,14 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsGranularToConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.NUMERIC);
+        state.typeConstraintValidator.isOfType(constraint.getField(), BigDecimal.class);
     }
 
     @Override
     public void visit(IsLessThanConstantConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.NUMERIC);
+        state.typeConstraintValidator.isOfType(constraint.getField(), BigDecimal.class);
         state.numericConstraintValidator.IsLessThan(constraint.getField(), constraint.referenceValue, false);
     }
 
@@ -121,7 +123,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsGreaterThanConstantConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.NUMERIC);
+        state.typeConstraintValidator.isOfType(constraint.getField(), BigDecimal.class);
         state.numericConstraintValidator.IsGreaterThan(constraint.getField(), constraint.referenceValue, false);
     }
 
@@ -129,7 +131,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsLessThanOrEqualToConstantConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.NUMERIC);
+        state.typeConstraintValidator.isOfType(constraint.getField(), BigDecimal.class);
         state.numericConstraintValidator.IsLessThan(constraint.getField(), constraint.referenceValue, true);
     }
 
@@ -137,7 +139,7 @@ public class ProfileValidationVisitor implements ProfileVisitor {
     public void visit(IsGreaterThanOrEqualToConstantConstraint constraint) {
         ConstraintValidator state = getFieldState(constraint.getField());
 
-        state.typeConstraintValidator.isOfType(constraint.getField(), IsOfTypeConstraint.Types.NUMERIC);
+        state.typeConstraintValidator.isOfType(constraint.getField(), BigDecimal.class);
         state.numericConstraintValidator.IsGreaterThan(constraint.getField(), constraint.referenceValue, true);
     }
 

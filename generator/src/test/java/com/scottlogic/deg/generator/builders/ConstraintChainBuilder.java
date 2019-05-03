@@ -105,7 +105,7 @@ public abstract class ConstraintChainBuilder<T> extends BaseConstraintBuilder<T>
         return saveAndSet(new StringHasLengthConstraint(fooField, length, null));
     }
 
-    public ConstraintChainBuilder<T> withOfTypeConstraint(Field fooField, IsOfTypeConstraint.Types requiredType) {
+    public ConstraintChainBuilder<T> withOfTypeConstraint(Field fooField, Class requiredType) {
         return saveAndSet(new IsOfTypeConstraint(fooField, requiredType, null));
     }
 

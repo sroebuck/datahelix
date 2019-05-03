@@ -3,6 +3,8 @@ package com.scottlogic.deg.generator.fieldspecs;
 import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 import com.scottlogic.deg.generator.restrictions.*;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -38,15 +40,15 @@ public class SetRestrictionsMergeOperation implements RestrictionMergeOperation 
             Stream<?> filterStream = setRestrictions.getWhitelist().stream();
             TypeRestrictions typeRestrictions = merging.getTypeRestrictions();
 
-            if (!typeRestrictions.isTypeAllowed(IsOfTypeConstraint.Types.NUMERIC)) {
+            if (!typeRestrictions.isTypeAllowed(BigDecimal.class)) {
                 filterStream = filterStream.filter(x -> !isNumeric(x));
             }
 
-            if (!typeRestrictions.isTypeAllowed(IsOfTypeConstraint.Types.STRING)) {
+            if (!typeRestrictions.isTypeAllowed(String.class)) {
                 filterStream = filterStream.filter(x -> !isString(x));
             }
 
-            if (!typeRestrictions.isTypeAllowed(IsOfTypeConstraint.Types.DATETIME)) {
+            if (!typeRestrictions.isTypeAllowed(OffsetDateTime.class)) {
                 filterStream = filterStream.filter(x -> !isDateTime(x));
             }
 

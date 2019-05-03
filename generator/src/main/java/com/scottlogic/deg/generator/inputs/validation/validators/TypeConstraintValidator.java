@@ -20,11 +20,11 @@ public class TypeConstraintValidator implements ConstraintValidatorAlerts {
 
     public TypeConstraintValidator(){
         this.alerts = new ArrayList<>();
-        this.currentRestrictions = new DataTypeRestrictions(Arrays.asList(IsOfTypeConstraint.Types.values()));
+        this.currentRestrictions = new AnyTypeRestriction();
     }
 
 
-    public void isOfType(Field field, IsOfTypeConstraint.Types type) {
+    public void isOfType(Field field, Class type) {
 
         TypeRestrictions candidateRestrictions = new DataTypeRestrictions(Arrays.asList(type));
         TypeRestrictionsMerger merger = new TypeRestrictionsMerger();

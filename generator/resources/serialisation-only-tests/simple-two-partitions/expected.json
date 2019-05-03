@@ -37,7 +37,7 @@
       "field" : {
         "name" : "Event"
       },
-      "requiredType" : "string"
+      "requiredType" : "java.lang.String"
     } ],
     "decisions" : [ {
       "options" : [ {

@@ -1,7 +1,5 @@
 package com.scottlogic.deg.generator.restrictions;
 
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
-
 import java.util.*;
 
 public class DataTypeRestrictions implements TypeRestrictions {
@@ -9,22 +7,22 @@ public class DataTypeRestrictions implements TypeRestrictions {
     public final static TypeRestrictions ALL_TYPES_PERMITTED = new AnyTypeRestriction();
     public final static TypeRestrictions NO_TYPES_PERMITTED = new NoAllowedTypesRestriction();
 
-    public DataTypeRestrictions(Collection<IsOfTypeConstraint.Types> allowedTypes) {
+    public DataTypeRestrictions(Collection<Class> allowedTypes) {
         if (allowedTypes.size() == 0)
             throw new UnsupportedOperationException("Cannot have a type restriction with no types");
 
         this.allowedTypes = new HashSet<>(allowedTypes);
     }
 
-    public static TypeRestrictions createFromWhiteList(IsOfTypeConstraint.Types... types) {
+    public static TypeRestrictions createFromWhiteList(Class... types) {
         return new DataTypeRestrictions(Arrays.asList(types));
     }
 
-    public TypeRestrictions except(IsOfTypeConstraint.Types... types) {
+    public TypeRestrictions except(Class... types) {
         if (types.length == 0)
             return this;
 
-        ArrayList<IsOfTypeConstraint.Types> allowedTypes = new ArrayList<>(this.allowedTypes);
+        ArrayList<Class> allowedTypes = new ArrayList<>(this.allowedTypes);
         allowedTypes.removeAll(Arrays.asList(types));
 
         if (allowedTypes.isEmpty()){
@@ -34,9 +32,9 @@ public class DataTypeRestrictions implements TypeRestrictions {
         return new DataTypeRestrictions(allowedTypes);
     }
 
-    private final Set<IsOfTypeConstraint.Types> allowedTypes;
+    private final Set<Class> allowedTypes;
 
-    public boolean isTypeAllowed(IsOfTypeConstraint.Types type){
+    public boolean isTypeAllowed(Class type){
         return allowedTypes.contains(type);
     }
 
@@ -53,7 +51,7 @@ public class DataTypeRestrictions implements TypeRestrictions {
         if (other == ALL_TYPES_PERMITTED)
             return this;
 
-        ArrayList<IsOfTypeConstraint.Types> allowedTypes = new ArrayList<>(this.allowedTypes);
+        ArrayList<Class> allowedTypes = new ArrayList<>(this.allowedTypes);
         allowedTypes.retainAll(other.getAllowedTypes());
 
         if (allowedTypes.isEmpty())
@@ -69,7 +67,7 @@ public class DataTypeRestrictions implements TypeRestrictions {
         return new DataTypeRestrictions(allowedTypes);
     }
 
-    public Set<IsOfTypeConstraint.Types> getAllowedTypes() {
+    public Set<Class> getAllowedTypes() {
         return allowedTypes;
     }
 

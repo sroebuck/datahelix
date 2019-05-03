@@ -71,7 +71,7 @@ public class ProfileViolationTests {
 
             Arguments.of(IsInSetConstraint.class, sampleSet),
             Arguments.of(IsNullConstraint.class, null),
-            Arguments.of(IsOfTypeConstraint.class, IsOfTypeConstraint.Types.STRING),
+            Arguments.of(IsOfTypeConstraint.class, String.class),
             Arguments.of(MatchesStandardConstraint.class, StandardConstraintTypes.ISIN),
 
             Arguments.of(ContainsRegexConstraint.class, Pattern.compile("\\w+")),
@@ -123,11 +123,11 @@ public class ProfileViolationTests {
             .withBeforeConstraint(staticField, OffsetDateTime.of(2019, 1, 15, 12, 0, 0, 0, ZoneOffset.UTC)).negate().wrapAtomicWithViolate();
 
         BaseConstraintBuilder<ConditionalConstraint> ifThenConstraintBuilder = new IfBuilder()
-            .withIf(new SingleConstraintBuilder().withOfTypeConstraint(staticField, IsOfTypeConstraint.Types.NUMERIC))
+            .withIf(new SingleConstraintBuilder().withOfTypeConstraint(staticField, BigDecimal.class))
             .withThen(new SingleConstraintBuilder().withInSetConstraint(staticField, new Object[]{10, 100}));
 
         BaseConstraintBuilder<AndConstraint> violatedIfThenConstraintBuilder = new AndBuilder()
-            .withOfTypeConstraint(staticField, IsOfTypeConstraint.Types.NUMERIC)
+            .withOfTypeConstraint(staticField, BigDecimal.class)
             .withInSetConstraint(staticField, new Object[]{10, 100}).negate().wrapAtomicWithViolate();
 
         BaseConstraintBuilder<ConditionalConstraint> ifThenElseConstraintBuilder = new IfBuilder()
@@ -174,7 +174,7 @@ public class ProfileViolationTests {
         A = new SingleConstraintBuilder().withEqualToConstraint(field1, "A");
         B = new SingleConstraintBuilder().withGreaterThanConstraint(field2, 100);
         C = new SingleConstraintBuilder().withOfLengthConstraint(field3, 10);
-        D = new SingleConstraintBuilder().withOfTypeConstraint(field4, IsOfTypeConstraint.Types.NUMERIC);
+        D = new SingleConstraintBuilder().withOfTypeConstraint(field4, BigDecimal.class);
         E = new SingleConstraintBuilder().withLessThanConstraint(field5, 200);
     }
 

@@ -91,6 +91,9 @@ class TreeTransformationIntegrationTests {
                     }
             });
             }
+            catch (RuntimeException ex){
+                throw new RuntimeException("Error loading test: " + directory.toPath().toString(), ex);
+            }
             catch (IOException | InvalidProfileException ex) {
                 // Throwing RuntimeException to escape the lambda
                 throw new RuntimeException(ex);

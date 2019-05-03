@@ -7,6 +7,8 @@ import com.scottlogic.deg.generator.generation.fieldvaluesources.*;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.datetime.DateTimeFieldValueSource;
 import com.scottlogic.deg.generator.restrictions.*;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,15 +43,15 @@ public class StandardFieldValueSourceEvaluator implements FieldValueSourceEvalua
             ? fieldSpec.getTypeRestrictions()
             : DataTypeRestrictions.ALL_TYPES_PERMITTED;
 
-        if (typeRestrictions.isTypeAllowed(IsOfTypeConstraint.Types.NUMERIC)) {
+        if (typeRestrictions.isTypeAllowed(BigDecimal.class)) {
             validSources.add(getNumericSource(fieldSpec));
         }
 
-        if (typeRestrictions.isTypeAllowed(IsOfTypeConstraint.Types.STRING)) {
+        if (typeRestrictions.isTypeAllowed(String.class)) {
             validSources.add(getStringSource(fieldSpec));
         }
 
-        if (typeRestrictions.isTypeAllowed(IsOfTypeConstraint.Types.DATETIME)) {
+        if (typeRestrictions.isTypeAllowed(OffsetDateTime.class)) {
             validSources.add(getDateTimeSource(fieldSpec));
         }
 

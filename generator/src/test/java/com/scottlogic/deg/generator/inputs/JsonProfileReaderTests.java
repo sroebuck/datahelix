@@ -238,7 +238,7 @@ public class JsonProfileReaderTests {
                                 IsOfTypeConstraint.class,
                                 c -> Assert.assertThat(
                                         c.requiredType,
-                                        equalTo(IsOfTypeConstraint.Types.STRING)))));
+                                        equalTo(String.class)))));
     }
 
     @Test

@@ -146,7 +146,7 @@ class AtomicConstraintReaderLookup {
                         return new AndConstraint(
                             new IsOfTypeConstraint(
                                 fields.getByName(dto.field),
-                                IsOfTypeConstraint.Types.NUMERIC,
+                                BigDecimal.class,
                                 rules
                             ),
                             new IsGranularToConstraint(
@@ -156,18 +156,18 @@ class AtomicConstraintReaderLookup {
                             )
                         );
                     }
-                    final IsOfTypeConstraint.Types type;
+                    final Class type;
                     switch (typeString) {
                         case "decimal":
-                            type = IsOfTypeConstraint.Types.NUMERIC;
+                            type = BigDecimal.class;
                             break;
 
                         case "string":
-                            type = IsOfTypeConstraint.Types.STRING;
+                            type = String.class;
                             break;
 
                         case "datetime":
-                            type = IsOfTypeConstraint.Types.DATETIME;
+                            type = OffsetDateTime.class;
                             break;
 
                         case "numeric":

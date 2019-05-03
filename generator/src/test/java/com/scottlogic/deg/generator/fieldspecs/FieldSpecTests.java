@@ -605,12 +605,12 @@ class FieldSpecTests {
         }
 
         @Override
-        public TypeRestrictions except(IsOfTypeConstraint.Types... types) {
+        public TypeRestrictions except(Class... types) {
             throw new UnsupportedOperationException("Not supported");
         }
 
         @Override
-        public boolean isTypeAllowed(IsOfTypeConstraint.Types type) {
+        public boolean isTypeAllowed(Class type) {
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -620,7 +620,7 @@ class FieldSpecTests {
         }
 
         @Override
-        public Set<IsOfTypeConstraint.Types> getAllowedTypes() {
+        public Set<Class> getAllowedTypes() {
             throw new UnsupportedOperationException("Not supported");
         }
     }

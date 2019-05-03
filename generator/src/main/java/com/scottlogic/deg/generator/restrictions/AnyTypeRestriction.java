@@ -1,16 +1,23 @@
 package com.scottlogic.deg.generator.restrictions;
 
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.*;
 
 public class AnyTypeRestriction implements TypeRestrictions {
-    private final static Set<IsOfTypeConstraint.Types> allTypes = new HashSet<>(Arrays.asList(IsOfTypeConstraint.Types.values()));
+    private final static Set<Class> allTypes = new HashSet<>(getAllPossibleTypes());
 
-    public boolean isTypeAllowed(IsOfTypeConstraint.Types type) {
+    private static Collection<Class> getAllPossibleTypes() {
+        //look at the class path for 'types' of data, with some way of identifying them
+
+        return Arrays.asList(
+            String.class,
+            BigDecimal.class,
+            OffsetDateTime.class
+        );
+    }
+
+    public boolean isTypeAllowed(Class type) {
         return true;
     }
 
@@ -23,17 +30,17 @@ public class AnyTypeRestriction implements TypeRestrictions {
     }
 
 
-    public TypeRestrictions except(IsOfTypeConstraint.Types... types) {
+    public TypeRestrictions except(Class... types) {
         if (types.length == 0)
             return this;
 
-        ArrayList<IsOfTypeConstraint.Types> allowedTypes = new ArrayList<>(allTypes);
+        ArrayList<Class> allowedTypes = new ArrayList<>(allTypes);
         allowedTypes.removeAll(Arrays.asList(types));
 
         return new DataTypeRestrictions(allowedTypes);
     }
 
-    public Set<IsOfTypeConstraint.Types> getAllowedTypes() {
+    public Set<Class> getAllowedTypes() {
         return allTypes;
     }
 

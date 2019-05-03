@@ -5,7 +5,7 @@ import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 import java.util.*;
 
 public class NoAllowedTypesRestriction implements TypeRestrictions {
-    public boolean isTypeAllowed(IsOfTypeConstraint.Types type) {
+    public boolean isTypeAllowed(Class type) {
         return false;
     }
 
@@ -17,11 +17,11 @@ public class NoAllowedTypesRestriction implements TypeRestrictions {
         return this;
     }
 
-    public TypeRestrictions except(IsOfTypeConstraint.Types... types) {
+    public TypeRestrictions except(Class... types) {
         return new DataTypeRestrictions(Arrays.asList(types));
     }
 
-    public Set<IsOfTypeConstraint.Types> getAllowedTypes() {
+    public Set<Class> getAllowedTypes() {
         return Collections.emptySet();
     }
 

@@ -10,10 +10,10 @@ import java.util.Set;
 
 public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileElement {
     public final Field field;
-    public final Types requiredType;
+    public final Class requiredType;
     private final Set<RuleInformation> rules;
 
-    public IsOfTypeConstraint(Field field, Types requiredType, Set<RuleInformation> rules) {
+    public IsOfTypeConstraint(Field field, Class requiredType, Set<RuleInformation> rules) {
         this.field = field;
         this.requiredType = requiredType;
         this.rules = rules;
@@ -24,15 +24,9 @@ public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileEle
        visitor.visit(this);
     }
 
-    public enum Types {
-        NUMERIC,
-        STRING,
-        DATETIME
-    }
-
     @Override
     public String toDotLabel() {
-        return String.format("%s is %s", field.name, requiredType.name());
+        return String.format("%s is %s", field.name, requiredType.getSimpleName());
     }
 
     @Override
@@ -48,7 +42,8 @@ public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileEle
         }
         if (o == null || getClass() != o.getClass()) return false;
         IsOfTypeConstraint constraint = (IsOfTypeConstraint) o;
-        return Objects.equals(field, constraint.field) && Objects.equals(requiredType, constraint.requiredType);
+        return Objects.equals(field, constraint.field)
+            && Objects.equals(requiredType, constraint.requiredType);
     }
 
     @Override
@@ -57,7 +52,7 @@ public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileEle
     }
 
     @Override
-    public String toString() { return String.format("`%s` is %s", field.name, requiredType.name()); }
+    public String toString() { return String.format("`%s` is %s", field.name, requiredType.getName()); }
 
     @Override
     public Set<RuleInformation> getRules() {
@@ -66,6 +61,6 @@ public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileEle
 
     @Override
     public AtomicConstraint withRules(Set<RuleInformation> rules) {
-        return new IsOfTypeConstraint(this.field, this.requiredType, rules);
+        return new IsOfTypeConstraint(field, requiredType, rules);
     }
 }

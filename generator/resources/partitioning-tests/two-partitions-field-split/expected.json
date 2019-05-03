@@ -49,7 +49,7 @@
 			"field": {
 				"name": "EventType"
 			},
-			"requiredType": "numeric"
+			"requiredType": "java.math.BigDecimal"
 		}],
 		"decisions": [{
 			"options": [{
@@ -161,7 +161,7 @@
 			"field": {
 				"name": "User"
 			},
-			"requiredType": "string"
+			"requiredType": "java.lang.String"
 		},{
 			"type": "NotConstraint",
 			"negatedConstraint": {
