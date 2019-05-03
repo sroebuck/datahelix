@@ -1,15 +1,15 @@
 package com.scottlogic.deg.generator.restrictions;
 
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 
 import java.util.Set;
 
 public interface TypeRestrictions {
-    TypeRestrictions except(Class... types);
+    TypeRestrictions except(TypeDefinition... types);
 
-    boolean isTypeAllowed(Class type);
+    boolean isTypeAllowed(TypeDefinition type);
 
     TypeRestrictions intersect(TypeRestrictions other);
 
-    Set<Class> getAllowedTypes();
+    Set<TypeDefinition> getAllowedTypes();
 }

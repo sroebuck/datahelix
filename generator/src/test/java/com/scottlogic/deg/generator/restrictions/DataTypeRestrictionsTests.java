@@ -1,11 +1,8 @@
 package com.scottlogic.deg.generator.restrictions;
 
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 
 import static org.hamcrest.Matchers.*;
 
@@ -13,21 +10,21 @@ class DataTypeRestrictionsTests {
     @Test
     public void except_withAlreadyExcludedType_shouldReturnSameCollectionOfPermittedTypes(){
         TypeRestrictions exceptStrings = DataTypeRestrictions.createFromWhiteList(
-            BigDecimal.class,
-            OffsetDateTime.class);
+            TypeDefinition.Numeric,
+            TypeDefinition.Temporal);
 
-        TypeRestrictions result = exceptStrings.except(String.class);
+        TypeRestrictions result = exceptStrings.except(TypeDefinition.String);
 
         Assert.assertThat(result.getAllowedTypes(), containsInAnyOrder(
-            BigDecimal.class,
-            OffsetDateTime.class));
+            TypeDefinition.Numeric,
+            TypeDefinition.Temporal));
     }
 
     @Test
     public void except_withNoTypes_shouldReturnSameCollectionOfPermittedTypes(){
         TypeRestrictions exceptStrings = DataTypeRestrictions.createFromWhiteList(
-            BigDecimal.class,
-            OffsetDateTime.class);
+            TypeDefinition.Numeric,
+            TypeDefinition.Temporal);
 
         TypeRestrictions result = exceptStrings.except();
 
@@ -37,21 +34,21 @@ class DataTypeRestrictionsTests {
     @Test
     public void except_withPermittedType_shouldReturnSameCollectionExcludingGivenType(){
         TypeRestrictions exceptStrings = DataTypeRestrictions.createFromWhiteList(
-            BigDecimal.class,
-            OffsetDateTime.class);
+            TypeDefinition.Numeric,
+            TypeDefinition.Temporal);
 
-        TypeRestrictions result = exceptStrings.except(BigDecimal.class);
+        TypeRestrictions result = exceptStrings.except(TypeDefinition.Numeric);
 
         Assert.assertThat(result.getAllowedTypes(), containsInAnyOrder(
-            OffsetDateTime.class));
+            TypeDefinition.Temporal));
     }
 
     @Test
     public void except_withLastPermittedType_shouldReturnNoTypesPermitted(){
         TypeRestrictions exceptStrings = DataTypeRestrictions.createFromWhiteList(
-            OffsetDateTime.class);
+            TypeDefinition.Temporal);
 
-        TypeRestrictions result = exceptStrings.except(OffsetDateTime.class);
+        TypeRestrictions result = exceptStrings.except(TypeDefinition.Temporal);
 
         Assert.assertThat(result.getAllowedTypes(), empty());
     }

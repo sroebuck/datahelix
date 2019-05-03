@@ -1,6 +1,7 @@
 package com.scottlogic.deg.generator.constraints.atomic;
 
 import com.scottlogic.deg.generator.Field;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.inputs.validation.VisitableProfileElement;
 import com.scottlogic.deg.generator.inputs.validation.ProfileVisitor;
 import com.scottlogic.deg.generator.inputs.RuleInformation;
@@ -10,10 +11,10 @@ import java.util.Set;
 
 public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileElement {
     public final Field field;
-    public final Class requiredType;
+    public final TypeDefinition requiredType;
     private final Set<RuleInformation> rules;
 
-    public IsOfTypeConstraint(Field field, Class requiredType, Set<RuleInformation> rules) {
+    public IsOfTypeConstraint(Field field, TypeDefinition requiredType, Set<RuleInformation> rules) {
         this.field = field;
         this.requiredType = requiredType;
         this.rules = rules;
@@ -26,7 +27,7 @@ public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileEle
 
     @Override
     public String toDotLabel() {
-        return String.format("%s is %s", field.name, requiredType.getSimpleName());
+        return String.format("%s is %s", field.name, requiredType.getType().getSimpleName());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileEle
     }
 
     @Override
-    public String toString() { return String.format("`%s` is %s", field.name, requiredType.getName()); }
+    public String toString() { return String.format("`%s` is %s", field.name, requiredType.getType().getName()); }
 
     @Override
     public Set<RuleInformation> getRules() {

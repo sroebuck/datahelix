@@ -2,6 +2,7 @@ package com.scottlogic.deg.generator.fieldspecs;
 
 import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 import com.scottlogic.deg.generator.generation.StringGenerator;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.restrictions.*;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -605,12 +606,12 @@ class FieldSpecTests {
         }
 
         @Override
-        public TypeRestrictions except(Class... types) {
+        public TypeRestrictions except(TypeDefinition... types) {
             throw new UnsupportedOperationException("Not supported");
         }
 
         @Override
-        public boolean isTypeAllowed(Class type) {
+        public boolean isTypeAllowed(TypeDefinition type) {
             throw new UnsupportedOperationException("Not supported");
         }
 
@@ -620,7 +621,7 @@ class FieldSpecTests {
         }
 
         @Override
-        public Set<Class> getAllowedTypes() {
+        public Set<TypeDefinition> getAllowedTypes() {
             throw new UnsupportedOperationException("Not supported");
         }
     }

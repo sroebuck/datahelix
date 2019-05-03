@@ -1,15 +1,17 @@
 package com.scottlogic.deg.generator.generation;
 
 import com.scottlogic.deg.generator.FlatMappingSpliterator;
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.generation.fieldvaluesources.*;
-import com.scottlogic.deg.generator.generation.fieldvaluesources.datetime.DateTimeFieldValueSource;
-import com.scottlogic.deg.generator.restrictions.*;
+import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;
+import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
+import com.scottlogic.deg.generator.restrictions.DataTypeRestrictions;
+import com.scottlogic.deg.generator.restrictions.Nullness;
+import com.scottlogic.deg.generator.restrictions.TypeRestrictions;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,17 +45,8 @@ public class StandardFieldValueSourceEvaluator implements FieldValueSourceEvalua
             ? fieldSpec.getTypeRestrictions()
             : DataTypeRestrictions.ALL_TYPES_PERMITTED;
 
-        if (typeRestrictions.isTypeAllowed(BigDecimal.class)) {
-            validSources.add(getNumericSource(fieldSpec));
-        }
-
-        if (typeRestrictions.isTypeAllowed(String.class)) {
-            validSources.add(getStringSource(fieldSpec));
-        }
-
-        if (typeRestrictions.isTypeAllowed(OffsetDateTime.class)) {
-            validSources.add(getDateTimeSource(fieldSpec));
-        }
+        typeRestrictions.getAllowedTypes()
+            .forEach(td -> validSources.add(td.getFieldValueSource(fieldSpec)));
 
         if (mayBeNull(fieldSpec)){
             validSources.add(nullOnlySource);
@@ -92,49 +85,5 @@ public class StandardFieldValueSourceEvaluator implements FieldValueSourceEvalua
             List::stream)
             .distinct()
             .collect(Collectors.toList());
-    }
-
-    private FieldValueSource getNumericSource(FieldSpec fieldSpec) {
-        NumericRestrictions restrictions = fieldSpec.getNumericRestrictions() == null
-            ? new NumericRestrictions()
-            : fieldSpec.getNumericRestrictions();
-
-        return new RealNumberFieldValueSource(
-            restrictions,
-            getBlacklist(fieldSpec));
-    }
-
-    private Set<Object> getBlacklist(FieldSpec fieldSpec) {
-        if (fieldSpec.getSetRestrictions() == null)
-            return Collections.emptySet();
-
-        return new HashSet<>(fieldSpec.getSetRestrictions().getBlacklist());
-    }
-
-    private FieldValueSource getStringSource(FieldSpec fieldSpec) {
-        StringRestrictions stringRestrictions = fieldSpec.getStringRestrictions();
-
-        if (stringRestrictions == null) {
-            return new CannedValuesFieldValueSource(Collections.emptyList());
-        }
-
-        Set<Object> blacklist = getBlacklist(fieldSpec);
-
-        StringGenerator generator = stringRestrictions.createGenerator();
-        if (blacklist.size() > 0) {
-            RegexStringGenerator blacklistGenerator = RegexStringGenerator.createFromBlacklist(blacklist);
-
-            generator = generator.intersect(blacklistGenerator);
-        }
-
-        return generator.asFieldValueSource();
-    }
-
-    private FieldValueSource getDateTimeSource(FieldSpec fieldSpec) {
-        DateTimeRestrictions restrictions = fieldSpec.getDateTimeRestrictions();
-
-        return new DateTimeFieldValueSource(
-            restrictions != null ? restrictions : new DateTimeRestrictions(),
-            getBlacklist(fieldSpec));
     }
 }

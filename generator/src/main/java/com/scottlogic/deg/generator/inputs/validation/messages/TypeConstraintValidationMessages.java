@@ -1,12 +1,14 @@
 package com.scottlogic.deg.generator.inputs.validation.messages;
 
+import com.scottlogic.deg.generator.generation.TypeDefinition;
+
 public class TypeConstraintValidationMessages implements StandardValidationMessages {
 
 
-    private Class validType;
-    private Class invalidType;
+    private TypeDefinition validType;
+    private TypeDefinition invalidType;
 
-    public TypeConstraintValidationMessages(Class validType, Class invalidType) {
+    public TypeConstraintValidationMessages(TypeDefinition validType, TypeDefinition invalidType) {
 
         this.validType = validType;
         this.invalidType = invalidType;
@@ -16,7 +18,7 @@ public class TypeConstraintValidationMessages implements StandardValidationMessa
     public String getVerboseMessage() {
         return String.format(
             "Type %s is not valid. The valid type is: %s",
-            invalidType.getSimpleName(),
-            validType.getSimpleName());
+            invalidType.getType().getSimpleName(),
+            validType.getType().getSimpleName());
     }
 }

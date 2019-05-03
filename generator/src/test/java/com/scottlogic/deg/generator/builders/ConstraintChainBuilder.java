@@ -6,6 +6,7 @@ import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.ConditionalConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.OrConstraint;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -105,7 +106,7 @@ public abstract class ConstraintChainBuilder<T> extends BaseConstraintBuilder<T>
         return saveAndSet(new StringHasLengthConstraint(fooField, length, null));
     }
 
-    public ConstraintChainBuilder<T> withOfTypeConstraint(Field fooField, Class requiredType) {
+    public ConstraintChainBuilder<T> withOfTypeConstraint(Field fooField, TypeDefinition requiredType) {
         return saveAndSet(new IsOfTypeConstraint(fooField, requiredType, null));
     }
 
@@ -146,6 +147,10 @@ public abstract class ConstraintChainBuilder<T> extends BaseConstraintBuilder<T>
                 AtomicConstraint constraint = (AtomicConstraint)constructors[0].newInstance(fooField, value, null);
                 return saveAndSet(constraint);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException("Unable to build constraint of type " + atomicConstraint.toString() +
+                    "from class and sample value: " + value.toString());
+            }
+            catch (IllegalArgumentException exc){
                 throw new RuntimeException("Unable to build constraint of type " + atomicConstraint.toString() +
                     "from class and sample value: " + value.toString());
             }

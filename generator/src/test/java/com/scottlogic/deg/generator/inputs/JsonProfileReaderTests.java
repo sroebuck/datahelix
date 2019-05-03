@@ -9,6 +9,7 @@ import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.ConditionalConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.OrConstraint;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -238,7 +239,7 @@ public class JsonProfileReaderTests {
                                 IsOfTypeConstraint.class,
                                 c -> Assert.assertThat(
                                         c.requiredType,
-                                        equalTo(String.class)))));
+                                        equalTo(TypeDefinition.String)))));
     }
 
     @Test

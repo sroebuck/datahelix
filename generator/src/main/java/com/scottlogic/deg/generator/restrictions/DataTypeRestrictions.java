@@ -1,5 +1,7 @@
 package com.scottlogic.deg.generator.restrictions;
 
+import com.scottlogic.deg.generator.generation.TypeDefinition;
+
 import java.util.*;
 
 public class DataTypeRestrictions implements TypeRestrictions {
@@ -7,22 +9,24 @@ public class DataTypeRestrictions implements TypeRestrictions {
     public final static TypeRestrictions ALL_TYPES_PERMITTED = new AnyTypeRestriction();
     public final static TypeRestrictions NO_TYPES_PERMITTED = new NoAllowedTypesRestriction();
 
-    public DataTypeRestrictions(Collection<Class> allowedTypes) {
+    private final Set<TypeDefinition> allowedTypes;
+
+    public DataTypeRestrictions(Collection<TypeDefinition> allowedTypes) {
         if (allowedTypes.size() == 0)
             throw new UnsupportedOperationException("Cannot have a type restriction with no types");
 
         this.allowedTypes = new HashSet<>(allowedTypes);
     }
 
-    public static TypeRestrictions createFromWhiteList(Class... types) {
+    public static TypeRestrictions createFromWhiteList(TypeDefinition... types) {
         return new DataTypeRestrictions(Arrays.asList(types));
     }
 
-    public TypeRestrictions except(Class... types) {
+    public TypeRestrictions except(TypeDefinition... types) {
         if (types.length == 0)
             return this;
 
-        ArrayList<Class> allowedTypes = new ArrayList<>(this.allowedTypes);
+        ArrayList<TypeDefinition> allowedTypes = new ArrayList<>(this.allowedTypes);
         allowedTypes.removeAll(Arrays.asList(types));
 
         if (allowedTypes.isEmpty()){
@@ -32,9 +36,7 @@ public class DataTypeRestrictions implements TypeRestrictions {
         return new DataTypeRestrictions(allowedTypes);
     }
 
-    private final Set<Class> allowedTypes;
-
-    public boolean isTypeAllowed(Class type){
+    public boolean isTypeAllowed(TypeDefinition type){
         return allowedTypes.contains(type);
     }
 
@@ -51,7 +53,7 @@ public class DataTypeRestrictions implements TypeRestrictions {
         if (other == ALL_TYPES_PERMITTED)
             return this;
 
-        ArrayList<Class> allowedTypes = new ArrayList<>(this.allowedTypes);
+        ArrayList<TypeDefinition> allowedTypes = new ArrayList<>(this.allowedTypes);
         allowedTypes.retainAll(other.getAllowedTypes());
 
         if (allowedTypes.isEmpty())
@@ -67,7 +69,7 @@ public class DataTypeRestrictions implements TypeRestrictions {
         return new DataTypeRestrictions(allowedTypes);
     }
 
-    public Set<Class> getAllowedTypes() {
+    public Set<TypeDefinition> getAllowedTypes() {
         return allowedTypes;
     }
 

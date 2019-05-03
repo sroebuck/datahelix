@@ -179,7 +179,7 @@ public class DecisionTreeMapper {
     static private IsOfTypeConstraintDto toDto(IsOfTypeConstraint constraint) {
         IsOfTypeConstraintDto dto = new IsOfTypeConstraintDto();
         dto.field = new FieldDto(constraint.field.name);
-        dto.requiredTypeString = constraint.requiredType.getName();
+        dto.requiredTypeString = constraint.requiredType.getType().getName();
         return dto;
     }
     

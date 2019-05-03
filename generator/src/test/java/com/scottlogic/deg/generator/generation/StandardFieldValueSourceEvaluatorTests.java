@@ -1,7 +1,6 @@
 package com.scottlogic.deg.generator.generation;
 
 import com.google.common.collect.Iterators;
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;
@@ -80,7 +79,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             max = new NumericLimit<>(new BigDecimal(30), false);
         }};
         TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(
-            BigDecimal.class
+            TypeDefinition.Numeric
         ));
         FieldSpec fieldSpecWithTypedNumericRestrictionsAndNullNotDisallowed = FieldSpec.Empty
             .withNumericRestrictions(numericRestrictions, fieldSpecSource)
@@ -97,7 +96,7 @@ public class StandardFieldValueSourceEvaluatorTests {
         FieldSpecSource fieldSpecSource = FieldSpecSource.Empty;
         StringRestrictions stringRestrictions = matchesRegex("/[ab]{2}/", false);
         TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(
-            String.class
+            TypeDefinition.String
         ));
         FieldSpec fieldSpecInSetWithTypedStringRestrictionsAndNullNotDisallowedd = FieldSpec.Empty
             .withStringRestrictions(stringRestrictions, fieldSpecSource)
@@ -117,7 +116,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             max = new DateTimeLimit(OffsetDateTime.MAX, false);
         }};
         TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(
-            OffsetDateTime.class
+            TypeDefinition.Temporal
         ));
         FieldSpec fieldSpecInSetWithTypedDateTimeRestrictionsAndNullNotDisallowed = FieldSpec.Empty
             .withDateTimeRestrictions(datetimeRestrictions, fieldSpecSource)
@@ -181,7 +180,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
-                Collections.singletonList(BigDecimal.class)
+                Collections.singletonList(TypeDefinition.Numeric)
             ),
             FieldSpecSource.Empty
         ).withNullRestrictions(
@@ -218,7 +217,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
-                Collections.singletonList(BigDecimal.class)
+                Collections.singletonList(TypeDefinition.Numeric)
             ),
             FieldSpecSource.Empty
         ).withNullRestrictions(
@@ -259,7 +258,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
-                Collections.singletonList(BigDecimal.class)
+                Collections.singletonList(TypeDefinition.Numeric)
             ),
             FieldSpecSource.Empty
         ).withNullRestrictions(
@@ -293,7 +292,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
-                Collections.singletonList(BigDecimal.class)
+                Collections.singletonList(TypeDefinition.Numeric)
             ),
             FieldSpecSource.Empty
         ).withNullRestrictions(
@@ -330,7 +329,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
-                Collections.singletonList(BigDecimal.class)
+                Collections.singletonList(TypeDefinition.Numeric)
             ),
             FieldSpecSource.Empty
         ).withNullRestrictions(
@@ -362,7 +361,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
-                Collections.singletonList(BigDecimal.class)
+                Collections.singletonList(TypeDefinition.Numeric)
             ),
             FieldSpecSource.Empty
         ).withNullRestrictions(
@@ -394,7 +393,7 @@ public class StandardFieldValueSourceEvaluatorTests {
             FieldSpecSource.Empty
         ).withTypeRestrictions(
             new DataTypeRestrictions(
-                Collections.singletonList(BigDecimal.class)
+                Collections.singletonList(TypeDefinition.Numeric)
             ),
             FieldSpecSource.Empty
         ).withNullRestrictions(

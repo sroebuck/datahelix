@@ -10,6 +10,7 @@ import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.ConditionalConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.OrConstraint;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.outputs.manifest.ManifestWriter;
 import com.scottlogic.deg.generator.restrictions.ParsedGranularity;
 import com.scottlogic.deg.generator.violations.ViolatedProfile;
@@ -71,7 +72,7 @@ public class ProfileViolationTests {
 
             Arguments.of(IsInSetConstraint.class, sampleSet),
             Arguments.of(IsNullConstraint.class, null),
-            Arguments.of(IsOfTypeConstraint.class, String.class),
+            Arguments.of(IsOfTypeConstraint.class, TypeDefinition.String),
             Arguments.of(MatchesStandardConstraint.class, StandardConstraintTypes.ISIN),
 
             Arguments.of(ContainsRegexConstraint.class, Pattern.compile("\\w+")),
@@ -123,11 +124,11 @@ public class ProfileViolationTests {
             .withBeforeConstraint(staticField, OffsetDateTime.of(2019, 1, 15, 12, 0, 0, 0, ZoneOffset.UTC)).negate().wrapAtomicWithViolate();
 
         BaseConstraintBuilder<ConditionalConstraint> ifThenConstraintBuilder = new IfBuilder()
-            .withIf(new SingleConstraintBuilder().withOfTypeConstraint(staticField, BigDecimal.class))
+            .withIf(new SingleConstraintBuilder().withOfTypeConstraint(staticField, TypeDefinition.Numeric))
             .withThen(new SingleConstraintBuilder().withInSetConstraint(staticField, new Object[]{10, 100}));
 
         BaseConstraintBuilder<AndConstraint> violatedIfThenConstraintBuilder = new AndBuilder()
-            .withOfTypeConstraint(staticField, BigDecimal.class)
+            .withOfTypeConstraint(staticField, TypeDefinition.Numeric)
             .withInSetConstraint(staticField, new Object[]{10, 100}).negate().wrapAtomicWithViolate();
 
         BaseConstraintBuilder<ConditionalConstraint> ifThenElseConstraintBuilder = new IfBuilder()
@@ -174,7 +175,7 @@ public class ProfileViolationTests {
         A = new SingleConstraintBuilder().withEqualToConstraint(field1, "A");
         B = new SingleConstraintBuilder().withGreaterThanConstraint(field2, 100);
         C = new SingleConstraintBuilder().withOfLengthConstraint(field3, 10);
-        D = new SingleConstraintBuilder().withOfTypeConstraint(field4, BigDecimal.class);
+        D = new SingleConstraintBuilder().withOfTypeConstraint(field4, TypeDefinition.Numeric);
         E = new SingleConstraintBuilder().withLessThanConstraint(field5, 200);
     }
 

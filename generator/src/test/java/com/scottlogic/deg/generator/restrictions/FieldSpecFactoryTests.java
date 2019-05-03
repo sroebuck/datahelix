@@ -6,6 +6,7 @@ import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecFactory;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecSource;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
 class FieldSpecFactoryTests {
     private static final StringRestrictionsFactory stringRestrictionsFactory = new StringRestrictionsFactory();
     private FieldSpecFactory fieldSpecFactory = new FieldSpecFactory(new FieldSpecMerger(), stringRestrictionsFactory);
-    private TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(String.class));
+    private TypeRestrictions typeRestrictions = new DataTypeRestrictions(Collections.singletonList(TypeDefinition.String));
     private StringRestrictions longerThanRestriction = stringRestrictionsFactory.forMinLength(3);
     private StringRestrictions shorterThanRestriction = stringRestrictionsFactory.forMaxLength(4);
 

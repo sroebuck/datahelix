@@ -1,23 +1,23 @@
 package com.scottlogic.deg.generator.restrictions;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
+
 import java.util.*;
 
 public class AnyTypeRestriction implements TypeRestrictions {
-    private final static Set<Class> allTypes = new HashSet<>(getAllPossibleTypes());
+    private final static Set<TypeDefinition> allTypes = new HashSet<>(getAllPossibleTypes());
 
-    private static Collection<Class> getAllPossibleTypes() {
+    private static Collection<TypeDefinition> getAllPossibleTypes() {
         //look at the class path for 'types' of data, with some way of identifying them
 
         return Arrays.asList(
-            String.class,
-            BigDecimal.class,
-            OffsetDateTime.class
+            TypeDefinition.String,
+            TypeDefinition.Numeric,
+            TypeDefinition.Temporal
         );
     }
 
-    public boolean isTypeAllowed(Class type) {
+    public boolean isTypeAllowed(TypeDefinition type) {
         return true;
     }
 
@@ -30,17 +30,17 @@ public class AnyTypeRestriction implements TypeRestrictions {
     }
 
 
-    public TypeRestrictions except(Class... types) {
+    public TypeRestrictions except(TypeDefinition... types) {
         if (types.length == 0)
             return this;
 
-        ArrayList<Class> allowedTypes = new ArrayList<>(allTypes);
+        ArrayList<TypeDefinition> allowedTypes = new ArrayList<>(allTypes);
         allowedTypes.removeAll(Arrays.asList(types));
 
         return new DataTypeRestrictions(allowedTypes);
     }
 
-    public Set<Class> getAllowedTypes() {
+    public Set<TypeDefinition> getAllowedTypes() {
         return allTypes;
     }
 

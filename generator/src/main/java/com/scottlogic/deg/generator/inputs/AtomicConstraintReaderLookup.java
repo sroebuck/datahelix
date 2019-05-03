@@ -3,6 +3,7 @@ package com.scottlogic.deg.generator.inputs;
 import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.generator.generation.GenerationConfig;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.restrictions.ParsedGranularity;
 import com.scottlogic.deg.generator.utils.NumberUtils;
 import com.scottlogic.deg.schemas.v0_1.AtomicConstraintType;
@@ -146,7 +147,7 @@ class AtomicConstraintReaderLookup {
                         return new AndConstraint(
                             new IsOfTypeConstraint(
                                 fields.getByName(dto.field),
-                                BigDecimal.class,
+                                TypeDefinition.Numeric,
                                 rules
                             ),
                             new IsGranularToConstraint(
@@ -156,18 +157,18 @@ class AtomicConstraintReaderLookup {
                             )
                         );
                     }
-                    final Class type;
+                    final TypeDefinition type;
                     switch (typeString) {
                         case "decimal":
-                            type = BigDecimal.class;
+                            type = TypeDefinition.Numeric;
                             break;
 
                         case "string":
-                            type = String.class;
+                            type = TypeDefinition.String;
                             break;
 
                         case "datetime":
-                            type = OffsetDateTime.class;
+                            type = TypeDefinition.Temporal;
                             break;
 
                         case "numeric":

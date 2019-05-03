@@ -1,11 +1,13 @@
 package com.scottlogic.deg.generator.restrictions;
 
-import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 public class NoAllowedTypesRestriction implements TypeRestrictions {
-    public boolean isTypeAllowed(Class type) {
+    public boolean isTypeAllowed(TypeDefinition type) {
         return false;
     }
 
@@ -17,11 +19,11 @@ public class NoAllowedTypesRestriction implements TypeRestrictions {
         return this;
     }
 
-    public TypeRestrictions except(Class... types) {
+    public TypeRestrictions except(TypeDefinition... types) {
         return new DataTypeRestrictions(Arrays.asList(types));
     }
 
-    public Set<Class> getAllowedTypes() {
+    public Set<TypeDefinition> getAllowedTypes() {
         return Collections.emptySet();
     }
 

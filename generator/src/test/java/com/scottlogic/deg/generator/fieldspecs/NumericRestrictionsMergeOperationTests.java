@@ -1,6 +1,7 @@
 package com.scottlogic.deg.generator.fieldspecs;
 
 import com.scottlogic.deg.generator.constraints.atomic.IsOfTypeConstraint;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.restrictions.DataTypeRestrictions;
 import com.scottlogic.deg.generator.restrictions.MergeResult;
 import com.scottlogic.deg.generator.restrictions.NumericRestrictions;
@@ -63,13 +64,13 @@ class NumericRestrictionsMergeOperationTests {
         Assert.assertThat(result.get(), not(sameInstance(merging)));
         Assert.assertThat(result.get().getNumericRestrictions(), is(nullValue()));
         Assert.assertThat(result.get().getTypeRestrictions(), not(nullValue()));
-        Assert.assertThat(result.get().getTypeRestrictions().getAllowedTypes(), not(hasItem(BigDecimal.class)));
+        Assert.assertThat(result.get().getTypeRestrictions().getAllowedTypes(), not(hasItem(TypeDefinition.Numeric)));
     }
 
     @Test
     public void applyMergeOperation_withContradictoryNumericRestrictions_shouldPreventAnyNumericValues(){
         FieldSpec merging = FieldSpec.Empty
-            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(String.class, BigDecimal.class),
+            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(TypeDefinition.String, TypeDefinition.Numeric),
                 FieldSpecSource.Empty);
 
         when(merger.merge(left.getNumericRestrictions(), right.getNumericRestrictions()))
@@ -81,13 +82,13 @@ class NumericRestrictionsMergeOperationTests {
         Assert.assertThat(result.get(), not(sameInstance(merging)));
         Assert.assertThat(result.get().getNumericRestrictions(), is(nullValue()));
         Assert.assertThat(result.get().getTypeRestrictions(), not(nullValue()));
-        Assert.assertThat(result.get().getTypeRestrictions().getAllowedTypes(), not(hasItem(BigDecimal.class)));
+        Assert.assertThat(result.get().getTypeRestrictions().getAllowedTypes(), not(hasItem(TypeDefinition.Numeric)));
     }
 
     @Test
     public void applyMergeOperation_withContradictoryNumericRestrictionsAndNumericTypeAlreadyNotPermitted_shouldPreventAnyNumericValues(){
         FieldSpec merging = FieldSpec.Empty
-            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(String.class), FieldSpecSource.Empty);
+            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(TypeDefinition.String), FieldSpecSource.Empty);
 
         when(merger.merge(left.getNumericRestrictions(), right.getNumericRestrictions()))
             .thenReturn(MergeResult.UNSUCCESSFUL);
@@ -98,13 +99,13 @@ class NumericRestrictionsMergeOperationTests {
         Assert.assertThat(result.get(), not(sameInstance(merging)));
         Assert.assertThat(result.get().getNumericRestrictions(), is(nullValue()));
         Assert.assertThat(result.get().getTypeRestrictions(), not(nullValue()));
-        Assert.assertThat(result.get().getTypeRestrictions().getAllowedTypes(), not(hasItem(BigDecimal.class)));
+        Assert.assertThat(result.get().getTypeRestrictions().getAllowedTypes(), not(hasItem(TypeDefinition.Numeric)));
     }
 
     @Test
     public void applyMergeOperation_withContradictoryNumericRestrictionsAndNumericTypeOnlyPermittedType_shouldPreventAnyNumericValues(){
         FieldSpec merging = FieldSpec.Empty
-            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(BigDecimal.class), FieldSpecSource.Empty);
+            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(TypeDefinition.Numeric), FieldSpecSource.Empty);
 
         when(merger.merge(left.getNumericRestrictions(), right.getNumericRestrictions()))
             .thenReturn(MergeResult.UNSUCCESSFUL);
@@ -121,7 +122,7 @@ class NumericRestrictionsMergeOperationTests {
     @Test
     public void applyMergeOperation_withMergableNumericRestrictions_shouldApplyMergedNumericRestrictions(){
         FieldSpec merging = FieldSpec.Empty
-            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(BigDecimal.class), FieldSpecSource.Empty);
+            .withTypeRestrictions(DataTypeRestrictions.createFromWhiteList(TypeDefinition.Numeric), FieldSpecSource.Empty);
         NumericRestrictions merged = new NumericRestrictions();
         when(merger.merge(left.getNumericRestrictions(), right.getNumericRestrictions()))
             .thenReturn(new MergeResult<>(merged));
