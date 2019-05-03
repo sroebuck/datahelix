@@ -4,6 +4,9 @@ import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public class TypeDefinition {
     public static final TypeDefinition String = StringFieldValueSourceFactory.getTypeDefinition();
     public static final TypeDefinition Numeric = NumericFieldValueSourceFactory.getTypeDefinition();
@@ -16,7 +19,34 @@ public class TypeDefinition {
     }
 
     public static TypeDefinition parse(String typeString) throws InvalidProfileException {
-        throw new InvalidProfileException("Unrecognised type in type constraint: " + typeString);
+        Class factoryClass;
+        try {
+            factoryClass = Class.forName(typeString);
+        } catch (ClassNotFoundException e) {
+            throw new InvalidProfileException("Unrecognised type in type constraint: " + typeString + "; class cannot be found");
+        }
+
+        if (!FieldValueSourceFactory.class.isAssignableFrom(factoryClass)){
+            throw new InvalidProfileException("Invalid type in type constraint: " + typeString + "; class does not implement " + FieldValueSourceFactory.class.getSimpleName());
+        }
+
+        Constructor constructor;
+        try {
+            constructor = factoryClass.getConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new InvalidProfileException("Invalid type in type constraint: " + typeString + "; class does not have an empty constructor");
+        }
+
+        try {
+            FieldValueSourceFactory factory = (FieldValueSourceFactory) constructor.newInstance();
+            return new TypeDefinition(factory);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new InvalidProfileException("Unable to create type provider " + typeString + "; " + e.getMessage());
+        }
+
+        throw new InvalidProfileException("Unable to create type provider " + typeString);
     }
 
     public Class getType() {
