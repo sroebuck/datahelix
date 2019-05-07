@@ -52,7 +52,7 @@ public class SetRestrictionsMergeOperation implements RestrictionMergeOperation 
         Set<TypeDefinition> allowedTypes = typeRestrictions.getAllowedTypes();
 
         return values.filter(value ->
-            allowedTypes.stream().anyMatch(td -> td.getType().isInstance(value) && td.isValid(value, fieldSpec)));
+            allowedTypes.stream().anyMatch(td -> td.isValid(value, fieldSpec)));
     }
 }
 

@@ -40,6 +40,6 @@ public class TemporalFieldValueSourceFactory implements FieldValueSourceFactory 
     @Override
     public boolean isValid(Object value, FieldSpec fieldSpec) {
         DateTimeRestrictions temporalRestrictions = fieldSpec.getDateTimeRestrictions();
-        return temporalRestrictions == null || temporalRestrictions.match(value);
+        return value instanceof OffsetDateTime && (temporalRestrictions == null || temporalRestrictions.match(value));
     }
 }

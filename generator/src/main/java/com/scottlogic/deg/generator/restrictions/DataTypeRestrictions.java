@@ -29,7 +29,7 @@ public class DataTypeRestrictions implements TypeRestrictions {
 
         List<TypeDefinition> allowedTypes = this.allowedTypes
             .stream()
-            .filter(allowedType -> Arrays.stream(types).noneMatch(t -> allowedType.getType().equals(t.getType())))
+            .filter(allowedType -> Arrays.stream(types).noneMatch(t -> allowedType.getBaseType().equals(t.getBaseType())))
             .collect(Collectors.toList());
 
         if (allowedTypes.isEmpty()){

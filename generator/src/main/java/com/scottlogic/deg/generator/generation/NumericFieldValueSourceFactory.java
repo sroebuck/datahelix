@@ -41,6 +41,6 @@ public class NumericFieldValueSourceFactory implements FieldValueSourceFactory {
     @Override
     public boolean isValid(Object value, FieldSpec fieldSpec) {
         NumericRestrictions numericRestrictions = fieldSpec.getNumericRestrictions();
-        return numericRestrictions == null || numericRestrictions.match(value);
+        return value instanceof Number && (numericRestrictions == null || numericRestrictions.match(value));
     }
 }

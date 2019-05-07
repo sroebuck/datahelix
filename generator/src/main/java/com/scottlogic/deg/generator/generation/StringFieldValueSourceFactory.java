@@ -50,7 +50,7 @@ public class StringFieldValueSourceFactory implements FieldValueSourceFactory {
     @Override
     public boolean isValid(Object value, FieldSpec fieldSpec) {
         StringRestrictions stringRestrictions = fieldSpec.getStringRestrictions();
-        return stringRestrictions == null || stringRestrictions.match(value);
+        return value instanceof String && (stringRestrictions == null || stringRestrictions.match(value));
     }
 }
 

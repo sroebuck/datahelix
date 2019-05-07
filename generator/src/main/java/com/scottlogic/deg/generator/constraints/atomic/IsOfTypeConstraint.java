@@ -53,7 +53,7 @@ public class IsOfTypeConstraint implements AtomicConstraint, VisitableProfileEle
     }
 
     @Override
-    public String toString() { return String.format("`%s` is %s", field.name, requiredType.getType().getName()); }
+    public String toString() { return String.format("`%s` is %s", field.name, requiredType.getType().getSimpleName()); }
 
     @Override
     public Set<RuleInformation> getRules() {

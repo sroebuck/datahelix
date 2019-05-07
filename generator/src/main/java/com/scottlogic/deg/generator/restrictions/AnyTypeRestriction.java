@@ -37,7 +37,7 @@ public class AnyTypeRestriction implements TypeRestrictions {
 
         List<TypeDefinition> allowedTypes = allTypes
             .stream()
-            .filter(allowedType -> Arrays.stream(types).noneMatch(t -> allowedType.getType().equals(t.getType())))
+            .filter(allowedType -> Arrays.stream(types).noneMatch(t -> allowedType.getBaseType().equals(t.getBaseType())))
             .collect(Collectors.toList());
 
         return new DataTypeRestrictions(allowedTypes);

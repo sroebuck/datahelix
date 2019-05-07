@@ -1,12 +1,12 @@
 package com.scottlogic.deg.generator.generation;
 
+import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.time.OffsetDateTime;
 
 public class TypeDefinition {
     public static final TypeDefinition String = StringFieldValueSourceFactory.getTypeDefinition();
@@ -50,17 +50,8 @@ public class TypeDefinition {
         throw new InvalidProfileException("Unable to create type provider " + typeString);
     }
 
-    public Class getType() {
-        switch (factory.getUnderlyingDataType()){
-            case STRING:
-                return java.lang.String.class;
-            case NUMERIC:
-                return Number.class;
-            case TEMPORAL:
-                return OffsetDateTime.class;
-        }
-
-        throw new UnsupportedOperationException("Invalid underlying DataType: " + factory.getUnderlyingDataType());
+    public DataGeneratorBaseTypes getBaseType() {
+        return factory.getUnderlyingDataType();
     }
 
     public FieldValueSource getFieldValueSource(FieldSpec fieldSpec){
@@ -69,13 +60,13 @@ public class TypeDefinition {
 
     @Override
     public int hashCode(){
-        return factory.getUnderlyingDataType().hashCode();
+        return factory.getClass().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof TypeDefinition) {
-            return getType().equals(((TypeDefinition) obj).getType());
+            return factory.getClass().equals(((TypeDefinition) obj).factory.getClass());
         }
 
         return false;
@@ -87,6 +78,10 @@ public class TypeDefinition {
 
     @Override
     public String toString(){
-        return "Type: " + getType().getSimpleName();
+        return "Type: " + factory.getClass().getSimpleName();
+    }
+
+    public Class<?> getType() {
+        return factory.getClass();
     }
 }
