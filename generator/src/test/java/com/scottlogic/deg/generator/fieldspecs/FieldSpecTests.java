@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -584,6 +585,41 @@ class FieldSpecTests {
 
         @Override
         public StringGenerator createGenerator() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Integer getMinLength() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Integer getMaxLength() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Set<Integer> getExcludedLengths() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Set<Pattern> getMatchingRegex() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Set<Pattern> getContainingRegex() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Set<Pattern> getNotMatchingRegex() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public Set<Pattern> getNotContainingRegex() {
             throw new NotImplementedException();
         }
     }

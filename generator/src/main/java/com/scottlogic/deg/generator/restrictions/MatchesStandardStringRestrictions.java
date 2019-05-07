@@ -5,6 +5,10 @@ import com.scottlogic.deg.generator.generation.IsinStringGenerator;
 import com.scottlogic.deg.generator.generation.SedolStringGenerator;
 import com.scottlogic.deg.generator.generation.StringGenerator;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 /**
  * Represents the restriction of a field to an `aValid` operator
  * Holds the type of the value that is required and whether the field has been negated
@@ -40,6 +44,41 @@ public class MatchesStandardStringRestrictions implements StringRestrictions{
         }
 
         throw new UnsupportedOperationException(String.format("Unable to create string generator for: %s", type));
+    }
+
+    @Override
+    public Integer getMinLength() {
+        return getCodeLength(type);
+    }
+
+    @Override
+    public Integer getMaxLength() {
+        return getCodeLength(type);
+    }
+
+    @Override
+    public Set<Integer> getExcludedLengths() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Pattern> getMatchingRegex() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Pattern> getContainingRegex() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Pattern> getNotMatchingRegex() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Pattern> getNotContainingRegex() {
+        return Collections.emptySet();
     }
 
     /**
@@ -97,20 +136,20 @@ public class MatchesStandardStringRestrictions implements StringRestrictions{
      * @param textualRestrictions The other restrictions type to check
      */
     private Impact getImpactOnValueProduction(TextualRestrictions textualRestrictions) {
-        boolean hasRegexRestrictions = !textualRestrictions.containingRegex.isEmpty()
-            || !textualRestrictions.matchingRegex.isEmpty()
-            || !textualRestrictions.notMatchingRegex.isEmpty()
-            || !textualRestrictions.notContainingRegex.isEmpty();
+        boolean hasRegexRestrictions = !textualRestrictions.getContainingRegex().isEmpty()
+            || !textualRestrictions.getMatchingRegex().isEmpty()
+            || !textualRestrictions.getNotMatchingRegex().isEmpty()
+            || !textualRestrictions.getNotContainingRegex().isEmpty();
 
         if (hasRegexRestrictions){
             return Impact.POTENTIAL; //because we dont know they wouldn't affect the values - see #487
         }
 
-        int maxLength = textualRestrictions.maxLength != null ? textualRestrictions.maxLength : Integer.MAX_VALUE;
-        int minLength = textualRestrictions.minLength != null ? textualRestrictions.minLength : 0;
+        int maxLength = textualRestrictions.getMaxLength() != null ? textualRestrictions.getMaxLength() : Integer.MAX_VALUE;
+        int minLength = textualRestrictions.getMinLength() != null ? textualRestrictions.getMinLength() : 0;
         int codeLength = getCodeLength(type);
 
-        return (codeLength < minLength || codeLength > maxLength || textualRestrictions.excludedLengths.contains(codeLength))
+        return (codeLength < minLength || codeLength > maxLength || textualRestrictions.getExcludedLengths().contains(codeLength))
             ? Impact.CONFIRMED
             : Impact.NONE;
     }

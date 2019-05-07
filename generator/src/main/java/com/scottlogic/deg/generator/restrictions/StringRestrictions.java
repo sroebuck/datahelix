@@ -2,6 +2,9 @@ package com.scottlogic.deg.generator.restrictions;
 
 import com.scottlogic.deg.generator.generation.StringGenerator;
 
+import java.util.Set;
+import java.util.regex.Pattern;
+
 public interface StringRestrictions {
     MergeResult<StringRestrictions> intersect(StringRestrictions other);
 
@@ -16,6 +19,14 @@ public interface StringRestrictions {
     }
 
     StringGenerator createGenerator();
+
+    Integer getMinLength();
+    Integer getMaxLength();
+    Set<Integer> getExcludedLengths();
+    Set<Pattern> getMatchingRegex();
+    Set<Pattern> getContainingRegex();
+    Set<Pattern> getNotMatchingRegex();
+    Set<Pattern> getNotContainingRegex();
 }
 
 
