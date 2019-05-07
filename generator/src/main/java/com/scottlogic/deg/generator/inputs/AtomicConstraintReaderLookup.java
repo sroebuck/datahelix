@@ -2,6 +2,7 @@ package com.scottlogic.deg.generator.inputs;
 
 import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
+import com.scottlogic.deg.generator.financial.Isin;
 import com.scottlogic.deg.generator.generation.GenerationConfig;
 import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.restrictions.ParsedGranularity;
@@ -64,12 +65,19 @@ class AtomicConstraintReaderLookup {
                         rules));
 
         add(AtomicConstraintType.AVALID.toString(),
-                (dto, fields, rules) ->
-                    new MatchesStandardConstraint(
-                        fields.getByName(dto.field),
-                        StandardConstraintTypes.valueOf(getValidatedValue(dto, String.class)),
-                        rules
-                    ));
+                (dto, fields, rules) -> {
+                    String type = getValidatedValue(dto, String.class);
+
+                    if (type.equals("ISIN")) {
+                        return new IsOfTypeConstraint(
+                            fields.getByName(dto.field),
+                            new TypeDefinition(new Isin()),
+                            rules
+                        );
+                    }
+
+                    throw new InvalidProfileException("Type " + type + " isn't supported, use `ofType` instead");
+                });
 
         add(AtomicConstraintType.ISGREATERTHANCONSTANT.toString(),
                 (dto, fields, rules) ->

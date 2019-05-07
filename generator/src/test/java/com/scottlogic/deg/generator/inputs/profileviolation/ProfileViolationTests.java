@@ -73,7 +73,6 @@ public class ProfileViolationTests {
             Arguments.of(IsInSetConstraint.class, sampleSet),
             Arguments.of(IsNullConstraint.class, null),
             Arguments.of(IsOfTypeConstraint.class, TypeDefinition.String),
-            Arguments.of(MatchesStandardConstraint.class, StandardConstraintTypes.ISIN),
 
             Arguments.of(ContainsRegexConstraint.class, Pattern.compile("\\w+")),
             Arguments.of(MatchesRegexConstraint.class, Pattern.compile("\\d+")),

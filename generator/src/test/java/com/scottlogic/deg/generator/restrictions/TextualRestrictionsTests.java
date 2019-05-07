@@ -1,7 +1,5 @@
 package com.scottlogic.deg.generator.restrictions;
 
-import com.scottlogic.deg.generator.constraints.atomic.StandardConstraintTypes;
-import com.scottlogic.deg.generator.generation.IsinStringGenerator;
 import com.scottlogic.deg.generator.generation.RegexStringGenerator;
 import com.scottlogic.deg.generator.generation.StringGenerator;
 import org.junit.Assert;
@@ -334,85 +332,6 @@ class TextualRestrictionsTests {
     }
 
     @Test
-    void createGenerator_withOnlyAMatchingStandardConstraint_shouldCreateSomeStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false);
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        Assert.assertThat(generator, instanceOf(IsinStringGenerator.class));
-    }
-
-    @Test
-    void createGenerator_withMinLengthAndMatchingStandardConstraint_shouldCreateSomeStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false)
-            .intersect(minLength(1)).restrictions;
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        Assert.assertThat(generator, instanceOf(IsinStringGenerator.class));
-    }
-
-    @Test
-    void createGenerator_withMaxLengthShorterThanCodeLengthAndMatchingStandardConstraint_shouldCreateNoStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false)
-            .intersect(maxLength(10)).restrictions;
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        assertGeneratorCannotGenerateAnyStrings(generator);
-    }
-
-    @Test
-    void createGenerator_withMaxLengthAtLengthOfCodeLengthAndMatchingStandardConstraint_shouldCreateSomeStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false)
-            .intersect(maxLength(12)).restrictions;
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        Assert.assertThat(generator, instanceOf(IsinStringGenerator.class));
-    }
-
-    @Test
-    void createGenerator_withMaxLengthLongerThanCodeLengthAndMatchingStandardConstraint_shouldCreateSomeStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false)
-            .intersect(maxLength(100)).restrictions;
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        Assert.assertThat(generator, instanceOf(IsinStringGenerator.class));
-    }
-
-    @Test
-    void createGenerator_withOfLengthAndMatchingStandardConstraint_shouldCreateSomeStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false)
-            .intersect(ofLength(12, false)).restrictions;
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        Assert.assertThat(generator, instanceOf(IsinStringGenerator.class));
-    }
-
-    @Test
-    void createGenerator_withMatchingRegexAndMatchingStandardConstraint_shouldCreateNoStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false)
-            .intersect(matchingRegex("[a-zA-Z0-9]{12}", false)).restrictions;
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        assertGeneratorCannotGenerateAnyStrings(generator);
-    }
-
-    @Test
-    void createGenerator_withContainingRegexAndMatchingStandardConstraint_shouldCreateNoStrings() {
-        StringRestrictions restrictions = aValid(StandardConstraintTypes.ISIN, false)
-            .intersect(containsRegex("[a-zA-Z0-9]{12}", false)).restrictions;
-
-        StringGenerator generator = restrictions.createGenerator();
-
-        assertGeneratorCannotGenerateAnyStrings(generator);
-    }
-
-    @Test
     void createGenerator_withNegatedMaxLengthConstraint_shouldCreateStringsFromLength() {
         StringRestrictions restrictions = minLength(10);
 
@@ -629,10 +548,6 @@ class TextualRestrictionsTests {
             Collections.emptySet(),
             Collections.emptySet(),
             negate ? Collections.singleton(pattern) : Collections.emptySet());
-    }
-
-    private static StringRestrictions aValid(@SuppressWarnings("SameParameterValue") StandardConstraintTypes type, @SuppressWarnings("SameParameterValue") boolean negate){
-        return new MatchesStandardStringRestrictions(type, negate);
     }
 
     private static void assertGeneratorCannotGenerateAnyStrings(StringGenerator generator){

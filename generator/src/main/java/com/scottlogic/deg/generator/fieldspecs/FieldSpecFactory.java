@@ -72,8 +72,6 @@ public class FieldSpecFactory {
             return construct((MatchesRegexConstraint) constraint, negate, violated);
         } else if (constraint instanceof ContainsRegexConstraint) {
             return construct((ContainsRegexConstraint) constraint, negate, violated);
-        } else if (constraint instanceof MatchesStandardConstraint) {
-            return construct((MatchesStandardConstraint) constraint, negate, violated);
         } else if (constraint instanceof IsOfTypeConstraint) {
             return construct((IsOfTypeConstraint) constraint, negate, violated);
         } else if (constraint instanceof FormatConstraint) {
@@ -243,14 +241,6 @@ public class FieldSpecFactory {
         return FieldSpec.Empty
             .withStringRestrictions(
                 stringRestrictionsFactory.forStringContaining(constraint.regex, negate),
-                FieldSpecSource.fromConstraint(constraint, negate, violated)
-            );
-    }
-
-    private FieldSpec construct(MatchesStandardConstraint constraint, boolean negate, boolean violated) {
-        return FieldSpec.Empty
-            .withStringRestrictions(
-                new MatchesStandardStringRestrictions(constraint.standard, negate),
                 FieldSpecSource.fromConstraint(constraint, negate, violated)
             );
     }
