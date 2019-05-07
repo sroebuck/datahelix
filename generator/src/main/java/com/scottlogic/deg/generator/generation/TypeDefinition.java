@@ -7,6 +7,8 @@ import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TypeDefinition {
     public static final TypeDefinition String = StringFieldValueSourceFactory.getTypeDefinition();
@@ -19,7 +21,16 @@ public class TypeDefinition {
         this.factory = factory;
     }
 
-    public static TypeDefinition parse(String typeString) throws InvalidProfileException {
+    public static TypeDefinition parse(String typeDef) throws InvalidProfileException {
+        Matcher typeDefParsed = Pattern.compile("^(.+?)(?:\\:(.+))?$").matcher(typeDef);
+        if (!typeDefParsed.matches()) {
+            throw new InvalidProfileException("Unrecognised type in type constraint: " + typeDef + "; definition is invalid");
+        }
+
+        String typeString = typeDefParsed.group(1);
+        String constructorArgs = typeDefParsed.group(2);
+        boolean requiresStringConstructor = constructorArgs != null;
+
         Class factoryClass;
         try {
             factoryClass = Class.forName(typeString);
@@ -33,13 +44,20 @@ public class TypeDefinition {
 
         Constructor constructor;
         try {
-            constructor = factoryClass.getConstructor();
+            constructor = requiresStringConstructor
+                ? factoryClass.getConstructor(String.class)
+                : factoryClass.getConstructor();
         } catch (NoSuchMethodException e) {
-            throw new InvalidProfileException("Invalid type in type constraint: " + typeString + "; class does not have an empty constructor");
+            String constructorRequirement = requiresStringConstructor
+                ? "a constructor taking a single String argument"
+                : "an empty constructor";
+            throw new InvalidProfileException("Invalid type in type constraint: " + typeString + "; class does not have " + constructorRequirement);
         }
 
         try {
-            FieldValueSourceFactory factory = (FieldValueSourceFactory) constructor.newInstance();
+            FieldValueSourceFactory factory = (FieldValueSourceFactory) (requiresStringConstructor
+                ? constructor.newInstance(constructorArgs)
+                : constructor.newInstance());
             return new TypeDefinition(factory);
         } catch (InstantiationException e) {
             e.printStackTrace();
