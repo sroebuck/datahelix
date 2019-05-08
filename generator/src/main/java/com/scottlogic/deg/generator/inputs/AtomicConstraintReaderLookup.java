@@ -76,7 +76,10 @@ class AtomicConstraintReaderLookup {
                         );
                     }
 
-                    throw new InvalidProfileException("Type " + type + " isn't supported, use `ofType` instead");
+                    return new IsOfTypeConstraint(
+                        fields.getByName(dto.field),
+                        TypeDefinition.parse(type),
+                        rules);
                 });
 
         add(AtomicConstraintType.ISGREATERTHANCONSTANT.toString(),
@@ -184,7 +187,7 @@ class AtomicConstraintReaderLookup {
                                 "Please use one of \"decimal\" or \"integer\"");
 
                         default:
-                            type = TypeDefinition.parse(typeString);
+                            throw new InvalidProfileException("Unsupported type for field"); //TODO: Revert to original error message
                     }
 
                     return new IsOfTypeConstraint(
