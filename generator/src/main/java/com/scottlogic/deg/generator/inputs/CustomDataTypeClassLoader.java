@@ -31,13 +31,14 @@ public class CustomDataTypeClassLoader {
         }
 
         String moduleName = matcher.group(1);
-        Pattern classNamePattern = Pattern.compile(".*\\." + matcher.group(2) + "$", Pattern.CASE_INSENSITIVE);
+        String requestedClassName = matcher.group(2);
+        Pattern classNamePattern = Pattern.compile(".*\\." + requestedClassName + "$", Pattern.CASE_INSENSITIVE);
 
         Optional<Class> foundClass = getClassesFromJarFile(moduleName, className -> classNamePattern.matcher(className).matches())
             .filter(requiredImplementation::isAssignableFrom)
             .findFirst();
 
-        return foundClass.orElseThrow(() -> new ClassNotFoundException("Class " + classSpec + " could not be found in " + moduleName + moduleExtension));
+        return foundClass.orElseThrow(() -> new ClassNotFoundException("Class " + requestedClassName + " could not be found in " + moduleName + moduleExtension));
     }
 
     private static Stream<Class> getClassesFromJarFile(String moduleName, Function<String, Boolean> classNamePredicate){
