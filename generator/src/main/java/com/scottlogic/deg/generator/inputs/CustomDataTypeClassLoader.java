@@ -21,38 +21,41 @@ import java.util.stream.StreamSupport;
 
 public class CustomDataTypeClassLoader {
     public static final String customDataTypePathName = "datahelix.datatypes";
-    private final Pattern classSpecPattern = Pattern.compile("^(.+?)(?:\\.jar)?\\|(.+)$");
+    private static final String moduleExtension = ".jar";
+    private final Pattern classSpecPattern = Pattern.compile("^(.+?)(?:\\" + moduleExtension + ")?\\|(.+)$");
 
-    public Class getDataTypeClass(String name, Class requiredImplementation) throws ClassNotFoundException, InvalidProfileException {
-        Matcher matcher = classSpecPattern.matcher(name);
+    public Class getDataTypeClass(String classSpec, Class requiredImplementation) throws ClassNotFoundException, InvalidProfileException {
+        Matcher matcher = classSpecPattern.matcher(classSpec);
         if (!matcher.matches()){
-            throw new InvalidProfileException("Custom data type is not in the correct format, it should be in the format: <jar-file-path>|<className>");
+            throw new InvalidProfileException("Custom data type is not in the correct format, it should be in the format: <module-name-or-path>|<className>");
         }
 
         String moduleName = matcher.group(1);
-        String className = matcher.group(2);
+        Pattern classNamePattern = Pattern.compile(".*\\." + matcher.group(2) + "$", Pattern.CASE_INSENSITIVE);
 
-        Optional<Class> foundClass = getClassesFromJarFile(moduleName, javaEntryClassName -> javaEntryClassName.endsWith(className))
+        Optional<Class> foundClass = getClassesFromJarFile(moduleName, className -> classNamePattern.matcher(className).matches())
             .filter(requiredImplementation::isAssignableFrom)
             .findFirst();
 
-        return foundClass.orElseThrow(() -> new ClassNotFoundException("Class " + name + " could not be found in " + moduleName + ".jar"));
+        return foundClass.orElseThrow(() -> new ClassNotFoundException("Class " + classSpec + " could not be found in " + moduleName + moduleExtension));
     }
 
     private static Stream<Class> getClassesFromJarFile(String moduleName, Function<String, Boolean> classNamePredicate){
+        final String classExtension = ".class";
+
         try {
             Stream<JarFile> jarFiles = getJarFiles(moduleName);
             return FlatMappingSpliterator.flatMap(
                 jarFiles,
                 jarFile -> {
                     try {
-                        URL[] urls = {new URL("jar:file:" + jarFile.getName() + ".jar!/")};
+                        URL[] urls = {new URL("jar:file:" + jarFile.getName() + "!/")};
                         URLClassLoader cl = URLClassLoader.newInstance(urls);
 
                         return new EntriesIterator(jarFile.entries()).asStream()
-                            .filter(jarEntry -> !jarEntry.isDirectory() && jarEntry.getName().endsWith(".class"))
+                            .filter(jarEntry -> !jarEntry.isDirectory() && jarEntry.getName().endsWith(classExtension))
                             .map(jarEntry -> {
-                                String className = jarEntry.getName().substring(0, jarEntry.getName().length() - ".class".length());
+                                String className = jarEntry.getName().substring(0, jarEntry.getName().length() - classExtension.length());
                                 return className.replace('/', '.');
                             })
                             .filter(classNamePredicate::apply)
@@ -76,11 +79,11 @@ public class CustomDataTypeClassLoader {
     private static Stream<JarFile> getJarFiles(String moduleName) throws IOException {
         boolean absolutePath = moduleName.contains(":");
         if (absolutePath){
-            if (!Files.exists(Paths.get(moduleName + ".jar"))){
-                throw new FileNotFoundException(String.format("Requested module %s could not be found", moduleName));
+            if (!Files.exists(Paths.get(moduleName + moduleExtension))){
+                throw new FileNotFoundException(String.format("Requested module %s%s could not be found", moduleName, moduleExtension));
             }
 
-            return Stream.of(new JarFile(moduleName + ".jar"));
+            return Stream.of(new JarFile(moduleName + moduleExtension));
         }
 
         Stream<String> dirs = Stream.concat(
@@ -89,7 +92,7 @@ public class CustomDataTypeClassLoader {
 
         return dirs
             .filter(Objects::nonNull)
-            .map(dir -> Paths.get(dir, moduleName + ".jar").toFile())
+            .map(dir -> Paths.get(dir, moduleName + moduleExtension).toFile())
             .filter(File::exists)
             .map(file -> {
                 try {
