@@ -11,7 +11,7 @@ public class ChuckNorrisFact implements FieldValueSourceFactory {
 
     @Override
     public FieldValueSource createValueSource(FieldSpec fieldSpec) {
-        return new FakerFieldValueSource(() -> faker.chuckNorris().fact()); //TODO: ensure the value meets the other FieldSpec requirements
+        return new FakerFieldValueSource(() -> faker.chuckNorris().fact(), fieldSpec); //TODO: ensure the value meets the other FieldSpec requirements
     }
 
     @Override

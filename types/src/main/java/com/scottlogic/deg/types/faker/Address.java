@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.FieldValueSourceFactory;
+import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 
 public class Address implements FieldValueSourceFactory {
@@ -11,7 +12,11 @@ public class Address implements FieldValueSourceFactory {
 
     @Override
     public FieldValueSource createValueSource(FieldSpec fieldSpec) {
-        return new FakerFieldValueSource(() -> faker.address().streetAddress()); //TODO: ensure the value meets the other FieldSpec requirements
+        if (fieldSpec.getStringRestrictions().getMaxLength() <= 10){
+            return CannedValuesFieldValueSource.of(); //TODO: Yield some information about the inability to produce data
+        }
+
+        return new FakerFieldValueSource(() -> faker.address().streetAddress(), fieldSpec); //TODO: ensure the value meets the other FieldSpec requirements
     }
 
     @Override

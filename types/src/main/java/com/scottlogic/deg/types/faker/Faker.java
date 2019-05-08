@@ -34,7 +34,7 @@ public class Faker implements FieldValueSourceFactory {
     public FieldValueSource createValueSource(FieldSpec fieldSpec) {
         Object fakerGroup = invokeMethod(faker, fakerGroupMethod);
 
-        return new FakerFieldValueSource(() -> invokeMethod(fakerGroup, fakerDataMethod)); //TODO: ensure the value meets the other FieldSpec requirements
+        return new FakerFieldValueSource(() -> invokeMethod(fakerGroup, fakerDataMethod), fieldSpec);
     }
 
     private static Object invokeMethod(Object instance, String methodName){
