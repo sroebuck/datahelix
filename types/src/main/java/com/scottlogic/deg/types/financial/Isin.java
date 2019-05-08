@@ -1,4 +1,4 @@
-package com.scottlogic.deg.generator.financial;
+package com.scottlogic.deg.types.financial;
 
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;

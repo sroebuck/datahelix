@@ -1,4 +1,4 @@
-package com.scottlogic.deg.generator.faker;
+package com.scottlogic.deg.types.faker;
 
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;

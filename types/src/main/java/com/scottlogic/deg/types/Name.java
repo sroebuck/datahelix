@@ -1,6 +1,7 @@
-package com.scottlogic.deg.generator;
+package com.scottlogic.deg.types;
 
 import com.google.common.collect.Sets;
+import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.FieldValueSourceFactory;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;

@@ -2,7 +2,6 @@ package com.scottlogic.deg.generator.inputs;
 
 import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
-import com.scottlogic.deg.generator.financial.Isin;
 import com.scottlogic.deg.generator.generation.GenerationConfig;
 import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.restrictions.ParsedGranularity;
@@ -67,14 +66,6 @@ class AtomicConstraintReaderLookup {
         add(AtomicConstraintType.AVALID.toString(),
                 (dto, fields, rules) -> {
                     String type = getValidatedValue(dto, String.class);
-
-                    if (type.equals("ISIN")) {
-                        return new IsOfTypeConstraint(
-                            fields.getByName(dto.field),
-                            new TypeDefinition(new Isin()),
-                            rules
-                        );
-                    }
 
                     return new IsOfTypeConstraint(
                         fields.getByName(dto.field),

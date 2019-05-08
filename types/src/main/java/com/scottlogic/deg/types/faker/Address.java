@@ -1,4 +1,4 @@
-package com.scottlogic.deg.generator.faker;
+package com.scottlogic.deg.types.faker;
 
 import com.github.javafaker.Faker;
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
@@ -6,12 +6,12 @@ import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.FieldValueSourceFactory;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 
-public class ChuckNorrisFact implements FieldValueSourceFactory {
+public class Address implements FieldValueSourceFactory {
     private static final Faker faker = new Faker();
 
     @Override
     public FieldValueSource createValueSource(FieldSpec fieldSpec) {
-        return new FakerFieldValueSource(() -> faker.chuckNorris().fact()); //TODO: ensure the value meets the other FieldSpec requirements
+        return new FakerFieldValueSource(() -> faker.address().streetAddress()); //TODO: ensure the value meets the other FieldSpec requirements
     }
 
     @Override
@@ -21,10 +21,10 @@ public class ChuckNorrisFact implements FieldValueSourceFactory {
 
     @Override
     public boolean isValid(Object value, FieldSpec fieldSpec) {
-        return value instanceof String && valueIsValid((String) value);
+        return value instanceof String && valueIsAnAddress((String) value);
     }
 
-    private boolean valueIsValid(String value) {
-        return true;
+    private boolean valueIsAnAddress(String value) {
+        return value.matches("^\\d+\\s+[A-Z][a-z]+\\s+[A-Z][a-z]+$");
     }
 }
