@@ -97,7 +97,9 @@ public class TypeDefinition {
     }
 
     public boolean isValid(Object value, FieldSpec fieldSpec) {
-        return factory.isValid(value, fieldSpec);
+        Class dataType = DataGeneratorBaseTypes.getValueClass(getBaseType());
+
+        return dataType.isInstance(value) && factory.isValid(value, fieldSpec);
     }
 
     @Override
