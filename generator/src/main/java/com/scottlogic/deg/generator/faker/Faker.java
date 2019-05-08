@@ -32,9 +32,9 @@ public class Faker implements FieldValueSourceFactory {
 
     @Override
     public FieldValueSource createValueSource(FieldSpec fieldSpec) {
-        Object address = invokeMethod(faker, fakerGroupMethod);
+        Object fakerGroup = invokeMethod(faker, fakerGroupMethod);
 
-        return new FakerFieldValueSource(() -> invokeMethod(address, fakerDataMethod)); //TODO: ensure the value meets the other FieldSpec requirements
+        return new FakerFieldValueSource(() -> invokeMethod(fakerGroup, fakerDataMethod)); //TODO: ensure the value meets the other FieldSpec requirements
     }
 
     private static Object invokeMethod(Object instance, String methodName){
@@ -52,10 +52,6 @@ public class Faker implements FieldValueSourceFactory {
 
     @Override
     public boolean isValid(Object value, FieldSpec fieldSpec) {
-        return value instanceof String && valueIsAnAddress((String) value);
-    }
-
-    private boolean valueIsAnAddress(String value) {
-        return value.matches("^\\d+\\s+[A-Z][a-z]+\\s+[A-Z][a-z]+$");
+        return value instanceof String; //TODO: Do something to check that the value matches the expected data, maybe some input regex?
     }
 }
