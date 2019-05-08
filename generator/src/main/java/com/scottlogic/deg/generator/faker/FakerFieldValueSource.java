@@ -6,10 +6,13 @@ import com.scottlogic.deg.generator.utils.RandomNumberGenerator;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-class FakerFieldValueSource implements FieldValueSource {
+/**
+ * Must be public so it can be used by the generator when it is loaded via 'reflection'
+ */
+public class FakerFieldValueSource implements FieldValueSource {
     private final Supplier<Object> getNextValue;
 
-    FakerFieldValueSource(Supplier<Object> getNextValue) {
+    public FakerFieldValueSource(Supplier<Object> getNextValue) {
         this.getNextValue = getNextValue;
     }
 
