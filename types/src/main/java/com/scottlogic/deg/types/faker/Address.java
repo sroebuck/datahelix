@@ -12,10 +12,6 @@ public class Address implements DataTypeFactory {
 
     @Override
     public FieldValueSource createValueSource(FieldSpec fieldSpec) {
-        if (fieldSpec.getStringRestrictions().getMaxLength() <= 10){
-            return CannedValuesFieldValueSource.of(); //TODO: Yield some information about the inability to produce data
-        }
-
         return new FakerFieldValueSource(() -> faker.address().streetAddress(), fieldSpec); //TODO: ensure the value meets the other FieldSpec requirements
     }
 
@@ -27,6 +23,11 @@ public class Address implements DataTypeFactory {
     @Override
     public boolean isValid(Object value, FieldSpec fieldSpec) {
         return value instanceof String && valueIsAnAddress((String) value);
+    }
+
+    @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        return fieldSpec.getStringRestrictions().getMaxLength() > 10;
     }
 
     private boolean valueIsAnAddress(String value) {

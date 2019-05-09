@@ -15,6 +15,11 @@ public class ChuckNorrisFact implements DataTypeFactory {
     }
 
     @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        return fieldSpec.getStringRestrictions().getMaxLength() > 10;
+    }
+
+    @Override
     public DataGeneratorBaseTypes getUnderlyingDataType() {
         return DataGeneratorBaseTypes.STRING;
     }

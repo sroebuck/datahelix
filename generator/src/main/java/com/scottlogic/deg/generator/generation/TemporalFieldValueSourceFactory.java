@@ -42,4 +42,9 @@ public class TemporalFieldValueSourceFactory implements DataTypeFactory {
         DateTimeRestrictions temporalRestrictions = fieldSpec.getDateTimeRestrictions();
         return value instanceof OffsetDateTime && (temporalRestrictions == null || temporalRestrictions.match(value));
     }
+
+    @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        return true; //Note: Contradiction checking happens in the restriction merge operations for primitive types
+    }
 }

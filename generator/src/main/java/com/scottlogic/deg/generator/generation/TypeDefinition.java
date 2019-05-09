@@ -82,6 +82,10 @@ public class TypeDefinition {
         return factory.createValueSource(fieldSpec);
     }
 
+    public boolean canProduceAnyValues(FieldSpec fieldSpec){
+        return factory.canProduceAnyValues(fieldSpec);
+    }
+
     @Override
     public int hashCode(){
         return factory.getClass().hashCode();

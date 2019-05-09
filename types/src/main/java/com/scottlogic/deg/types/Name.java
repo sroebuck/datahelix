@@ -86,5 +86,10 @@ public class Name implements DataTypeFactory {
     public boolean isValid(Object value, FieldSpec fieldSpec) {
         return value instanceof String && names.contains(value);
     }
+
+    @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        return true;
+    }
 }
 

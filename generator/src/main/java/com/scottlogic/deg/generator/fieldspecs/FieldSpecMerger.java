@@ -78,6 +78,10 @@ public class FieldSpecMerger {
             return true;
         }
 
+        if (fieldSpec.getTypeRestrictions().getAllowedTypes().stream().noneMatch(td -> td.canProduceAnyValues(fieldSpec))){
+            return false;
+        }
+
         return false;
     }
 }

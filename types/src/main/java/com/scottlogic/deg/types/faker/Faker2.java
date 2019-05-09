@@ -27,4 +27,17 @@ public class Faker2 implements DataTypeFactory {
     public boolean isValid(Object value, FieldSpec fieldSpec) {
         return value instanceof String; //TODO: Do something to check that the value matches the expected data, maybe some input regex?
     }
+
+    @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        try {
+            if (faker.expression(spec) == null){ //check to see if 'spec' is valid
+                return false;
+            }
+
+            return true;  //presume there is nothing that would prevent value generation (maybe check that shorterThan is >= 2?)
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

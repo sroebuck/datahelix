@@ -43,4 +43,9 @@ public class NumericFieldValueSourceFactory implements DataTypeFactory {
         NumericRestrictions numericRestrictions = fieldSpec.getNumericRestrictions();
         return value instanceof Number && (numericRestrictions == null || numericRestrictions.match(value));
     }
+
+    @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        return true; //Note: Contradiction checking happens in the restriction merge operations for primitive types
+    }
 }

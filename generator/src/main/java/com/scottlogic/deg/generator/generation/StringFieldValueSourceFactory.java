@@ -52,6 +52,11 @@ public class StringFieldValueSourceFactory implements DataTypeFactory {
         StringRestrictions stringRestrictions = fieldSpec.getStringRestrictions();
         return value instanceof String && (stringRestrictions == null || stringRestrictions.match(value));
     }
+
+    @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        return true; //Note: Contradiction checking happens in the restriction merge operations for primitive types
+    }
 }
 
 

@@ -29,4 +29,13 @@ public interface DataTypeFactory {
      * @return Whether the value is considered value for this data type or not
      */
     boolean isValid(Object value, FieldSpec fieldSpec);
+
+
+    /**
+     * Expose whether this data type can emit any data given the provided restrictions
+     *
+     * @param fieldSpec The restrictions the emitted data must adhere to
+     * @return Whether any data can be emitted given the provided restrictions
+     */
+    boolean canProduceAnyValues(FieldSpec fieldSpec);
 }

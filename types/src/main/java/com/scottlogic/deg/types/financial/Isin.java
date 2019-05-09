@@ -63,6 +63,25 @@ public class Isin implements DataTypeFactory {
             : Impact.NONE;
     }
 
+    @Override
+    public boolean canProduceAnyValues(FieldSpec fieldSpec) {
+        StringRestrictions stringRestrictions = fieldSpec.getStringRestrictions();
+        if (stringRestrictions == null){
+            return true;
+        }
+
+        switch (getImpactOnValueProduction(fieldSpec.getStringRestrictions())){
+            case NONE:
+                return true;
+            case CONFIRMED:
+                return false;
+            case POTENTIAL:
+                return true; //May be able to produce some values, but cannot confirm nor deny
+        }
+
+        return true;
+    }
+
     private enum Impact
     {
         /**
