@@ -1,6 +1,7 @@
 package com.scottlogic.deg.generator.inputs;
 
 import com.google.inject.Inject;
+import com.scottlogic.deg.generator.DataTypeImports;
 import com.scottlogic.deg.generator.ProfileFields;
 import com.scottlogic.deg.generator.constraints.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
@@ -22,7 +23,7 @@ public class MainConstraintReader implements ConstraintReader {
     public Constraint apply(
         ConstraintDTO dto,
         ProfileFields fields,
-        Set<RuleInformation> rules)
+        Set<RuleInformation> rules, DataTypeImports imports)
         throws InvalidProfileException {
 
         if (dto == null) {
@@ -41,14 +42,14 @@ public class MainConstraintReader implements ConstraintReader {
             }
 
             try {
-                return subReader.apply(dto, fields, rules);
+                return subReader.apply(dto, fields, rules, imports);
             } catch (IllegalArgumentException e) {
                 throw new InvalidProfileException(e.getMessage());
             }
         }
 
         if (dto.not != null) {
-            return this.apply(dto.not, fields, rules).negate();
+            return this.apply(dto.not, fields, rules, imports).negate();
         }
 
         if (dto.allOf != null) {
@@ -61,7 +62,7 @@ public class MainConstraintReader implements ConstraintReader {
                     subConstraintDto -> this.apply(
                         subConstraintDto,
                         fields,
-                        rules)));
+                        rules, imports)));
         }
 
         if (dto.anyOf != null) {
@@ -71,7 +72,7 @@ public class MainConstraintReader implements ConstraintReader {
                     subConstraintDto -> this.apply(
                         subConstraintDto,
                         fields,
-                        rules)));
+                        rules, imports)));
         }
 
         if (dto.if_ != null) {
@@ -79,16 +80,16 @@ public class MainConstraintReader implements ConstraintReader {
                 this.apply(
                     dto.if_,
                     fields,
-                    rules),
+                    rules, imports),
                 this.apply(
                     dto.then,
                     fields,
-                    rules),
+                    rules, imports),
                 dto.else_ != null
                     ? this.apply(
                         dto.else_,
                         fields,
-                        rules)
+                        rules, imports)
                     : null);
         }
 

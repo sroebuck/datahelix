@@ -30,42 +30,42 @@ public class AtomicConstraintReaderLookup {
     @Inject
     public AtomicConstraintReaderLookup(TypeDefinitionFactory typeDefinitionFactory) {
         add(AtomicConstraintType.FORMATTEDAS.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new FormatConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, String.class),
                         rules));
 
         add(AtomicConstraintType.ISEQUALTOCONSTANT.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsInSetConstraint(
                         fields.getByName(dto.field),
                         Collections.singleton(getValidatedValue(dto)),
                         rules));
 
         add(AtomicConstraintType.ISINSET.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsInSetConstraint(
                         fields.getByName(dto.field),
                         getValidatedValues(dto),
                         rules));
 
         add(AtomicConstraintType.CONTAINSREGEX.toString(),
-            (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                 new ContainsRegexConstraint(
                     fields.getByName(dto.field),
                     Pattern.compile(getValidatedValue(dto, String.class)),
                     rules));
 
         add(AtomicConstraintType.MATCHESREGEX.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new MatchesRegexConstraint(
                         fields.getByName(dto.field),
                         Pattern.compile(getValidatedValue(dto, String.class)),
                         rules));
 
         add(AtomicConstraintType.AVALID.toString(),
-                (dto, fields, rules) -> {
+            (dto, fields, rules, imports) -> {
                     String type = getValidatedValue(dto, String.class);
 
                     return new IsOfTypeConstraint(
@@ -75,7 +75,7 @@ public class AtomicConstraintReaderLookup {
                 });
 
         add(AtomicConstraintType.ISGREATERTHANCONSTANT.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsGreaterThanConstantConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, Number.class),
@@ -83,67 +83,67 @@ public class AtomicConstraintReaderLookup {
         );
 
         add(AtomicConstraintType.ISGREATERTHANOREQUALTOCONSTANT.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsGreaterThanOrEqualToConstantConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, Number.class),
                         rules));
 
         add(AtomicConstraintType.ISLESSTHANCONSTANT.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsLessThanConstantConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, Number.class),
                         rules));
 
         add(AtomicConstraintType.ISLESSTHANOREQUALTOCONSTANT.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsLessThanOrEqualToConstantConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, Number.class),
                         rules));
 
         add(AtomicConstraintType.ISBEFORECONSTANTDATETIME.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsBeforeConstantDateTimeConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, OffsetDateTime.class),
                         rules));
 
         add(AtomicConstraintType.ISBEFOREOREQUALTOCONSTANTDATETIME.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsBeforeOrEqualToConstantDateTimeConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, OffsetDateTime.class),
                         rules));
 
         add(AtomicConstraintType.ISAFTERCONSTANTDATETIME.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsAfterConstantDateTimeConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, OffsetDateTime.class),
                         rules));
 
         add(AtomicConstraintType.ISAFTEROREQUALTOCONSTANTDATETIME.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsAfterOrEqualToConstantDateTimeConstraint(
                         fields.getByName(dto.field),
                         getValidatedValue(dto, OffsetDateTime.class),
                         rules));
 
         add(AtomicConstraintType.ISGRANULARTO.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsGranularToConstraint(
                         fields.getByName(dto.field),
                         ParsedGranularity.parse(getValidatedValue(dto, Number.class)),
                         rules));
 
         add(AtomicConstraintType.ISNULL.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsNullConstraint(fields.getByName(dto.field), rules));
 
         add(AtomicConstraintType.ISOFTYPE.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                 {
                     String typeString = getValidatedValue(dto, String.class);
                     if (typeString.equals("integer")) {
@@ -192,21 +192,21 @@ public class AtomicConstraintReaderLookup {
 
         // String constraints
         add(AtomicConstraintType.ISSTRINGLONGERTHAN.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsStringLongerThanConstraint(
                         fields.getByName(dto.field),
                         ensureValueBetween(dto, Integer.class, BigDecimal.ZERO, maxStringLength.subtract(BigDecimal.ONE)),
                         rules));
 
         add(AtomicConstraintType.ISSTRINGSHORTERTHAN.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new IsStringShorterThanConstraint(
                         fields.getByName(dto.field),
                         ensureValueBetween(dto, Integer.class, BigDecimal.ONE, maxStringLength.add(BigDecimal.ONE)),
                         rules));
 
         add(AtomicConstraintType.HASLENGTH.toString(),
-                (dto, fields, rules) ->
+            (dto, fields, rules, imports) ->
                     new StringHasLengthConstraint(
                         fields.getByName(dto.field),
                         ensureValueBetween(dto, Integer.class, BigDecimal.ZERO, maxStringLength),

@@ -52,6 +52,8 @@ public class JsonProfileReader implements ProfileReader {
                 .map(fDto -> new Field(fDto.name))
                 .collect(Collectors.toList()));
 
+        DataTypeImports imports = new DataTypeImports(profileDto.imports);
+
         Collection<Rule> rules = mapDtos(
             profileDto.rules,
             r -> {
@@ -68,7 +70,8 @@ public class JsonProfileReader implements ProfileReader {
                                 return constraintReader.apply(
                                     dto,
                                     profileFields,
-                                    Collections.singleton(constraintRule));
+                                    Collections.singleton(constraintRule),
+                                    imports);
                             } catch (InvalidProfileException e) {
                                 throw new InvalidProfileException("Rule: " + r.rule + "\n" + e.getMessage());
                             }

@@ -2,6 +2,7 @@ package com.scottlogic.deg.generator.cucumber.testframework.utils;
 
 import com.google.gson.JsonParseException;
 import com.google.inject.Inject;
+import com.scottlogic.deg.generator.DataTypeImports;
 import com.scottlogic.deg.generator.Profile;
 import com.scottlogic.deg.generator.ProfileFields;
 import com.scottlogic.deg.generator.Rule;
@@ -42,7 +43,7 @@ public class CucumberProfileReader implements ProfileReader {
 
             List<Constraint> mappedConstraints = state.constraints.stream().map(dto -> {
                 try {
-                    return constraintReader.apply(dto, profileFields, getRules());
+                    return constraintReader.apply(dto, profileFields, getRules(), new DataTypeImports(state.imports));
                 } catch (InvalidProfileException e) {
                     state.addException(e);
                     exceptionInMapping.set(true);

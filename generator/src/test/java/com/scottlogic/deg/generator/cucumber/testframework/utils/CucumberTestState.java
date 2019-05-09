@@ -2,6 +2,7 @@ package com.scottlogic.deg.generator.cucumber.testframework.utils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scottlogic.deg.generator.DataTypeImports;
 import com.scottlogic.deg.generator.Field;
 import com.scottlogic.deg.generator.generation.GenerationConfig;
 import com.scottlogic.deg.schemas.v0_1.AtomicConstraintType;
@@ -25,6 +26,7 @@ public class CucumberTestState {
      */
     public Boolean shouldViolate = false;
     public boolean requireFieldTyping = true;
+    public List<String> imports = new ArrayList<>();
 
     /** If true, we inject a no-op generation engine during the test (e.g. because we're just testing profile validation) */
     private Boolean shouldSkipGeneration = false;

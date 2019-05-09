@@ -1,5 +1,6 @@
 package com.scottlogic.deg.generator.inputs;
 
+import com.scottlogic.deg.generator.DataTypeImports;
 import com.scottlogic.deg.generator.Field;
 import com.scottlogic.deg.generator.ProfileFields;
 import com.scottlogic.deg.generator.constraints.Constraint;
@@ -239,8 +240,9 @@ public class AtomicConstraintReaderLookupTests {
             RuleDTO rule = new RuleDTO();
             rule.rule = "rule";
             Set<RuleInformation> ruleInformation = Collections.singleton(new RuleInformation(rule));
+            DataTypeImports imports = new DataTypeImports(Collections.emptySet());
 
-            Constraint constraint = reader.apply(dto, profileFields, ruleInformation);
+            Constraint constraint = reader.apply(dto, profileFields, ruleInformation, imports);
 
             Assert.assertThat("Expected " + constraintType.getName() + " but got " + constraint.getClass().getName(),
                     constraint,
@@ -260,8 +262,9 @@ public class AtomicConstraintReaderLookupTests {
         RuleDTO rule = new RuleDTO();
         rule.rule = "rule";
         Set<RuleInformation> ruleInformation = Collections.singleton(new RuleInformation(rule));
+        DataTypeImports imports = new DataTypeImports(Collections.emptySet());
 
-        Assertions.assertThrows(InvalidProfileException.class, () -> reader.apply(dto, profileFields, ruleInformation));
+        Assertions.assertThrows(InvalidProfileException.class, () -> reader.apply(dto, profileFields, ruleInformation, imports));
     }
 
     @DisplayName("Should fail when value property is numeric and out of bounds")
@@ -273,8 +276,9 @@ public class AtomicConstraintReaderLookupTests {
         RuleDTO rule = new RuleDTO();
         rule.rule = "rule";
         Set<RuleInformation> ruleInformation = Collections.singleton(new RuleInformation(rule));
+        DataTypeImports imports = new DataTypeImports(Collections.emptySet());
 
-        Assertions.assertThrows(InvalidProfileException.class, () -> reader.apply(dto, profileFields, ruleInformation));
+        Assertions.assertThrows(InvalidProfileException.class, () -> reader.apply(dto, profileFields, ruleInformation, imports));
     }
 
     @DisplayName("Should pass when string lengths have an integer operand")
@@ -286,8 +290,9 @@ public class AtomicConstraintReaderLookupTests {
         RuleDTO rule = new RuleDTO();
         rule.rule = "rule";
         Set<RuleInformation> ruleInformation = Collections.singleton(new RuleInformation(rule));
+        DataTypeImports imports = new DataTypeImports(Collections.emptySet());
 
-        Assertions.assertDoesNotThrow(() -> reader.apply(dto, profileFields, ruleInformation));
+        Assertions.assertDoesNotThrow(() -> reader.apply(dto, profileFields, ruleInformation, imports));
     }
 
     @Test
@@ -386,7 +391,9 @@ public class AtomicConstraintReaderLookupTests {
         rule.rule = "rule";
         Set<RuleInformation> ruleInformation = Collections.singleton(new RuleInformation(rule));
 
-        IsAfterConstantDateTimeConstraint constraint = (IsAfterConstantDateTimeConstraint) reader.apply(dateDto, profileFields, ruleInformation);
+        DataTypeImports imports = new DataTypeImports(Collections.emptySet());
+
+        IsAfterConstantDateTimeConstraint constraint = (IsAfterConstantDateTimeConstraint) reader.apply(dateDto, profileFields, ruleInformation, imports);
 
         return constraint.referenceValue;
     }
