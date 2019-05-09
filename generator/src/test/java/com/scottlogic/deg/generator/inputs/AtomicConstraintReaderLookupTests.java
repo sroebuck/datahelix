@@ -6,6 +6,7 @@ import com.scottlogic.deg.generator.constraints.Constraint;
 import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.generator.generation.GenerationConfig;
+import com.scottlogic.deg.generator.generation.TypeDefinitionFactory;
 import com.scottlogic.deg.schemas.v0_1.AtomicConstraintType;
 import com.scottlogic.deg.schemas.v0_1.ConstraintDTO;
 import com.scottlogic.deg.schemas.v0_1.RuleDTO;
@@ -34,7 +35,7 @@ public class AtomicConstraintReaderLookupTests {
     @BeforeAll
     public void before() {
 
-        atomicConstraintReaderLookup = new AtomicConstraintReaderLookup();
+        atomicConstraintReaderLookup = new AtomicConstraintReaderLookup(new TypeDefinitionFactory());
 
         List<Field> fields = new ArrayList<>();
 

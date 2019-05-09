@@ -6,8 +6,11 @@ import com.scottlogic.deg.generator.Profile;
 import com.scottlogic.deg.generator.decisiontree.serialisation.DecisionTreeDto;
 import com.scottlogic.deg.generator.decisiontree.serialisation.DecisionTreeMapper;
 import com.scottlogic.deg.generator.decisiontree.testutils.*;
+import com.scottlogic.deg.generator.generation.TypeDefinitionFactory;
+import com.scottlogic.deg.generator.inputs.AtomicConstraintReaderLookup;
 import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 import com.scottlogic.deg.generator.inputs.JsonProfileReader;
+import com.scottlogic.deg.generator.inputs.MainConstraintReader;
 import org.junit.Assert;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -109,7 +112,7 @@ class TreeTransformationIntegrationTests {
     }
 
     private Profile getProfile(Path path) throws IOException, InvalidProfileException {
-        return new JsonProfileReader().read(path);
+        return new JsonProfileReader(new MainConstraintReader(new AtomicConstraintReaderLookup(new TypeDefinitionFactory()))).read(path);
     }
 
     private List<DecisionTreeDto> getMappedExpectedOutput(File file) throws IOException {

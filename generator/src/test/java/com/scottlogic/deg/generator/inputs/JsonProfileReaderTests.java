@@ -10,6 +10,7 @@ import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.ConditionalConstraint;
 import com.scottlogic.deg.generator.constraints.grammatical.OrConstraint;
 import com.scottlogic.deg.generator.generation.TypeDefinition;
+import com.scottlogic.deg.generator.generation.TypeDefinitionFactory;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,7 @@ public class JsonProfileReaderTests {
 
     private Profile getResultingProfile() throws IOException, InvalidProfileException {
         if (this.profile == null) {
-            JsonProfileReader objectUnderTest = new JsonProfileReader();
+            JsonProfileReader objectUnderTest = new JsonProfileReader(new MainConstraintReader(new AtomicConstraintReaderLookup(new TypeDefinitionFactory())));
             this.profile = objectUnderTest.read(this.json);
         }
 

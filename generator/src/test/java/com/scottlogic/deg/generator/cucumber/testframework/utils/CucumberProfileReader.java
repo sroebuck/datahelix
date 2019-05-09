@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 public class CucumberProfileReader implements ProfileReader {
 
     private final CucumberTestState state;
+    private final MainConstraintReader constraintReader;
 
     @Inject
-    public CucumberProfileReader(CucumberTestState state) {
+    public CucumberProfileReader(CucumberTestState state, MainConstraintReader constraintReader) {
         this.state = state;
+        this.constraintReader = constraintReader;
     }
 
     @Override
@@ -35,7 +37,6 @@ public class CucumberProfileReader implements ProfileReader {
 
     private Profile getProfile() throws InvalidProfileException {
         try {
-            MainConstraintReader constraintReader = new MainConstraintReader();
             ProfileFields profileFields = new ProfileFields(state.profileFields);
             AtomicBoolean exceptionInMapping = new AtomicBoolean();
 

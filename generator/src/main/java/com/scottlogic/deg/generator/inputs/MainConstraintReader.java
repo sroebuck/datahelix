@@ -1,5 +1,6 @@
 package com.scottlogic.deg.generator.inputs;
 
+import com.google.inject.Inject;
 import com.scottlogic.deg.generator.ProfileFields;
 import com.scottlogic.deg.generator.constraints.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
@@ -12,8 +13,9 @@ import java.util.Set;
 public class MainConstraintReader implements ConstraintReader {
     private final AtomicConstraintReaderLookup atomicConstraintReaderLookup;
 
-    public MainConstraintReader() {
-        this.atomicConstraintReaderLookup = new AtomicConstraintReaderLookup();
+    @Inject
+    public MainConstraintReader(AtomicConstraintReaderLookup readerLookup) {
+        this.atomicConstraintReaderLookup = readerLookup;
     }
 
     @Override

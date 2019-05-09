@@ -14,8 +14,10 @@ import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
 import com.scottlogic.deg.generator.fieldspecs.RowSpecMerger;
 import com.scottlogic.deg.generator.generation.*;
 import com.scottlogic.deg.generator.generation.databags.StandardRowSpecDataBagSourceFactory;
+import com.scottlogic.deg.generator.inputs.AtomicConstraintReaderLookup;
 import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 import com.scottlogic.deg.generator.inputs.JsonProfileReader;
+import com.scottlogic.deg.generator.inputs.MainConstraintReader;
 import com.scottlogic.deg.generator.inputs.profileviolation.IndividualConstraintRuleViolator;
 import com.scottlogic.deg.generator.inputs.profileviolation.IndividualRuleProfileViolator;
 import com.scottlogic.deg.generator.outputs.GeneratedObject;
@@ -56,7 +58,7 @@ class ExampleProfilesViolationTests {
                 GenerationConfig.CombinationStrategyType.PINNING));
 
         return forEachProfileFile(config, ((standard, violating, profileFile) -> {
-            final Profile profile = new JsonProfileReader().read(profileFile.toPath());
+            final Profile profile = new JsonProfileReader(new MainConstraintReader(new AtomicConstraintReaderLookup(new TypeDefinitionFactory()))).read(profileFile.toPath());
 
             Collection<Integer> constraintsPerRule = profile.rules.stream().map(r -> r.constraints.size()).collect(Collectors.toList());
             Assert.assertThat(constraintsPerRule, not(hasItem(0))); //there should be no rules with 0 constraints
@@ -72,7 +74,7 @@ class ExampleProfilesViolationTests {
                 GenerationConfig.CombinationStrategyType.PINNING));
                 
         return forEachProfileFile(config, ((standard, violating, profileFile) -> {
-            final Profile profile = new JsonProfileReader().read(profileFile.toPath());
+            final Profile profile = new JsonProfileReader(new MainConstraintReader(new AtomicConstraintReaderLookup(new TypeDefinitionFactory()))).read(profileFile.toPath());
             standard.generateDataSet(profile, config, new NullOutputTarget());
         }));
     }
@@ -86,7 +88,7 @@ class ExampleProfilesViolationTests {
                 GenerationConfig.CombinationStrategyType.PINNING));
 
         return forEachProfileFile(config, ((standard, violating, profileFile) -> {
-            final Profile profile = new JsonProfileReader().read(profileFile.toPath());
+            final Profile profile = new JsonProfileReader(new MainConstraintReader(new AtomicConstraintReaderLookup(new TypeDefinitionFactory()))).read(profileFile.toPath());
             violating.generateDataSet(profile, config, new NullOutputTarget());
         }));
     }

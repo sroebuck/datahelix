@@ -1,9 +1,11 @@
 package com.scottlogic.deg.generator.inputs;
 
+import com.google.inject.Inject;
 import com.scottlogic.deg.generator.constraints.atomic.*;
 import com.scottlogic.deg.generator.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.generator.generation.GenerationConfig;
 import com.scottlogic.deg.generator.generation.TypeDefinition;
+import com.scottlogic.deg.generator.generation.TypeDefinitionFactory;
 import com.scottlogic.deg.generator.restrictions.ParsedGranularity;
 import com.scottlogic.deg.generator.utils.NumberUtils;
 import com.scottlogic.deg.schemas.v0_1.AtomicConstraintType;
@@ -22,12 +24,11 @@ import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.regex.Pattern;
 
-class AtomicConstraintReaderLookup {
-    private static final Map<String, ConstraintReader> typeCodeToSpecificReader;
+public class AtomicConstraintReaderLookup {
+    private final Map<String, ConstraintReader> typeCodeToSpecificReader = new HashMap<>();
 
-    static {
-        typeCodeToSpecificReader = new HashMap<>();
-
+    @Inject
+    public AtomicConstraintReaderLookup(TypeDefinitionFactory typeDefinitionFactory) {
         add(AtomicConstraintType.FORMATTEDAS.toString(),
                 (dto, fields, rules) ->
                     new FormatConstraint(
@@ -69,7 +70,7 @@ class AtomicConstraintReaderLookup {
 
                     return new IsOfTypeConstraint(
                         fields.getByName(dto.field),
-                        TypeDefinition.parse(type),
+                        typeDefinitionFactory.createFromDefinition(type),
                         rules);
                 });
 
@@ -340,7 +341,7 @@ class AtomicConstraintReaderLookup {
         return mappedValues;
     }
 
-    private static void add(String typeCode, ConstraintReader func) {
+    private void add(String typeCode, ConstraintReader func) {
         typeCodeToSpecificReader.put(typeCode, func);
     }
 
