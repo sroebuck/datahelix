@@ -3,7 +3,7 @@ package com.scottlogic.deg.types;
 import com.google.common.collect.Sets;
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.generation.FieldValueSourceFactory;
+import com.scottlogic.deg.generator.generation.DataTypeFactory;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 import com.scottlogic.deg.generator.restrictions.StringRestrictions;
@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Name implements FieldValueSourceFactory {
+public class Name implements DataTypeFactory {
     private final Set<String> names = Sets.newHashSet(
         "James",
         "Arthur",

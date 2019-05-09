@@ -2,15 +2,10 @@ package com.scottlogic.deg.types.faker;
 
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.generation.FieldValueSourceFactory;
+import com.scottlogic.deg.generator.generation.DataTypeFactory;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
-import com.scottlogic.deg.generator.inputs.InvalidProfileException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class Faker2 implements FieldValueSourceFactory {
+public class Faker2 implements DataTypeFactory {
     private static final com.github.javafaker.Faker faker = new com.github.javafaker.Faker();
     private final String spec;
 

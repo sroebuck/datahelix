@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class NumericFieldValueSourceFactory implements FieldValueSourceFactory {
+public class NumericFieldValueSourceFactory implements DataTypeFactory {
     public static TypeDefinition getTypeDefinition() {
         return new TypeDefinition(new NumericFieldValueSourceFactory());
     }

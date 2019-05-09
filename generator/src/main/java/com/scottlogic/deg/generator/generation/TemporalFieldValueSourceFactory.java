@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TemporalFieldValueSourceFactory implements FieldValueSourceFactory {
+public class TemporalFieldValueSourceFactory implements DataTypeFactory {
     public static TypeDefinition getTypeDefinition() {
         return new TypeDefinition(new TemporalFieldValueSourceFactory());
     }

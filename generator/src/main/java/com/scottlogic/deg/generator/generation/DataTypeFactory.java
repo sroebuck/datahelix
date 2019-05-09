@@ -4,7 +4,7 @@ import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 
-public interface FieldValueSourceFactory {
+public interface DataTypeFactory {
     FieldValueSource createValueSource(FieldSpec fieldSpec);
     DataGeneratorBaseTypes getUnderlyingDataType();
     boolean isValid(Object value, FieldSpec fieldSpec);

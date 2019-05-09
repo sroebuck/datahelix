@@ -3,11 +3,11 @@ package com.scottlogic.deg.types.faker;
 import com.github.javafaker.Faker;
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.generation.FieldValueSourceFactory;
+import com.scottlogic.deg.generator.generation.DataTypeFactory;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 
-public class Address implements FieldValueSourceFactory {
+public class Address implements DataTypeFactory {
     private static final Faker faker = new Faker();
 
     @Override

@@ -2,14 +2,14 @@ package com.scottlogic.deg.types.financial;
 
 import com.scottlogic.deg.generator.DataGeneratorBaseTypes;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.generation.FieldValueSourceFactory;
+import com.scottlogic.deg.generator.generation.DataTypeFactory;
 import com.scottlogic.deg.generator.generation.IsinStringGenerator;
 import com.scottlogic.deg.generator.generation.StringGenerator;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.CannedValuesFieldValueSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
 import com.scottlogic.deg.generator.restrictions.StringRestrictions;
 
-public class Isin implements FieldValueSourceFactory {
+public class Isin implements DataTypeFactory {
     private static final StringGenerator isinGenerator = new IsinStringGenerator();
 
     @Override

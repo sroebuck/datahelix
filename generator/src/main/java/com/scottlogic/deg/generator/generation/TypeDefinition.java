@@ -18,9 +18,9 @@ public class TypeDefinition {
     public static final TypeDefinition Numeric = NumericFieldValueSourceFactory.getTypeDefinition();
     public static final TypeDefinition Temporal = TemporalFieldValueSourceFactory.getTypeDefinition();
 
-    private final FieldValueSourceFactory factory;
+    private final DataTypeFactory factory;
 
-    public TypeDefinition(FieldValueSourceFactory factory) {
+    public TypeDefinition(DataTypeFactory factory) {
         this.factory = factory;
     }
 
@@ -36,14 +36,14 @@ public class TypeDefinition {
 
         Class<?> factoryClass;
         try {
-            factoryClass = classLoader.getDataTypeClass(typeString, FieldValueSourceFactory.class);
+            factoryClass = classLoader.getDataTypeClass(typeString, DataTypeFactory.class);
         } catch (ClassNotFoundException e) {
             throw new InvalidProfileException(
                 java.lang.String.format(
                     "Unrecognised type in type constraint: %s; class cannot be found or does not implement %s\n" +
                     "Check the %s.jar is in the working directory or the directory identified by '%s' (system property)",
                     typeString,
-                    FieldValueSourceFactory.class.getName(),
+                    DataTypeFactory.class.getName(),
                     classLoader.getModuleName(typeDefParsed.group(1)),
                     CustomDataTypeClassLoader.customDataTypePathName));
         }
@@ -63,7 +63,7 @@ public class TypeDefinition {
         }
 
         try {
-            FieldValueSourceFactory factory = (FieldValueSourceFactory) (requiresStringConstructor
+            DataTypeFactory factory = (DataTypeFactory) (requiresStringConstructor
                 ? constructor.newInstance(constructorArgs)
                 : constructor.newInstance());
             return new TypeDefinition(factory);
