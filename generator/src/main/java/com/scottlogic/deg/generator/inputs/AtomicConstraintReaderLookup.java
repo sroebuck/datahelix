@@ -70,7 +70,7 @@ public class AtomicConstraintReaderLookup {
 
                     return new IsOfTypeConstraint(
                         fields.getByName(dto.field),
-                        typeDefinitionFactory.createFromDefinition(type),
+                        typeDefinitionFactory.createFromDefinition(type, imports),
                         rules);
                 });
 

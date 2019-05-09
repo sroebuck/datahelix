@@ -3,10 +3,13 @@
   "fields": [
     {"name": "isin"}
   ],
+  "imports": [
+	"com.scottlogic.deg.types"
+  ],
   "rules": [
     {
       "constraints": [
-        {"field": "isin", "is": "aValid", "value": "ISIN"}
+        {"field": "isin", "is": "aValid", "value": "financial.Isin"}
       ]
     }
   ]

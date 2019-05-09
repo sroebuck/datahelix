@@ -9,8 +9,10 @@ import com.scottlogic.deg.generator.decisiontree.serialisation.DecisionTreeMappe
 import com.scottlogic.deg.generator.decisiontree.treepartitioning.NoopTreePartitioner;
 import com.scottlogic.deg.generator.decisiontree.treepartitioning.RelatedFieldTreePartitioner;
 import com.scottlogic.deg.generator.decisiontree.treepartitioning.TreePartitioner;
+import com.scottlogic.deg.generator.generation.TypeDefinition;
 import com.scottlogic.deg.generator.generation.TypeDefinitionFactory;
 import com.scottlogic.deg.generator.inputs.AtomicConstraintReaderLookup;
+import com.scottlogic.deg.generator.inputs.CustomDataTypeClassLoader;
 import com.scottlogic.deg.generator.inputs.JsonProfileReader;
 import com.scottlogic.deg.generator.inputs.MainConstraintReader;
 import picocli.CommandLine;
@@ -55,7 +57,12 @@ public class GenerateTreeCollectionJson implements Runnable {
         final Profile profile;
 
         try {
-            profile = new JsonProfileReader(new MainConstraintReader(new AtomicConstraintReaderLookup(new TypeDefinitionFactory()))).read(inputPath.toPath());
+            profile = new JsonProfileReader(
+                new MainConstraintReader(
+                    new AtomicConstraintReaderLookup(
+                        new TypeDefinitionFactory(
+                            new CustomDataTypeClassLoader(TypeDefinitionFactory.class.getClassLoader())
+                        )))).read(inputPath.toPath());
         } catch (Exception e) {
             System.err.println("Failed to read file!");
             e.printStackTrace();

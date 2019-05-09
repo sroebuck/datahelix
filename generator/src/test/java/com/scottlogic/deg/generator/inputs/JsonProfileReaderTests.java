@@ -42,7 +42,13 @@ public class JsonProfileReaderTests {
 
     private Profile getResultingProfile() throws IOException, InvalidProfileException {
         if (this.profile == null) {
-            JsonProfileReader objectUnderTest = new JsonProfileReader(new MainConstraintReader(new AtomicConstraintReaderLookup(new TypeDefinitionFactory())));
+            JsonProfileReader objectUnderTest = new JsonProfileReader(
+                new MainConstraintReader(
+                    new AtomicConstraintReaderLookup(
+                        new TypeDefinitionFactory(
+                            new CustomDataTypeClassLoader(
+                                TypeDefinitionFactory.class.getClassLoader())
+            ))));
             this.profile = objectUnderTest.read(this.json);
         }
 

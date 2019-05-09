@@ -1,37 +1,30 @@
 package com.scottlogic.deg.generator.inputs;
 
-import java.util.Arrays;
+import com.google.inject.Inject;
+import com.scottlogic.deg.generator.DataTypeImports;
+
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class CustomDataTypeClassLoader {
-    private static final ClassLoader classLoader = CustomDataTypeClassLoader.class.getClassLoader();
+    private final ClassLoader classLoader;
 
-    public static final String customPackageImports = "datahelix.datatypes";
-    private static final String moduleExtension = ".jar";
-    private final Pattern classSpecPattern = Pattern.compile("^(.+?)(?:\\" + moduleExtension + ")?\\|(.+)$");
+    @Inject
+    public CustomDataTypeClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
-    public Class getDataTypeClass(String classSpec, Class requiredImplementation) throws ClassNotFoundException, InvalidProfileException {
-        Matcher matcher = classSpecPattern.matcher(classSpec);
-        if (!matcher.matches()){
-            throw new InvalidProfileException("Custom data type is not in the correct format, it should be in the format: <module-name-or-path>|<className>");
-        }
-
-        String moduleName = matcher.group(1);
-        String requestedClassName = matcher.group(2);
-
-        Optional<Class> foundClass = getClassesFromJarFile(requestedClassName)
+    public Class getDataTypeClass(String className, Class requiredImplementation, DataTypeImports imports) throws ClassNotFoundException {
+        Optional<Class> foundClass = getClassesFromImportedPackages(className, imports)
             .filter(requiredImplementation::isAssignableFrom)
             .findFirst();
 
-        return foundClass.orElseThrow(() -> new ClassNotFoundException("Class " + requestedClassName + " could not be found in " + moduleName + moduleExtension));
+        return foundClass.orElseThrow(() -> new ClassNotFoundException("Class " + className + " could not be found"));
     }
 
-    private static Stream<Class> getClassesFromJarFile(String requestedClassName){
-        return getConfiguredPackageImports()
+    private Stream<Class> getClassesFromImportedPackages(String requestedClassName, DataTypeImports imports){
+        return imports.getImports().stream()
             .map(packageImport -> {
                 String fullClassName = packageImport + "." + requestedClassName;
                 return getClass(fullClassName);
@@ -39,29 +32,11 @@ public class CustomDataTypeClassLoader {
             .filter(Objects::nonNull);
     }
 
-    private static Class getClass(String fullClassName) {
+    private Class getClass(String fullClassName) {
         try {
             return classLoader.loadClass(fullClassName);
         } catch (ClassNotFoundException e) {
             return null;
         }
-    }
-
-    private static Stream<String> getConfiguredPackageImports() {
-        String property = System.getenv(customPackageImports);
-        if (property == null || property.equals("")){
-            return Stream.empty();
-        }
-
-        return Arrays.stream(property
-            .split(";"));
-    }
-
-    public String getModuleName(String classSpec) {
-        Matcher matcher = classSpecPattern.matcher(classSpec);
-
-        return matcher.matches()
-            ? matcher.group(1)
-            : null;
     }
 }

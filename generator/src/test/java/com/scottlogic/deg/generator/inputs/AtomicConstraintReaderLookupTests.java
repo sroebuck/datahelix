@@ -36,7 +36,9 @@ public class AtomicConstraintReaderLookupTests {
     @BeforeAll
     public void before() {
 
-        atomicConstraintReaderLookup = new AtomicConstraintReaderLookup(new TypeDefinitionFactory());
+        atomicConstraintReaderLookup = new AtomicConstraintReaderLookup(new TypeDefinitionFactory(
+            new CustomDataTypeClassLoader(TypeDefinitionFactory.class.getClassLoader())
+        ));
 
         List<Field> fields = new ArrayList<>();
 
