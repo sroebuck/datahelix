@@ -149,6 +149,6 @@ class MostProlificConstraintOptimiserTest {
                     .where(A).isNotInSet("a1")
             ).build();
 
-        assertThat(actual, sameBeanAs(expected).ignoring("nodeMarkings.OPTIMISED.string"));
+        assertThat(actual, sameBeanAs(expected));
     }
 }
