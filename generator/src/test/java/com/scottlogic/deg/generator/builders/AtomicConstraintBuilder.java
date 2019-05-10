@@ -1,7 +1,11 @@
 package com.scottlogic.deg.generator.builders;
 
 import com.scottlogic.deg.generator.Field;
+import com.scottlogic.deg.generator.constraints.Constraint;
+import com.scottlogic.deg.generator.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.generator.constraints.atomic.IsInSetConstraint;
+import com.scottlogic.deg.generator.constraints.atomic.IsNullConstraint;
+import com.scottlogic.deg.generator.constraints.atomic.NotConstraint;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,6 +25,26 @@ public class AtomicConstraintBuilder {
         Collections.addAll(values, legalValues);
         IsInSetConstraint isInSetConstraint = new IsInSetConstraint(field, values, Collections.emptySet());
         constraintNodeBuilder.constraints.add(isInSetConstraint);
+        return constraintNodeBuilder;
+    }
+
+    public ConstraintNodeBuilder isNotInSet(Object... legalValues){
+        Set values = new HashSet();
+        Collections.addAll(values, legalValues);
+        AtomicConstraint isInSetConstraint = new IsInSetConstraint(field, values, Collections.emptySet()).negate();
+        constraintNodeBuilder.constraints.add(isInSetConstraint);
+        return constraintNodeBuilder;
+    }
+
+    public ConstraintNodeBuilder isNull(){
+        IsNullConstraint isNullConstraint = new IsNullConstraint(field, Collections.emptySet());
+        constraintNodeBuilder.constraints.add(isNullConstraint);
+        return constraintNodeBuilder;
+    }
+
+    public ConstraintNodeBuilder isNotNull(){
+        AtomicConstraint isNotNullConstraint = new IsNullConstraint(field, Collections.emptySet()).negate();
+        constraintNodeBuilder.constraints.add(isNotNullConstraint);
         return constraintNodeBuilder;
     }
 }
