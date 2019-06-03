@@ -131,7 +131,7 @@ public class TextualRestrictions implements StringRestrictions {
     }
 
     public boolean match(Object o) {
-        if (!isInstanceOf(o)) {
+        if (!isCorrectType(o)) {
             return false;
         }
 

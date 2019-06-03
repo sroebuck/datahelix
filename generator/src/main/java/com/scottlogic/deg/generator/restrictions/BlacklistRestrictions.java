@@ -19,7 +19,7 @@ public class BlacklistRestrictions implements TypedRestrictions {
     }
 
     @Override
-    public boolean isInstanceOf(Object o) {
+    public boolean isCorrectType(Object o) {
         return true;
     }
 }

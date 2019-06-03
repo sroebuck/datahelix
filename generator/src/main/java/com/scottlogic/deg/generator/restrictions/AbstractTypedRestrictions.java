@@ -7,7 +7,7 @@ abstract class AbstractTypedRestrictions implements TypedRestrictions {
     protected abstract IsOfTypeConstraint.Types getType();
 
     @Override
-    public boolean isInstanceOf(Object o) {
+    public boolean isCorrectType(Object o) {
         return getType().isInstanceOf(o);
     }
 }

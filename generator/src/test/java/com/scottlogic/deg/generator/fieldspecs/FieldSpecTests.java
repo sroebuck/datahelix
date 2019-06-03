@@ -619,7 +619,7 @@ class FieldSpecTests {
         }
 
         @Override
-        public boolean isInstanceOf(Object o) {
+        public boolean isCorrectType(Object o) {
             return IsOfTypeConstraint.Types.DATETIME.isInstanceOf(o);
         }
 

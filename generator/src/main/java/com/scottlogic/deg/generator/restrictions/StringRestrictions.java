@@ -7,7 +7,7 @@ public interface StringRestrictions extends TypedRestrictions {
     MergeResult<StringRestrictions> intersect(StringRestrictions other);
 
     @Override
-    default boolean isInstanceOf(Object o) {
+    default boolean isCorrectType(Object o) {
         return IsOfTypeConstraint.Types.STRING.isInstanceOf(o);
     }
 
@@ -15,7 +15,7 @@ public interface StringRestrictions extends TypedRestrictions {
 
     @Override
     default boolean match(Object x) {
-        return isInstanceOf(x) && match((String) x);
+        return isCorrectType(x) && match((String) x);
     }
 
     StringGenerator createGenerator();

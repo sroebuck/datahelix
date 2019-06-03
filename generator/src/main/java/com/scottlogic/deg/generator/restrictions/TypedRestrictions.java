@@ -4,5 +4,5 @@ public interface TypedRestrictions extends Restrictions {
 
     boolean match(Object o);
 
-    boolean isInstanceOf(Object o);
+    boolean isCorrectType(Object o);
 }

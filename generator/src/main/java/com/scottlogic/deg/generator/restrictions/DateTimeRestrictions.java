@@ -32,7 +32,7 @@ public class DateTimeRestrictions extends AbstractTypedRestrictions {
 
     @Override
     public boolean match(Object o) {
-        if (!isInstanceOf(o)) {
+        if (!isCorrectType(o)) {
             return false;
         }
 

@@ -136,7 +136,7 @@ public class FieldSpec {
             .map(r -> (TypedRestrictions) r)
             .collect(Collectors.toSet());
         for (TypedRestrictions restriction : toCheckForMatch) {
-            if (restriction != null && restriction.isInstanceOf(value) && !restriction.match(value)) {
+            if (restriction != null && restriction.isCorrectType(value) && !restriction.match(value)) {
                 return false;
             }
         }
