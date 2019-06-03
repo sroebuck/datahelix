@@ -21,7 +21,6 @@ class SetRestrictionsTests {
             SetRestrictions objectUnderTest = SetRestrictions.fromWhitelist(set(1, 2, 3));
 
             Assert.assertThat(objectUnderTest.getWhitelist(), equalTo(set(1, 2, 3)));
-            Assert.assertThat(objectUnderTest.getBlacklist(), equalTo(set()));
         }
     }
 
@@ -36,26 +35,7 @@ class SetRestrictionsTests {
     }
 
     @Nested
-    class fromBlacklist {
-        @Test
-        void copiesBlacklistAndUsesNullWhitelist() {
-            SetRestrictions objectUnderTest = SetRestrictions.fromBlacklist(set(1, 2, 3));
-
-            Assert.assertThat(objectUnderTest.getWhitelist(), nullValue());
-            Assert.assertThat(objectUnderTest.getBlacklist(), equalTo(set(1, 2, 3)));
-        }
-    }
-
-    @Nested
     class merge {
-        @Test
-        void removesBlacklistItemsFromWhitelist() {
-            expectMerge(
-                SetRestrictions.fromWhitelist(set(1, 2, 3)),
-                SetRestrictions.fromBlacklist(set(1)),
-
-                SetRestrictions.fromWhitelist(set(2, 3)));
-        }
 
         @Test
         void intersectsWhitelists() {
@@ -64,24 +44,6 @@ class SetRestrictionsTests {
                 SetRestrictions.fromWhitelist(set(2, 3, 4)),
 
                 SetRestrictions.fromWhitelist(set(2, 3)));
-        }
-
-        @Test
-        void unionsBlacklists() {
-            expectMerge(
-                SetRestrictions.fromBlacklist(set(1, 2, 3)),
-                SetRestrictions.fromBlacklist(set(2, 3, 4)),
-
-                SetRestrictions.fromBlacklist(set(1, 2, 3, 4)));
-        }
-
-        @Test
-        void discardsBlacklistIfWhitelistPopulated() {
-            expectMerge(
-                SetRestrictions.fromWhitelist(set(1, 2, 3)),
-                SetRestrictions.fromBlacklist(set(7, 8)),
-
-                SetRestrictions.fromWhitelist(set(1, 2, 3)));
         }
 
         @Test
@@ -113,31 +75,6 @@ class SetRestrictionsTests {
             assertEqual(
                 SetRestrictions.fromWhitelist(Collections.emptySet()),
                 SetRestrictions.fromWhitelist(Collections.emptySet()));
-        }
-
-        @Test
-        void twoEmptyBlacklistsAreEqual() {
-            assertEqual(
-                SetRestrictions.fromBlacklist(Collections.emptySet()),
-                SetRestrictions.fromBlacklist(Collections.emptySet()));
-        }
-
-        @Test
-        void twoDifferentBlacklistsAreNotEqual() {
-            assertNotEqual( // same type
-                SetRestrictions.fromBlacklist(set("Test")),
-                SetRestrictions.fromBlacklist(set("Parrot")));
-
-            assertNotEqual( // different type
-                SetRestrictions.fromBlacklist(set("Test")),
-                SetRestrictions.fromBlacklist(set(1)));
-        }
-
-        @Test
-        void twoIdenticalBlacklistsAreEqual() {
-            assertEqual(
-                SetRestrictions.fromBlacklist(set("Test")),
-                SetRestrictions.fromBlacklist(set("Test")));
         }
 
         @Test

@@ -29,6 +29,10 @@ public class FieldSpec {
         return restrictions.get(SetRestrictions.class).orElse(null);
     }
 
+    public BlacklistRestrictions getBlacklistRestrictions() {
+        return restrictions.get(BlacklistRestrictions.class).orElse(null);
+    }
+
     public NumericRestrictions getNumericRestrictions() {
         return restrictions.get(NumericRestrictions.class).orElse(null);
     }
@@ -59,6 +63,10 @@ public class FieldSpec {
 
     public FieldSpec withSetRestrictions(SetRestrictions setRestrictions, FieldSpecSource source) {
         return withConstraint(SetRestrictions.class, setRestrictions, source);
+    }
+
+    public FieldSpec withBlacklistRestrictions(BlacklistRestrictions blacklistRestrictions, FieldSpecSource source) {
+        return withConstraint(BlacklistRestrictions.class, blacklistRestrictions, source);
     }
 
     public FieldSpec withNumericRestrictions(NumericRestrictions numericRestrictions, FieldSpecSource source) {
@@ -121,6 +129,7 @@ public class FieldSpec {
         keys.add(NumericRestrictions.class);
         keys.add(DateTimeRestrictions.class);
         keys.add(StringRestrictions.class);
+        keys.add(BlacklistRestrictions.class);
 
         Set<TypedRestrictions> toCheckForMatch = restrictions.getMultiple(keys)
             .stream()

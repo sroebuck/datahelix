@@ -8,9 +8,6 @@ import com.scottlogic.deg.common.util.NumberUtils;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FieldSpecFactory {
     private final StringRestrictionsFactory stringRestrictionsFactory;
@@ -75,10 +72,14 @@ public class FieldSpecFactory {
     }
 
     private FieldSpec construct(IsInSetConstraint constraint, boolean negate, boolean violated) {
+        if (negate){
+            return FieldSpec.Empty.withBlacklistRestrictions(
+                new BlacklistRestrictions(constraint.legalValues),
+                FieldSpecSource.fromConstraint(constraint, negate, violated));
+        }
+
         return FieldSpec.Empty.withSetRestrictions(
-                negate
-                    ? SetRestrictions.fromBlacklist(constraint.legalValues)
-                    : SetRestrictions.fromWhitelist(constraint.legalValues),
+            SetRestrictions.fromWhitelist(constraint.legalValues),
             FieldSpecSource.fromConstraint(constraint, negate, violated));
     }
 
