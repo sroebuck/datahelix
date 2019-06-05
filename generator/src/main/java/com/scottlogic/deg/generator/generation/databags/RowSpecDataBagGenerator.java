@@ -2,7 +2,6 @@ package com.scottlogic.deg.generator.generation.databags;
 import com.google.inject.Inject;
 import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.fieldspecs.RowSpec;
 import com.scottlogic.deg.generator.generation.FieldSpecValueGenerator;
 import com.scottlogic.deg.generator.generation.combinationstrategies.CombinationStrategy;
 
@@ -23,18 +22,14 @@ public class RowSpecDataBagGenerator {
         this.combinationStrategy = combinationStrategy;
     }
 
-    public Stream<DataBag> createDataBags(RowSpec rowSpec) {
+    public Stream<DataBag> createDataBags(Map<Field, FieldSpec> rowSpec) {
         Stream<Stream<DataBag>> dataBagsForFields =
-            rowSpec.getFields().stream()
-                .map(field -> generateDataForField(rowSpec, field));
+            rowSpec.entrySet().stream()
+                .map(entry ->
+                    generator.generate(entry.getValue())
+                        .map(value->toDataBag(entry.getKey(), value)));
 
         return combinationStrategy.permute(dataBagsForFields);
-    }
-
-    private Stream<DataBag> generateDataForField(RowSpec rowSpec, Field field) {
-        FieldSpec fieldSpec = rowSpec.getSpecForField(field);
-
-        return generator.generate(fieldSpec).map(value->toDataBag(field, value));
     }
 
     private DataBag toDataBag(Field field, DataBagValue value) {

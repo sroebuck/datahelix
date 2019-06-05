@@ -2,7 +2,6 @@ package com.scottlogic.deg.generator.walker;
 
 import com.google.inject.Inject;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
-import com.scottlogic.deg.generator.fieldspecs.RowSpec;
 import com.scottlogic.deg.generator.generation.databags.DataBag;
 
 import java.util.Optional;

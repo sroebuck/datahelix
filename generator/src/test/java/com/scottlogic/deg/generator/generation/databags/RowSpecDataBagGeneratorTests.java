@@ -4,7 +4,6 @@ import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.profile.ProfileFields;
 import com.scottlogic.deg.generator.builders.DataBagBuilder;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.fieldspecs.RowSpec;
 import com.scottlogic.deg.generator.generation.FieldSpecValueGenerator;
 import com.scottlogic.deg.generator.generation.combinationstrategies.CombinationStrategy;
 import com.scottlogic.deg.generator.generation.combinationstrategies.ExhaustiveCombinationStrategy;
@@ -41,11 +40,10 @@ class RowSpecDataBagGeneratorTests {
         RowSpecDataBagGenerator factory =
             new RowSpecDataBagGenerator(mockGeneratorFactory, exhaustiveCombinationStrategy);
         Map<Field, FieldSpec> map = new HashMap<Field, FieldSpec>() {{ put(field, fieldSpec); }};
-        RowSpec rowSpec = new RowSpec(fields, map);
 
         when(mockGeneratorFactory.generate(any(FieldSpec.class))).thenReturn(Stream.of(dataBagValue));
 
-        List<DataBag> actual = factory.createDataBags(rowSpec)
+        List<DataBag> actual = factory.createDataBags(map)
             .collect(Collectors.toList());
 
         verify(mockGeneratorFactory, times(1)).generate(fieldSpec);
@@ -63,12 +61,11 @@ class RowSpecDataBagGeneratorTests {
             put(field, fieldSpec);
             put(field2, fieldSpec2);
             put(field3, fieldSpec3); }};
-        RowSpec rowSpec = new RowSpec(new ProfileFields(Arrays.asList(field2, field, field3)), map);
 
         when(mockGeneratorFactory.generate(any(FieldSpec.class)))
             .thenReturn(Stream.of(dataBagValue), Stream.of(dataBagValue1), Stream.of(dataBagValue2));
 
-        factory.createDataBags(rowSpec)
+        factory.createDataBags(map)
             .collect(Collectors.toList());
 
         verify(mockGeneratorFactory, times(1)).generate(fieldSpec);
@@ -81,9 +78,8 @@ class RowSpecDataBagGeneratorTests {
         RowSpecDataBagGenerator factory =
             new RowSpecDataBagGenerator(mockGeneratorFactory, mockCombinationStrategy);
         Map<Field, FieldSpec> map = new HashMap<Field, FieldSpec>() {{ put(field, fieldSpec); }};
-        RowSpec rowSpec = new RowSpec(fields, map);
 
-        factory.createDataBags(rowSpec);
+        factory.createDataBags(map);
 
         verify(mockCombinationStrategy, times(1)).permute(any());
     }

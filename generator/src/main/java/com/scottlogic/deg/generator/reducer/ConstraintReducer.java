@@ -7,7 +7,6 @@ import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecFactory;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
-import com.scottlogic.deg.generator.fieldspecs.RowSpec;
 
 import java.util.*;
 import java.util.function.Function;
@@ -28,7 +27,7 @@ public class ConstraintReducer {
         this.fieldSpecMerger = fieldSpecMerger;
     }
 
-    public Optional<RowSpec> reduceConstraintsToRowSpec(ProfileFields fields, Iterable<AtomicConstraint> constraints) {
+    public Optional<Map<Field, FieldSpec>> reduceConstraintsToRowSpec(ProfileFields fields, Iterable<AtomicConstraint> constraints) {
         final Map<Field, List<AtomicConstraint>> fieldToConstraints = StreamSupport
             .stream(constraints.spliterator(), false)
             .collect(
@@ -43,7 +42,8 @@ public class ConstraintReducer {
                     Function.identity(),
                     field ->  reduceConstraintsToFieldSpec(fieldToConstraints.get(field))));
 
-        final Optional<Map<Field, FieldSpec>> optionalMap = Optional.of(fieldToFieldSpec)
+
+        return Optional.of(fieldToFieldSpec)
             .filter(map -> map.values().stream().allMatch(Optional::isPresent))
             .map(map -> map
                 .entrySet()
@@ -53,10 +53,6 @@ public class ConstraintReducer {
                         Map.Entry::getKey,
                         entry -> entry.getValue().get())));
 
-        return optionalMap.map(
-            map -> new RowSpec(
-                fields,
-                map));
     }
 
     public Optional<FieldSpec> reduceConstraintsToFieldSpec(Iterable<AtomicConstraint> constraints) {
