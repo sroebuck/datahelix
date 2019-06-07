@@ -72,7 +72,7 @@ public class RelatedFieldTreePartitioner implements TreePartitioner {
                 )),
             unpartitionedFields
                 .map(field -> new DecisionTree(
-                    new ConstraintNode(),
+                    new ConstraintNode(Collections.emptySet(), Collections.emptySet()),
                     new ProfileFields(Collections.singletonList(field)),
                     "Tree with Unpartitioned Fields"
                 ))

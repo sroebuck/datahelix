@@ -13,17 +13,12 @@ public class DecisionNode {
         this(Collections.unmodifiableCollection(Arrays.asList(options)));
     }
 
-
     public DecisionNode(Collection<ConstraintNode> options) {
         this.options = Collections.unmodifiableCollection(options);
     }
 
     public Collection<ConstraintNode> getOptions() {
         return options;
-    }
-
-    public DecisionNode setOptions(Collection<ConstraintNode> options){
-        return new DecisionNode(options);
     }
 
     public String toString(){

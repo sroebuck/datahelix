@@ -1,5 +1,7 @@
 package com.scottlogic.deg.generator.decisiontree;
 
+import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,11 +18,12 @@ public class DecisionTreeSimplifier {
         if (node.getDecisions().isEmpty())
             return node;
 
-        ConstraintNode transformedNode = this.simplifySingleOptionDecisions(node);
+        ConstraintNode transformedNode = simplifySingleOptionDecisions(node);
         Collection<DecisionNode> simplifiedDecisions = transformedNode.getDecisions().stream()
             .map(this::simplify)
             .collect(Collectors.toList());
-        return transformedNode.setDecisions(simplifiedDecisions);
+
+        return new ConstraintNode(transformedNode.getAtomicConstraints(), simplifiedDecisions);
     }
 
     private DecisionNode simplify(DecisionNode decision) {
@@ -41,7 +44,7 @@ public class DecisionTreeSimplifier {
             }
         }
 
-        return decision.setOptions(newNodes);
+        return new DecisionNode(newNodes);
     }
 
     private ConstraintNode simplifySingleOptionDecisions(ConstraintNode node) {
@@ -52,14 +55,17 @@ public class DecisionTreeSimplifier {
                 node,
                 (parentConstraint, decisionNode) -> {
                     ConstraintNode firstOption = decisionNode.getOptions().iterator().next();
-                    if (parentConstraint.getAtomicConstraints().stream().anyMatch(firstOption.getAtomicConstraints()::contains)) {
-                        return parentConstraint.removeDecisions(Collections.singletonList(decisionNode));
-                    } else {
-                        return parentConstraint
-                            .addAtomicConstraints(firstOption.getAtomicConstraints())
-                            .addDecisions(firstOption.getDecisions())
-                            .removeDecisions(Collections.singletonList(decisionNode));
+                    ArrayList<DecisionNode> decisions = new ArrayList<>(parentConstraint.getDecisions());
+                    ArrayList<AtomicConstraint> atomicConstraints = new ArrayList<>(parentConstraint.getAtomicConstraints());
+
+                    if (!parentConstraint.getAtomicConstraints().stream().anyMatch(firstOption.getAtomicConstraints()::contains)) {
+                        decisions.addAll(firstOption.getDecisions());
+                        atomicConstraints.addAll(firstOption.getAtomicConstraints());
                     }
+
+                    decisions.remove(decisionNode);
+                    return new ConstraintNode(atomicConstraints, decisions);
+
                 },
                 (node1, node2) ->
                     new ConstraintNode(

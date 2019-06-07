@@ -2,13 +2,17 @@ package com.scottlogic.deg.generator.decisiontree;
 
 import com.google.inject.Inject;
 import com.scottlogic.deg.common.profile.Profile;
+import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.common.profile.constraints.atomic.IsStringShorterThanConstraint;
 import com.scottlogic.deg.common.util.Defaults;
 import com.scottlogic.deg.common.profile.RuleInformation;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Decorator over a DecisionTreeFactory to inject a &lt;shorterThan X&gt; constraint at the root node for every field
@@ -33,13 +37,17 @@ public class MaxStringLengthInjectingDecisionTreeFactory implements DecisionTree
 
         Set<RuleInformation> rules = Collections.singleton(createRule());
 
+        List<AtomicConstraint> collect = tree.fields
+            .stream()
+            .map(field -> new IsStringShorterThanConstraint(field, maxLength + 1, rules))
+            .map(a -> (AtomicConstraint) a)
+            .collect(Collectors.toList());
+
+        ArrayList<AtomicConstraint> atomicConstraints = new ArrayList<>(tree.rootNode.getAtomicConstraints());
+        atomicConstraints.addAll(collect);
+
         return new DecisionTree(
-            tree.rootNode.addAtomicConstraints(
-                tree.fields
-                    .stream()
-                    .map(field -> new IsStringShorterThanConstraint(field, maxLength + 1, rules))
-                    .collect(Collectors.toList())
-            ),
+            new ConstraintNode(atomicConstraints, tree.rootNode.getDecisions()),
             tree.fields,
             tree.description
         );
