@@ -27,7 +27,7 @@ public class ConstraintReducer {
         this.fieldSpecMerger = fieldSpecMerger;
     }
 
-    public Optional<Map<Field, FieldSpec>> reduceConstraintsToRowSpec(ProfileFields fields, Iterable<AtomicConstraint> constraints) {
+    public Optional<Map<Field, FieldSpec>> reduceConstraintsToRowSpec(Iterable<AtomicConstraint> constraints) {
         final Map<Field, List<AtomicConstraint>> fieldToConstraints = StreamSupport
             .stream(constraints.spliterator(), false)
             .collect(
@@ -36,7 +36,7 @@ public class ConstraintReducer {
                     Collectors.mapping(Function.identity(),
                         Collectors.toList())));
 
-        final Map<Field, Optional<FieldSpec>> fieldToFieldSpec = fields.stream()
+        final Map<Field, Optional<FieldSpec>> fieldToFieldSpec = fieldToConstraints.keySet().stream()
             .collect(
                 Collectors.toMap(
                     Function.identity(),

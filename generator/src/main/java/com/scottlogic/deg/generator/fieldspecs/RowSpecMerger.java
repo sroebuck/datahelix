@@ -4,10 +4,7 @@ import com.google.inject.Inject;
 import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.profile.ProfileFields;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -19,45 +16,21 @@ public class RowSpecMerger {
         this.fieldSpecMerger = fieldSpecMerger;
     }
 
-    public Optional<Map<Field, FieldSpec>> merge(Collection<Map<Field, FieldSpec>> rowSpecs) {
-        if (rowSpecs.isEmpty()) {
-            throw new UnsupportedOperationException();
+    public Optional<Map<Field, FieldSpec>> merge(Map<Field, FieldSpec> rowSpec1, Map<Field, FieldSpec> rowSpec2) {
+
+        Map<Field, FieldSpec> merged = new HashMap<>(rowSpec1);
+
+        for (Map.Entry<Field, FieldSpec> entry : rowSpec2.entrySet()) {
+            if (!merged.containsKey(entry.getKey())){
+                merged.put(entry.getKey(), entry.getValue());
+            }
+            Optional<FieldSpec> merge = fieldSpecMerger.merge(entry.getValue(), merged.get(entry.getKey()));
+            if (!merge.isPresent()){
+                return Optional.empty();
+            }
+            merged.put(entry.getKey(), merge.get());
         }
 
-        final ProfileFields fields = new ProfileFields(new ArrayList<>(rowSpecs.iterator().next().keySet()));
-
-        final Map<Field, Optional<FieldSpec>> fieldToFieldSpec = fields
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    Function.identity(),
-                    field -> rowSpecs
-                        .stream()
-                        .map(x -> x.get(field))
-                        .reduce(
-                            Optional.of(FieldSpec.Empty),
-                            (acc, next) -> acc.flatMap(fieldSpec -> fieldSpecMerger.merge(fieldSpec, next)),
-                            (opt1, opt2) -> opt1.flatMap(
-                                fieldSpec1 -> opt2.flatMap(
-                                    fieldSpec2 -> fieldSpecMerger.merge(fieldSpec1, fieldSpec2)
-                                )
-                            )
-                        )
-                )
-            );
-
-        return Optional.of(fieldToFieldSpec)
-            .filter(map -> map.values().stream().allMatch(Optional::isPresent))
-            .map(map -> map
-                .entrySet()
-                .stream()
-                .collect(
-                    Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> entry.getValue().get()
-                    )
-                )
-            );
-
+        return Optional.of(merged);
     }
 }

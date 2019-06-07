@@ -62,20 +62,15 @@ public class CartesianProductDecisionTreeWalker implements DecisionTreeWalker {
 
         public Stream<Map<Field, FieldSpec>> walk(ConstraintNode option, Map<Field, FieldSpec> accumulatedSpec) {
             final Optional<Map<Field, FieldSpec>> nominalRowSpec =  constraintReducer.reduceConstraintsToRowSpec(
-                    profileFields,
-                    option.getAtomicConstraints()
-            );
+                    option.getAtomicConstraints());
 
             if (!nominalRowSpec.isPresent()) {
                 return Stream.empty();
             }
 
             final Optional<Map<Field, FieldSpec>> mergedRowSpecOpt = rowSpecMerger.merge(
-                    Arrays.asList(
                             nominalRowSpec.get(),
-                            accumulatedSpec
-                    )
-            );
+                            accumulatedSpec);
 
             if (!mergedRowSpecOpt.isPresent()) {
                 return Stream.empty();
