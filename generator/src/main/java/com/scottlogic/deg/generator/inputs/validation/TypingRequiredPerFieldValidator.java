@@ -9,6 +9,9 @@ import com.scottlogic.deg.common.profile.constraints.atomic.IsInSetConstraint;
 import com.scottlogic.deg.common.profile.constraints.atomic.IsNullConstraint;
 import com.scottlogic.deg.common.profile.constraints.atomic.IsOfTypeConstraint;
 import com.scottlogic.deg.generator.decisiontree.*;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
+import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,30 +61,28 @@ public class TypingRequiredPerFieldValidator implements ProfileValidator {
         }
     }
 
-    private static boolean sufficientlyRestrictsFieldTypes(ConstraintNode node, Field fieldToCheck) {
+    private static boolean sufficientlyRestrictsFieldTypes(FSConstraintNode node, Field fieldToCheck) {
         // a constraint node is sufficient if any of its constraints, or any of its decision nodes,
         // are sufficient
         return
-            node.getAtomicConstraints().stream()
-                .anyMatch(constraint -> sufficientlyRestrictsFieldTypes(constraint, fieldToCheck))
+            sufficientlyRestrictsFieldTypes(node.getFieldSpecs().get(fieldToCheck))
             ||
             node.getDecisions().stream()
                 .anyMatch(decisionNode -> sufficientlyRestrictsFieldTypes(decisionNode, fieldToCheck));
     }
 
-    private static boolean sufficientlyRestrictsFieldTypes(DecisionNode node, Field fieldToCheck) {
+    private static boolean sufficientlyRestrictsFieldTypes(FSDecisionNode node, Field fieldToCheck) {
         // a decision node is sufficient if all of its branches are sufficient
         return node.getOptions().stream()
             .allMatch(constraintNode -> sufficientlyRestrictsFieldTypes(constraintNode, fieldToCheck));
     }
 
-    private static boolean sufficientlyRestrictsFieldTypes(AtomicConstraint constraint, Field fieldToCheck) {
-        return
-            constraint.getField().equals(fieldToCheck)
-            && (
-                constraint instanceof IsOfTypeConstraint
-                || constraint instanceof IsNullConstraint
-                || constraint instanceof IsInSetConstraint // covers the equalTo case as well as inSet
-            );
+    private static boolean sufficientlyRestrictsFieldTypes(FieldSpec fieldSpec) {
+        if (fieldSpec == null){
+            return false;
+        }
+
+        return fieldSpec.getSetRestrictions() != null
+            || fieldSpec.getTypeRestrictions() != null;
     }
 }
