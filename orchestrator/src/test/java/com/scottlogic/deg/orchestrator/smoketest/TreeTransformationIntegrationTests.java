@@ -59,7 +59,7 @@ class TreeTransformationIntegrationTests {
                 File outputFile = new File(directory.getPath() + FS + "expected.json");
                 Profile inputProfile = getProfile(inputFile.toPath());
 
-                DecisionTree beforeTree = decisionTreeGenerator.analyse(inputProfile);
+                DecisionTree beforeTree = decisionTreeGenerator.create(inputProfile);
                 
                 final List<DecisionTree> actualTrees = strategy.transformTree(beforeTree);
                 

@@ -31,9 +31,9 @@ class MaxStringLengthInjectingDecisionTreeFactoryTests {
             fields,
             "description"
         );
-        when(underlyingFactory.analyse(profile)).thenReturn(underlyingTree);
+        when(underlyingFactory.create(profile)).thenReturn(underlyingTree);
 
-        DecisionTree result = factory.analyse(profile);
+        DecisionTree result = factory.create(profile);
 
         Collection<AtomicConstraint> atomicConstraints = result.getRootNode().getAtomicConstraints();
         Assert.assertThat(atomicConstraints, hasItem(instanceOf(IsStringShorterThanConstraint.class)));

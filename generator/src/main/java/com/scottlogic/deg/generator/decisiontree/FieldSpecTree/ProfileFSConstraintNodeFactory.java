@@ -11,6 +11,7 @@ import com.scottlogic.deg.common.profile.constraints.grammatical.ConditionalCons
 import com.scottlogic.deg.common.profile.constraints.grammatical.NegatedGrammaticalConstraint;
 import com.scottlogic.deg.common.profile.constraints.grammatical.OrConstraint;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
+import com.scottlogic.deg.generator.decisiontree.DecisionTreeFactory;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.fieldspecs.RowSpecMerger;
 import com.scottlogic.deg.generator.reducer.ConstraintReducer;
@@ -18,7 +19,7 @@ import com.scottlogic.deg.generator.reducer.ConstraintReducer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProfileFSConstraintNodeFactory {
+public class ProfileFSConstraintNodeFactory implements DecisionTreeFactory {
     private final ConstraintReducer constraintReducer;
     private final RowSpecMerger rowSpecMerger;
 

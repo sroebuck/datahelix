@@ -124,7 +124,7 @@ class CartesianProductDecisionTreeWalkerTests {
 
         Profile profile = new Profile(fields, dummyRules);
 
-        final DecisionTree merged = this.dTreeGenerator.analyse(profile);
+        final DecisionTree merged = this.dTreeGenerator.create(profile);
 
         final List<DataBag> rowSpecs = dTreeWalker
             .walk(merged)

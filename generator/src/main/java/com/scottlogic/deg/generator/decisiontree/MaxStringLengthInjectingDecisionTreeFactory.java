@@ -2,17 +2,20 @@ package com.scottlogic.deg.generator.decisiontree;
 
 import com.google.inject.Inject;
 import com.scottlogic.deg.common.profile.Profile;
+import com.scottlogic.deg.common.profile.Rule;
+import com.scottlogic.deg.common.profile.constraints.Constraint;
 import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.common.profile.constraints.atomic.IsStringShorterThanConstraint;
+import com.scottlogic.deg.common.profile.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.common.util.Defaults;
 import com.scottlogic.deg.common.profile.RuleInformation;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.ProfileFSConstraintNodeFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Decorator over a DecisionTreeFactory to inject a &lt;shorterThan X&gt; constraint at the root node for every field
@@ -22,7 +25,7 @@ public class MaxStringLengthInjectingDecisionTreeFactory implements DecisionTree
     private final DecisionTreeFactory underlyingFactory;
 
     @Inject
-    public MaxStringLengthInjectingDecisionTreeFactory(ProfileDecisionTreeFactory underlyingFactory) {
+    public MaxStringLengthInjectingDecisionTreeFactory(ProfileFSConstraintNodeFactory underlyingFactory) {
         this(underlyingFactory, Defaults.MAX_STRING_LENGTH);
     }
 
@@ -32,25 +35,16 @@ public class MaxStringLengthInjectingDecisionTreeFactory implements DecisionTree
     }
 
     @Override
-    public DecisionTree analyse(Profile profile) {
-        DecisionTree tree = underlyingFactory.analyse(profile);
-
-        Set<RuleInformation> rules = Collections.singleton(createRule());
-
-        List<AtomicConstraint> collect = tree.fields
+    public DecisionTree create(Profile profile) {
+        List<Constraint> shorterThan = profile.getFields()
             .stream()
-            .map(field -> new IsStringShorterThanConstraint(field, maxLength + 1, rules))
-            .map(a -> (AtomicConstraint) a)
+            .map(field -> new IsStringShorterThanConstraint(field, maxLength + 1, Collections.emptySet()))
             .collect(Collectors.toList());
 
-        ArrayList<AtomicConstraint> atomicConstraints = new ArrayList<>(tree.rootNode.getAtomicConstraints());
-        atomicConstraints.addAll(collect);
+        profile.getRules().add(new Rule(new RuleInformation("max Lengths"), shorterThan));
 
-        return new DecisionTree(
-            new ConstraintNode(atomicConstraints, tree.rootNode.getDecisions()),
-            tree.fields,
-            tree.description
-        );
+        return underlyingFactory.create(profile);
+
     }
 
     private RuleInformation createRule() {

@@ -8,10 +8,8 @@ import com.scottlogic.deg.generator.decisiontree.DecisionTreeFactory;
 import com.scottlogic.deg.generator.decisiontree.visualisation.DecisionTreeVisualisationWriter;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecFactory;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
-import com.scottlogic.deg.generator.fieldspecs.RowSpecMerger;
 import com.scottlogic.deg.orchestrator.guice.AllConfigSource;
 import com.scottlogic.deg.profile.reader.ProfileReader;
-import com.scottlogic.deg.generator.reducer.ConstraintReducer;
 import com.scottlogic.deg.generator.validators.ErrorReporter;
 import com.scottlogic.deg.orchestrator.validator.VisualisationConfigValidator;
 import com.scottlogic.deg.profile.v0_1.ProfileSchemaValidator;
@@ -75,7 +73,7 @@ public class VisualiseExecute implements Runnable {
             return;
         }
 
-        final DecisionTree mergedTree = profileAnalyser.analyse(profile);
+        final DecisionTree mergedTree = profileAnalyser.create(profile);
 
         final String profileBaseName = configSource.getProfileFile().getName()
             .replaceFirst("\\.[^.]+$", "");

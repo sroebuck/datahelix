@@ -45,7 +45,7 @@ public class TypingRequiredPerFieldValidator implements ProfileValidator {
 
     @Override
     public void validate(Profile profile) {
-        final DecisionTree decisionTree = decisionTreeFactory.analyse(profile);
+        final DecisionTree decisionTree = decisionTreeFactory.create(profile);
 
         List<String> untypedFields = profile.getFields().stream()
             .filter(field -> !sufficientlyRestrictsFieldTypes(decisionTree.getRootNode(), field))
