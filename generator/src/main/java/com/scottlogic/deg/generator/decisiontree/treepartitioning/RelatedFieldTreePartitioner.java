@@ -4,7 +4,9 @@ import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.util.FlatMappingSpliterator;
 import com.scottlogic.deg.common.profile.ProfileFields;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
-import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
+import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 
 import java.util.*;
 import java.util.function.Function;
@@ -64,13 +66,13 @@ public class RelatedFieldTreePartitioner implements TreePartitioner {
                 .stream()
                 .sorted(Comparator.comparingInt(p -> p.id))
                 .map(partition -> new DecisionTree(
-                    new ConstraintNode(partition.getAtomicConstraints(), partition.getDecisionNodes()),
+                    new FSConstraintNode(partition.getFieldToSpec(), partition.getDecisionNodes()),
                     new ProfileFields(new ArrayList<>(partition.fields)),
                     "Partitioned Tree"
                 )),
             unrestrictedFields
                 .map(field -> new DecisionTree(
-                    new ConstraintNode(Collections.emptySet(), Collections.emptySet()),
+                    new FSConstraintNode(new HashMap<>(), Collections.emptySet()),
                     new ProfileFields(Collections.singletonList(field)),
                     "Tree with Unpartitioned Fields"
                 ))
