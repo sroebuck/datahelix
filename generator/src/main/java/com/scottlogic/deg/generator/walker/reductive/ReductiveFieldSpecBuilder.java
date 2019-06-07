@@ -1,28 +1,13 @@
 package com.scottlogic.deg.generator.walker.reductive;
 
-import com.google.inject.Inject;
 import com.scottlogic.deg.common.profile.Field;
-import com.scottlogic.deg.common.profile.constraintdetail.Nullness;
-import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
-import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraintsHelper;
-import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
-import com.scottlogic.deg.generator.reducer.ConstraintReducer;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ReductiveFieldSpecBuilder {
-
-    private final ConstraintReducer constraintReducer;
-    private final FieldSpecMerger fieldSpecMerger;
-
-    @Inject
-    public ReductiveFieldSpecBuilder(ConstraintReducer constraintReducer, FieldSpecMerger fieldSpecMerger) {
-        this.constraintReducer = constraintReducer;
-        this.fieldSpecMerger = fieldSpecMerger;
-    }
 
     /**
      * creates a FieldSpec for a field for the current state of the tree
@@ -31,50 +16,36 @@ public class ReductiveFieldSpecBuilder {
      * @param field to create the fieldSpec for
      * @return fieldSpec with mustContains restriction if not contradictory, otherwise Optional.empty()
      */
-    public Set<FieldSpec> getDecisionFieldSpecs(ConstraintNode rootNode, Field field){
-        List<AtomicConstraint> constraintsForRootNode =
-            AtomicConstraintsHelper.getConstraintsForField(rootNode.getAtomicConstraints(), field);
+    public Set<FieldSpec> getDecisionFieldSpecs(FSConstraintNode rootNode, Field field) {
+        return getSpecsForConstraint(rootNode, field, new HashSet<>());
+    }
 
-        Optional<FieldSpec> rootOptional = constraintReducer.reduceConstraintsToFieldSpec(constraintsForRootNode);
-        if (!rootOptional.isPresent()){
-            return Collections.emptySet();
+    public Set<FieldSpec> getSpecsForConstraint(FSConstraintNode rootNode, Field field, Set<FieldSpec> set){
+        FieldSpec fieldSpec = rootNode.getFieldSpecs().get(field);
+
+        if (field != null) {
+            set.add(fieldSpec);
+            if (hasSet(fieldSpec)) {
+                return set;
+            }
         }
-        FieldSpec rootFieldSpec = rootOptional.get();
-        if (hasSetOrIsNull(rootFieldSpec)){
-            return Collections.singleton(rootFieldSpec);
+
+        for (FSDecisionNode decision : rootNode.getDecisions()) {
+            set.addAll(getSpecsForDecision(decision, field, set));
         }
 
-        Set<FieldSpec> fieldSpecsForDecisions = getFieldSpecsForDecisions(field, rootNode);
-
-        if (fieldSpecsForDecisions.isEmpty()) { return Collections.singleton(rootFieldSpec); }
-
-        return mergeDecisionFieldSpecsWithRoot(
-            rootFieldSpec,
-            fieldSpecsForDecisions);
+        return set;
     }
 
-    private boolean hasSetOrIsNull(FieldSpec fieldSpec) {
-        return  (fieldSpec.getSetRestrictions() != null && fieldSpec.getSetRestrictions().getWhitelist().isPresent())
-            || (fieldSpec.getNullRestrictions() != null && fieldSpec.getNullRestrictions().nullness == Nullness.MUST_BE_NULL);
+    private Set<FieldSpec> getSpecsForDecision(FSDecisionNode decision, Field field, Set<FieldSpec> set) {
+        for (FSConstraintNode constraintNode : decision.getOptions()) {
+            set.addAll(getSpecsForConstraint(constraintNode, field, set));
+        }
+        return set;
     }
 
-    private Set<FieldSpec> getFieldSpecsForDecisions(Field field, ConstraintNode rootNode) {
-        FieldSpecExtractionVisitor visitor = new FieldSpecExtractionVisitor(field, constraintReducer);
-
-        //ignore the root node, pass the visitor into any option of a decision below the root node.
-        rootNode.getDecisions()
-            .forEach(d -> d.getOptions()
-                .forEach(o -> o.accept(visitor)));
-
-        return visitor.fieldSpecs;
-    }
-
-    private Set<FieldSpec> mergeDecisionFieldSpecsWithRoot(FieldSpec rootFieldSpec, Set<FieldSpec> decisionFieldSpecs) {
-        return decisionFieldSpecs.stream()
-            .map(decisionSpec -> fieldSpecMerger.merge(rootFieldSpec, decisionSpec))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toSet());
+    private boolean hasSet(FieldSpec fieldSpec) {
+        return fieldSpec != null && fieldSpec.getSetRestrictions() != null && fieldSpec.getSetRestrictions().getWhitelist().isPresent();
     }
 
 }

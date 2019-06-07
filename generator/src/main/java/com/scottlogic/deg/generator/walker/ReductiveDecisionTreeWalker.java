@@ -5,6 +5,7 @@ import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.util.FlatMappingSpliterator;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.generation.FieldSpecValueGenerator;
 import com.scottlogic.deg.generator.generation.ReductiveDataGeneratorMonitor;
@@ -51,7 +52,7 @@ public class ReductiveDecisionTreeWalker implements DecisionTreeWalker {
         return fixNextField(tree.getRootNode(), initialState, fixFieldStrategy);
     }
 
-    private Stream<DataBag> fixNextField(ConstraintNode tree, ReductiveState reductiveState, FixFieldStrategy fixFieldStrategy) {
+    private Stream<DataBag> fixNextField(FSConstraintNode tree, ReductiveState reductiveState, FixFieldStrategy fixFieldStrategy) {
         Field fieldToFix = fixFieldStrategy.getNextFieldToFix(reductiveState);
         Set<FieldSpec> nextFieldSpecs = reductiveFieldSpecBuilder.getDecisionFieldSpecs(tree, fieldToFix);
 
@@ -68,13 +69,13 @@ public class ReductiveDecisionTreeWalker implements DecisionTreeWalker {
     }
 
     private Stream<DataBag> pruneTreeForNextValue(
-        ConstraintNode tree,
+        FSConstraintNode tree,
         ReductiveState reductiveState,
         FixFieldStrategy fixFieldStrategy,
         Field field,
         DataBagValue fieldValue){
 
-        Merged<ConstraintNode> reducedTree = treePruner.pruneConstraintNode(tree, field, fieldValue);
+        Merged<FSConstraintNode> reducedTree = treePruner.pruneConstraintNode(tree, field, fieldValue);
 
         if (reducedTree.isContradictory()){
             //yielding an empty stream will cause back-tracking
@@ -95,9 +96,9 @@ public class ReductiveDecisionTreeWalker implements DecisionTreeWalker {
         return fixNextField(reducedTree.get(), newReductiveState, fixFieldStrategy);
     }
 
-    private void visualise(ConstraintNode rootNode, ReductiveState reductiveState){
+    private void visualise(FSConstraintNode rootNode, ReductiveState reductiveState){
         try {
-            iterationVisualiser.visualise(rootNode, reductiveState);
+            iterationVisualiser.visualise(null, reductiveState);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

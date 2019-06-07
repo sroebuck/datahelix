@@ -2,26 +2,26 @@ package com.scottlogic.deg.generator.walker.reductive.fieldselectionstrategy;
 
 import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
 import com.scottlogic.deg.generator.walker.reductive.ReductiveState;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FieldAppearanceFixingStrategy implements FixFieldStrategy {
     final List<Field> fieldsInFixingOrder;
+    Map<Field, Integer> fieldAppearances = new HashMap<>();
 
-    public FieldAppearanceFixingStrategy(ConstraintNode rootNode) {
+    public FieldAppearanceFixingStrategy(FSConstraintNode rootNode) {
         FieldAppearanceAnalyser fieldAppearanceAnalyser = new FieldAppearanceAnalyser();
-        rootNode.accept(fieldAppearanceAnalyser);
+        fieldAppearanceAnalyser.visit(rootNode);
 
         fieldsInFixingOrder = fieldAppearanceAnalyser.fieldAppearances.entrySet().stream()
             .sorted(highestToLowest())
             .map(Map.Entry::getKey)
             .collect(Collectors.toList());
     }
+
     @Override
     public Field getNextFieldToFix(ReductiveState reductiveState) {
         return fieldsInFixingOrder.stream()
@@ -33,5 +33,4 @@ public class FieldAppearanceFixingStrategy implements FixFieldStrategy {
     private Comparator<Map.Entry<Field, Integer>> highestToLowest() {
         return Collections.reverseOrder(Map.Entry.comparingByValue());
     }
-
 }
