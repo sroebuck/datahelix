@@ -1,60 +1,61 @@
 package com.scottlogic.deg.generator.walker.reductive;
 
 import com.scottlogic.deg.common.profile.Field;
-import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
-import com.scottlogic.deg.generator.decisiontree.DecisionNode;
-import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
+import com.scottlogic.deg.generator.fieldspecs.FieldSpecMerger;
+import com.scottlogic.deg.generator.fieldspecs.RowSpecMerger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 class PrunedConstraintState {
 
-    private final Collection<AtomicConstraint> newAtomicConstraints;
-    private final Collection<DecisionNode> newDecisionNodes = new ArrayList<>();
-    private final Collection<AtomicConstraint> pulledUpAtomicConstraints = new ArrayList<>();
+    private final Collection<FSDecisionNode> newDecisionNodes = new ArrayList<>();
+    private final RowSpecMerger rowSpecMerger;
 
-    PrunedConstraintState(ConstraintNode constraintNode){
-        newAtomicConstraints = new ArrayList<>(constraintNode.getAtomicConstraints());
+    public Map<Field, FieldSpec> fieldSpecs;
+    private boolean hasPulledUpDecisions;
+
+    PrunedConstraintState(Map<Field, FieldSpec> fieldSpecs, RowSpecMerger rowSpecMerger){
+        this.fieldSpecs = fieldSpecs;
+        this.rowSpecMerger = rowSpecMerger;
     }
 
-    void addPrunedDecision(DecisionNode prunedDecisionNode) {
-        if (!onlyOneOption(prunedDecisionNode)) {
-            newDecisionNodes.add(prunedDecisionNode);
-            return;
+    boolean addPrunedDecision(FSDecisionNode prunedDecisionNode) {
+        if (onlyOneOption(prunedDecisionNode)) {
+            hasPulledUpDecisions = true;
+            FSConstraintNode remainingConstraintNode = getOnlyRemainingOption(prunedDecisionNode);
+
+            Optional<Map<Field, FieldSpec>> merged = rowSpecMerger.merge(remainingConstraintNode.getFieldSpecs(), fieldSpecs);
+            if (!merged.isPresent()){
+                return false;
+            }
+            fieldSpecs = merged.get();
+
+            newDecisionNodes.addAll(remainingConstraintNode.getDecisions());
         }
-        
-        ConstraintNode remainingConstraintNode = getOnlyRemainingOption(prunedDecisionNode);
-        pulledUpAtomicConstraints.addAll(remainingConstraintNode.getAtomicConstraints());
-        newAtomicConstraints.addAll(remainingConstraintNode.getAtomicConstraints());
-        newDecisionNodes.addAll(remainingConstraintNode.getDecisions());
+        newDecisionNodes.add(prunedDecisionNode);
+        return true;
     }
 
-    boolean hasPulledUpDecisions() {
-        return !pulledUpAtomicConstraints.isEmpty();
-    }
-
-    ConstraintNode getNewConstraintNode() {
-        return new ConstraintNode(newAtomicConstraints, newDecisionNodes);
-    }
-
-    Map<Field, FieldSpec> addPulledUpFieldsToMap(Map<Field, FieldSpec> previousFieldSpecs) {
-        Map<Field, FieldSpec> mapWithPulledUpFields = new HashMap<>(previousFieldSpecs);
-        for (AtomicConstraint c : pulledUpAtomicConstraints) {
-            mapWithPulledUpFields.putIfAbsent(c.getField(), FieldSpec.Empty);
-        }
-        return mapWithPulledUpFields;
-    }
-
-    private boolean onlyOneOption(DecisionNode prunedDecisionNode) {
+    private boolean onlyOneOption(FSDecisionNode prunedDecisionNode) {
         return prunedDecisionNode.getOptions().size() == 1;
     }
 
-    private ConstraintNode getOnlyRemainingOption(DecisionNode prunedDecisionNode) {
+    private FSConstraintNode getOnlyRemainingOption(FSDecisionNode prunedDecisionNode) {
         return prunedDecisionNode.getOptions().iterator().next();
+    }
+
+    public boolean hasPulledUpDecisions() {
+        return hasPulledUpDecisions;
+    }
+
+    public FSConstraintNode getNewFSConstraintNode() {
+        return new FSConstraintNode(fieldSpecs, newDecisionNodes);
     }
 }
