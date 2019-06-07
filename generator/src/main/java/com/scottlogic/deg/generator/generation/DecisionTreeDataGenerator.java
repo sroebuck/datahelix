@@ -6,6 +6,8 @@ import com.scottlogic.deg.common.profile.Profile;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
 import com.scottlogic.deg.generator.decisiontree.DecisionTreeFactory;
 import com.scottlogic.deg.generator.decisiontree.DecisionTreeOptimiser;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.ProfileFSConstraintNodeFactory;
 import com.scottlogic.deg.generator.decisiontree.treepartitioning.TreePartitioner;
 import com.scottlogic.deg.generator.generation.combinationstrategies.CombinationStrategy;
 import com.scottlogic.deg.generator.generation.databags.*;
@@ -17,7 +19,7 @@ import java.util.stream.Stream;
 public class DecisionTreeDataGenerator implements DataGenerator {
     private final DecisionTreeWalker treeWalker;
     private final DataGeneratorMonitor monitor;
-    private final DecisionTreeFactory decisionTreeGenerator;
+    private final ProfileFSConstraintNodeFactory nodeFactory;
     private final TreePartitioner treePartitioner;
     private final DecisionTreeOptimiser treeOptimiser;
     private final CombinationStrategy partitionCombiner;
@@ -25,14 +27,14 @@ public class DecisionTreeDataGenerator implements DataGenerator {
 
     @Inject
     public DecisionTreeDataGenerator(
-        DecisionTreeFactory decisionTreeGenerator,
+        ProfileFSConstraintNodeFactory nodeFactory,
         DecisionTreeWalker treeWalker,
         TreePartitioner treePartitioner,
         DecisionTreeOptimiser optimiser,
         DataGeneratorMonitor monitor,
         CombinationStrategy combinationStrategy,
         @Named("config:maxRows") long maxRows) {
-        this.decisionTreeGenerator = decisionTreeGenerator;
+        this.nodeFactory = nodeFactory;
         this.treePartitioner = treePartitioner;
         this.treeOptimiser = optimiser;
         this.treeWalker = treeWalker;
@@ -44,7 +46,7 @@ public class DecisionTreeDataGenerator implements DataGenerator {
     @Override
     public Stream<GeneratedObject> generateData(Profile profile) {
         monitor.generationStarting();
-        DecisionTree decisionTree = decisionTreeGenerator.analyse(profile);
+        DecisionTree decisionTree = nodeFactory.create(profile);
 
         Stream<Stream<DataBag>> partitionedDataBags = treePartitioner
             .splitTreeIntoPartitions(decisionTree)

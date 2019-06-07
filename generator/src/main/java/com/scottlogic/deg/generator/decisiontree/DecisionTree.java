@@ -1,19 +1,20 @@
 package com.scottlogic.deg.generator.decisiontree;
 
 import com.scottlogic.deg.common.profile.ProfileFields;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
 
 public class DecisionTree {
-    public final ConstraintNode rootNode;
+    public final FSConstraintNode rootNode;
     public final ProfileFields fields;
     public final String description;
 
-    public DecisionTree(ConstraintNode rootNode, ProfileFields fields, String description) {
+    public DecisionTree(FSConstraintNode rootNode, ProfileFields fields, String description) {
         this.rootNode = rootNode;
         this.fields = fields;
         this.description = description;
     }
 
-    public ConstraintNode getRootNode() {
+    public FSConstraintNode getRootNode() {
         return rootNode;
     }
 

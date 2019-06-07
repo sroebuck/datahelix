@@ -9,7 +9,7 @@ public class FSDecisionNode {
         this.options = options;
     }
 
-    Collection<FSConstraintNode> getOptions(){
+    public Collection<FSConstraintNode> getOptions(){
         return options;
     }
 }

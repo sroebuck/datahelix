@@ -10,12 +10,12 @@ import com.scottlogic.deg.common.profile.constraints.grammatical.AndConstraint;
 import com.scottlogic.deg.common.profile.constraints.grammatical.ConditionalConstraint;
 import com.scottlogic.deg.common.profile.constraints.grammatical.NegatedGrammaticalConstraint;
 import com.scottlogic.deg.common.profile.constraints.grammatical.OrConstraint;
+import com.scottlogic.deg.generator.decisiontree.DecisionTree;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.fieldspecs.RowSpecMerger;
 import com.scottlogic.deg.generator.reducer.ConstraintReducer;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ProfileFSConstraintNodeFactory {
@@ -28,12 +28,15 @@ public class ProfileFSConstraintNodeFactory {
         this.rowSpecMerger = rowSpecMerger;
     }
 
-    public FSConstraintNode create(Profile profile){
+    public DecisionTree create(Profile profile){
         Set<Constraint> constraints = profile.getRules().stream()
             .flatMap(rule -> rule.constraints.stream())
             .collect(Collectors.toSet());
 
-        return convertAndConstraint(new AndConstraint(constraints), new HashMap<>());
+        return new DecisionTree(
+            convertAndConstraint(new AndConstraint(constraints), new HashMap<>()),
+            profile.getFields(),
+            profile.getDescription());
     }
 
     private FSConstraintNode convertAndConstraint(AndConstraint andConstraint, Map<Field, FieldSpec> parentFieldSpecs) {

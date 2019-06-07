@@ -4,6 +4,9 @@ import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.util.FlatMappingSpliterator;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
@@ -31,31 +34,32 @@ class ConstraintToFieldMapper {
         }
     }
 
-    private Stream<ConstraintToFields> mapConstraintToFields(ConstraintNode node) {
-        return Stream.concat(
-            node.getAtomicConstraints()
-                .stream()
-                .map(constraint -> new ConstraintToFields(new RootLevelConstraint(constraint), constraint.getField())),
-            node.getDecisions()
-                .stream()
-                .map(decision -> new ConstraintToFields(
-                    new RootLevelConstraint(decision),
-                    FlatMappingSpliterator.flatMap(
-                        FlatMappingSpliterator.flatMap(decision
-                            .getOptions()
-                            .stream(),
-                            this::mapConstraintToFields),
-                        objectField -> objectField.fields.stream())
-                        .collect(Collectors.toSet()))
-                ));
-    }
-
     Map<RootLevelConstraint, Set<Field>> mapConstraintsToFields(DecisionTree decisionTree){
         return mapConstraintToFields(decisionTree.getRootNode())
             .collect(
                 Collectors.toMap(
                     map -> map.constraint,
                     map -> map.fields
+                ));
+    }
+
+    private Set<Field> getFieldsForDecision(FSDecisionNode decision) {
+        return decision.getOptions().stream()
+            .flatMap(this::mapConstraintToFields)
+            .flatMap(objectField -> objectField.fields.stream())
+            .collect(Collectors.toSet());
+    }
+
+    private Stream<ConstraintToFields> mapConstraintToFields(FSConstraintNode node) {
+        return Stream.concat(
+            node.getFieldSpecs().entrySet()
+                .stream()
+                .map(fieldToSpec -> new ConstraintToFields(new RootLevelConstraint(fieldToSpec), fieldToSpec.getKey())),
+            node.getDecisions()
+                .stream()
+                .map(decision -> new ConstraintToFields(
+                    new RootLevelConstraint(decision),
+                    getFieldsForDecision(decision))
                 ));
     }
 }

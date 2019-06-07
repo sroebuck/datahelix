@@ -6,8 +6,13 @@ import com.scottlogic.deg.common.profile.constraints.atomic.IsInSetConstraint;
 import com.scottlogic.deg.common.profile.RuleInformation;
 import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.generator.decisiontree.*;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
 import com.scottlogic.deg.generator.decisiontree.testutils.*;
 import com.scottlogic.deg.generator.decisiontree.testutils.EqualityComparer;
+import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
+import com.scottlogic.deg.generator.fieldspecs.FieldSpecSource;
+import com.scottlogic.deg.generator.restrictions.set.SetRestrictions;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +21,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.shazam.shazamcrest.MatcherAssert.assertThat;
+import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
+
+
 class RelatedFieldTreePartitionerTests {
-    private static final ConstraintNode emptyConstraint
-        = new ConstraintNode(Collections.emptySet(), Collections.emptySet());
+    private static final FSConstraintNode emptyConstraint
+        = new FSConstraintNode(new HashMap<>(), Collections.emptySet());
 
     @Test
     void shouldSplitTreeIntoPartitions() {
@@ -202,19 +211,21 @@ class RelatedFieldTreePartitionerTests {
             tree(fields("C"), emptyConstraint));
     }
 
-    private ConstraintNode constraint(String... fieldNames) {
-        return constraint(fieldNames, new DecisionNode[0]);
+    private FSConstraintNode constraint(String... fieldNames) {
+        return constraint(fieldNames, new FSDecisionNode[0]);
     }
 
-    private ConstraintNode constraint(DecisionNode... decisions) {
+    private FSConstraintNode constraint(FSDecisionNode... decisions) {
         return constraint(new String[0], decisions);
     }
 
-    private ConstraintNode constraint(String[] fieldNames, DecisionNode... decisions) {
-        return new ConstraintNode(
-            Stream.of(fieldNames)
-                .map(this::atomicConstraint)
-                .collect(Collectors.toList()),
+    private FSConstraintNode constraint(String[] fieldNames, FSDecisionNode... decisions) {
+        return new FSConstraintNode(
+            Stream.of(fieldNames).collect(
+                Collectors.toMap(
+                    Field::new,
+                    field->FieldSpec.Empty.withSetRestrictions(SetRestrictions.fromWhitelist(Collections.singleton(field)), FieldSpecSource.Empty)
+                )),
             Arrays.asList(decisions));
     }
 
@@ -229,8 +240,8 @@ class RelatedFieldTreePartitionerTests {
         return constraint;
     }
 
-    private DecisionNode decision(ConstraintNode... constraints) {
-        return new DecisionNode(constraints);
+    private FSDecisionNode decision(FSConstraintNode... constraints) {
+        return new FSDecisionNode(Arrays.asList(constraints));
     }
 
     private ProfileFields fields(String... fieldNames) {
@@ -240,7 +251,7 @@ class RelatedFieldTreePartitionerTests {
                 .collect(Collectors.toList()));
     }
 
-    private DecisionTree tree(ProfileFields fields, ConstraintNode rootNode) {
+    private DecisionTree tree(ProfileFields fields, FSConstraintNode rootNode) {
         return new DecisionTree(rootNode, fields, "Decision Tree");
     }
 
@@ -248,50 +259,21 @@ class RelatedFieldTreePartitionerTests {
     void beforeEach() {
         constraints = new HashMap<>();
         decisionTree = null;
-        partitionedTrees = null;
     }
 
     private Map<String, AtomicConstraint> constraints;
-    private List<DecisionTree> partitionedTrees;
     private DecisionTree decisionTree;
 
     private void givenTree(DecisionTree decisionTree) {
         this.decisionTree = decisionTree;
     }
 
-    private void partitionTrees() {
-        partitionedTrees = new RelatedFieldTreePartitioner()
+    private void expectTrees(DecisionTree... decisionTrees) {
+        List<DecisionTree> partitionedTrees = new RelatedFieldTreePartitioner()
             .splitTreeIntoPartitions(decisionTree)
             .collect(Collectors.toList());
-    }
-    private void expectTrees(DecisionTree... decisionTrees) {
-        if (partitionedTrees == null)
-            partitionTrees();
 
-        TreeComparisonReporter reporter = new TreeComparisonReporter();
-        TreeComparisonContext context = new TreeComparisonContext();
-        AnyOrderCollectionEqualityComparer defaultAnyOrderCollectionEqualityComparer = new AnyOrderCollectionEqualityComparer();
-        EqualityComparer anyOrderComparer = new AnyOrderCollectionEqualityComparer(
-            new TreeComparer(
-                new ConstraintNodeComparer(
-                    context,
-                    defaultAnyOrderCollectionEqualityComparer,
-                    new DecisionComparer(),
-                    defaultAnyOrderCollectionEqualityComparer,
-                    new AnyOrderCollectionEqualityComparer(new DecisionComparer())),
-                new ProfileFieldComparer(context, defaultAnyOrderCollectionEqualityComparer, defaultAnyOrderCollectionEqualityComparer),
-                context
-            )
-        );
-
-        boolean match = anyOrderComparer.equals(
-            partitionedTrees,
-            Arrays.asList(decisionTrees));
-
-        if (!match) {
-            reporter.reportMessages(context);
-            Assert.fail("Trees do not match");
-        }
+        assertThat(partitionedTrees, sameBeanAs(Arrays.asList(decisionTrees)));
     }
 
     private static Set<RuleInformation> rules(){

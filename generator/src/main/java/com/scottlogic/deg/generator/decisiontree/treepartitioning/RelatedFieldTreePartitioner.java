@@ -3,8 +3,6 @@ package com.scottlogic.deg.generator.decisiontree.treepartitioning;
 import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.util.FlatMappingSpliterator;
 import com.scottlogic.deg.common.profile.ProfileFields;
-import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
-import com.scottlogic.deg.generator.decisiontree.DecisionNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 
@@ -55,7 +53,7 @@ public class RelatedFieldTreePartitioner implements TreePartitioner {
         }
 
         // any leftover fields must be grouped into their own partition
-        final Stream<Field> unpartitionedFields = decisionTree
+        final Stream<Field> unrestrictedFields = decisionTree
             .getFields()
             .stream()
             .filter(field -> Objects.isNull(partitions.getPartitionId(field)));
@@ -70,7 +68,7 @@ public class RelatedFieldTreePartitioner implements TreePartitioner {
                     new ProfileFields(new ArrayList<>(partition.fields)),
                     "Partitioned Tree"
                 )),
-            unpartitionedFields
+            unrestrictedFields
                 .map(field -> new DecisionTree(
                     new ConstraintNode(Collections.emptySet(), Collections.emptySet()),
                     new ProfileFields(Collections.singletonList(field)),
@@ -90,15 +88,15 @@ public class RelatedFieldTreePartitioner implements TreePartitioner {
             this.constraints = constraints;
         }
 
-        Set<AtomicConstraint> getAtomicConstraints() {
+        Map<Field, FieldSpec> getFieldToSpec() {
             return constraints
                 .stream()
-                .map(RootLevelConstraint::getAtomicConstraint)
+                .map(RootLevelConstraint::getFieldToSpec)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
 
-        Set<DecisionNode> getDecisionNodes() {
+        Set<FSDecisionNode> getDecisionNodes() {
             return constraints
                 .stream()
                 .map(RootLevelConstraint::getDecisionNode)
