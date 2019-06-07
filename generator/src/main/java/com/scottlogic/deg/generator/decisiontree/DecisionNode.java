@@ -6,21 +6,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DecisionNode implements Node {
+public class DecisionNode {
     private final Collection<ConstraintNode> options;
-    private final Set<NodeMarking> nodeMarkings;
 
     public DecisionNode(ConstraintNode... options) {
         this(Collections.unmodifiableCollection(Arrays.asList(options)));
     }
 
-    public DecisionNode(Collection<ConstraintNode> options) {
-        this(options, Collections.emptySet());
-    }
 
-    public DecisionNode(Collection<ConstraintNode> options, Set<NodeMarking> nodeMarkings) {
+    public DecisionNode(Collection<ConstraintNode> options) {
         this.options = Collections.unmodifiableCollection(options);
-        this.nodeMarkings = Collections.unmodifiableSet(nodeMarkings);
     }
 
     public Collection<ConstraintNode> getOptions() {
@@ -29,18 +24,6 @@ public class DecisionNode implements Node {
 
     public DecisionNode setOptions(Collection<ConstraintNode> options){
         return new DecisionNode(options);
-    }
-
-    public boolean hasMarking(NodeMarking detail) {
-        return this.nodeMarkings.contains(detail);
-    }
-
-    public DecisionNode markNode(NodeMarking marking) {
-        Set<NodeMarking> newMarkings = FlatMappingSpliterator.flatMap(
-            Stream.of(Collections.singleton(marking), this.nodeMarkings),
-            Collection::stream)
-            .collect(Collectors.toSet());
-        return new DecisionNode(this.options, newMarkings);
     }
 
     public String toString(){
@@ -68,8 +51,7 @@ public class DecisionNode implements Node {
         Stream<ConstraintNode> options = getOptions().stream().map(c->c.accept(visitor));
         return visitor.visit(
             new DecisionNode(
-                options.collect(Collectors.toSet()),
-                nodeMarkings
+                options.collect(Collectors.toSet())
             )
         );
     }

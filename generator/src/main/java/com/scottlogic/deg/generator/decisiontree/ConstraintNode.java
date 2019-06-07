@@ -1,7 +1,6 @@
 package com.scottlogic.deg.generator.decisiontree;
 
 import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
-import com.scottlogic.deg.common.util.FlatMappingSpliterator;
 import com.scottlogic.deg.generator.fieldspecs.RowSpec;
 
 import java.util.*;
@@ -10,43 +9,30 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ConstraintNode implements Node {
+public class ConstraintNode {
 
-    public static final ConstraintNode empty = new ConstraintNode(Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
+    public static final ConstraintNode empty = new ConstraintNode(Collections.emptySet(), Collections.emptySet());
 
     private final Collection<AtomicConstraint> atomicConstraints;
     private final Collection<DecisionNode> decisions;
-    private final Set<NodeMarking> nodeMarkings;
 
     public ConstraintNode(Collection<AtomicConstraint> atomicConstraints, Collection<DecisionNode> decisions) {
-        this(atomicConstraints, decisions, Collections.emptySet());
-    }
-
-    public ConstraintNode(Collection<AtomicConstraint> atomicConstraints, Collection<DecisionNode> decisions, Set<NodeMarking> nodeMarkings) {
         this.atomicConstraints = Collections.unmodifiableCollection(atomicConstraints);
         this.decisions = Collections.unmodifiableCollection(decisions);
-        this.nodeMarkings = Collections.unmodifiableSet(nodeMarkings);
     }
 
     public ConstraintNode(AtomicConstraint... atomicConstraints) {
         this(
             Arrays.asList(atomicConstraints),
-            Collections.emptySet(),
-            Collections.emptySet());
+            Collections.emptySet()
+        );
     }
 
     public ConstraintNode(AtomicConstraint singleAtomicConstraint) {
         this(
             Collections.singletonList(singleAtomicConstraint),
-            Collections.emptySet(),
-            Collections.emptySet());
-    }
-
-    ConstraintNode(DecisionNode... decisionNodes) {
-        this(
-            Collections.emptyList(),
-            Arrays.asList(decisionNodes),
-            Collections.emptySet());
+            Collections.emptySet()
+        );
     }
 
     public Collection<AtomicConstraint> getAtomicConstraints() {
@@ -95,8 +81,7 @@ public class ConstraintNode implements Node {
             this.atomicConstraints,
             decisions.stream()
                 .filter(existingDecision -> !shouldRemove.apply(existingDecision))
-                .collect(Collectors.toList()),
-            this.nodeMarkings
+                .collect(Collectors.toList())
         );
     }
 
@@ -106,8 +91,7 @@ public class ConstraintNode implements Node {
                 .stream()
                 .filter(c -> !c.equals(excludeAtomicConstraint))
                 .collect(Collectors.toList()),
-            decisions,
-            this.nodeMarkings);
+            decisions);
     }
 
     public boolean atomicConstraintExists(AtomicConstraint constraint) {
@@ -123,9 +107,7 @@ public class ConstraintNode implements Node {
                     this.atomicConstraints.stream(),
                     constraints.stream())
                 .collect(Collectors.toList()),
-            this.decisions,
-            this.nodeMarkings
-        );
+            this.decisions);
     }
 
     public ConstraintNode addDecisions(Collection<DecisionNode> decisions) {
@@ -135,25 +117,12 @@ public class ConstraintNode implements Node {
                 .concat(
                     this.decisions.stream(),
                     decisions.stream())
-                .collect(Collectors.toList()),
-            this.nodeMarkings
+                .collect(Collectors.toList())
         );
     }
 
     public ConstraintNode setDecisions(Collection<DecisionNode> decisions) {
-        return new ConstraintNode(this.atomicConstraints, decisions, this.nodeMarkings);
-    }
-
-    public boolean hasMarking(NodeMarking detail) {
-        return this.nodeMarkings.contains(detail);
-    }
-
-    public ConstraintNode markNode(NodeMarking marking) {
-        Set<NodeMarking> newMarkings = FlatMappingSpliterator.flatMap(
-            Stream.of(Collections.singleton(marking), this.nodeMarkings),
-            Collection::stream)
-            .collect(Collectors.toSet());
-        return new ConstraintNode(this.atomicConstraints, this.decisions, newMarkings);
+        return new ConstraintNode(this.atomicConstraints, decisions);
     }
 
     public boolean equals(Object o) {
@@ -174,30 +143,22 @@ public class ConstraintNode implements Node {
         return visitor.visit(
             new ConstraintNode(
                 new ArrayList<>(atomicConstraints),
-                decisionNodeStream.collect(Collectors.toSet()),
-                nodeMarkings));
+                decisionNodeStream.collect(Collectors.toSet())));
     }
 
     public static ConstraintNode merge(Iterator<ConstraintNode> constraintNodeIterator) {
         Collection<AtomicConstraint> atomicConstraints = new ArrayList<>();
         Collection<DecisionNode> decisions = new ArrayList<>();
-        Set<NodeMarking> markings = new HashSet<>();
 
         while (constraintNodeIterator.hasNext()) {
             ConstraintNode constraintNode = constraintNodeIterator.next();
 
             atomicConstraints.addAll(constraintNode.getAtomicConstraints());
             decisions.addAll(constraintNode.getDecisions());
-            markings.addAll(constraintNode.getNodeMarkings());
         }
 
-        return new ConstraintNode(atomicConstraints, decisions, markings);
+        return new ConstraintNode(atomicConstraints, decisions);
     }
 
-    public Set<NodeMarking> getNodeMarkings(){
-        return Arrays.stream(NodeMarking.values())
-            .filter(this::hasMarking)
-            .collect(Collectors.toSet());
-    }
 }
 

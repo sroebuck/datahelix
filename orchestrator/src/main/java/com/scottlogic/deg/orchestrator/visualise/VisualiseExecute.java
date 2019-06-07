@@ -13,7 +13,6 @@ import com.scottlogic.deg.orchestrator.guice.AllConfigSource;
 import com.scottlogic.deg.profile.reader.ProfileReader;
 import com.scottlogic.deg.generator.reducer.ConstraintReducer;
 import com.scottlogic.deg.generator.validators.ErrorReporter;
-import com.scottlogic.deg.generator.validators.StaticContradictionDecisionTreeValidator;
 import com.scottlogic.deg.orchestrator.validator.VisualisationConfigValidator;
 import com.scottlogic.deg.profile.v0_1.ProfileSchemaValidator;
 
@@ -81,14 +80,6 @@ public class VisualiseExecute implements Runnable {
         final String profileBaseName = configSource.getProfileFile().getName()
             .replaceFirst("\\.[^.]+$", "");
 
-        StaticContradictionDecisionTreeValidator treeValidator =
-            new StaticContradictionDecisionTreeValidator(
-                profile.getFields(),
-                new RowSpecMerger(fieldSpecMerger),
-                new ConstraintReducer(fieldSpecFactory, fieldSpecMerger));
-
-        DecisionTree validatedTree = treeValidator.markContradictions(mergedTree);
-
         final String title =
             Stream.of(profile.getDescription(), profileBaseName)
             .filter(Objects::nonNull)
@@ -97,7 +88,7 @@ public class VisualiseExecute implements Runnable {
 
         try {
             writeTreeTo(
-                validatedTree,
+                mergedTree,
                 title,
                 configSource.getOutputPath());
         } catch (IOException e) {

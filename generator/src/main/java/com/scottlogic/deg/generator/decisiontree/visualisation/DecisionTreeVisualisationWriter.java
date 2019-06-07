@@ -175,7 +175,7 @@ class NodeVisualiser {
     private final int MAX_LENGTH_FOR_LABEL = 16816;
 
     String renderNode(String id, DecisionNode node){
-        return "  " + id + determineNodeColour(node) + "[bgcolor=\"white\"][label=\"\"][shape=invtriangle]";
+        return "  " + id + determineNodeColour() + "[bgcolor=\"white\"][label=\"\"][shape=invtriangle]";
     }
 
     String renderNode(String id, ConstraintNode node){
@@ -190,22 +190,10 @@ class NodeVisualiser {
             label = label.substring(0, MAX_LENGTH_FOR_LABEL - suffix.length() - 1) + suffix;
         }
 
-        return "  " + id + determineNodeColour(node) + "[bgcolor=\"white\"][fontsize=\"12\"][label=\"" + label + "\"][shape=box]";
+        return "  " + id + determineNodeColour() + "[bgcolor=\"white\"][fontsize=\"12\"][label=\"" + label + "\"][shape=box]";
     }
 
-    private String determineNodeColour(Node node){
-        if (node.hasMarking(NodeMarking.VIOLATED)){
-            return "[color=\"green\"]";
-        }
-
-        if (node.hasMarking(NodeMarking.STATICALLY_CONTRADICTORY)) {
-            return "[color=\"red\"]";
-        }
-
-        if (node.hasMarking(NodeMarking.OPTIMISED)){
-            return "[color=\"blue\"]";
-        }
-
+    private String determineNodeColour(){
         return "";
     }
 }
