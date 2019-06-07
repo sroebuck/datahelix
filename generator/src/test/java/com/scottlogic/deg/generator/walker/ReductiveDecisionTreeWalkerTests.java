@@ -5,7 +5,7 @@ import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.profile.ProfileFields;
 import com.scottlogic.deg.generator.builders.DataBagBuilder;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
-import com.scottlogic.deg.generator.decisiontree.TreeConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpecSource;
 import com.scottlogic.deg.generator.generation.FieldSpecValueGenerator;
@@ -31,7 +31,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 class ReductiveDecisionTreeWalkerTests {
-    private TreeConstraintNode rootNode;
+    private ConstraintNode rootNode;
     private DecisionTree tree;
     private ReductiveFieldSpecBuilder reductiveFieldSpecBuilder;
     private ReductiveDecisionTreeWalker walker;
@@ -44,7 +44,7 @@ class ReductiveDecisionTreeWalkerTests {
     @BeforeEach
     public void beforeEach(){
         ProfileFields fields = new ProfileFields(Arrays.asList(field1, field2));
-        rootNode = new TreeConstraintNode();
+        rootNode = new ConstraintNode();
         tree = new DecisionTree(rootNode, fields, "");
         ReductiveTreePruner treePruner = mock(ReductiveTreePruner.class);
         when(treePruner.pruneConstraintNode(eq(rootNode), any(), any())).thenReturn(Merged.of(rootNode));

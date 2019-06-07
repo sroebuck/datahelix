@@ -4,7 +4,7 @@ import com.scottlogic.deg.common.output.DataBagValueSource;
 import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.profile.constraints.atomic.IsLessThanConstantConstraint;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
-import com.scottlogic.deg.generator.decisiontree.TreeConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.fieldspecs.*;
 import com.scottlogic.deg.generator.generation.databags.DataBagValue;
 import com.scottlogic.deg.generator.reducer.ConstraintReducer;
@@ -47,7 +47,7 @@ class ReductiveTreePrunerTests {
     public void pruneConstraintNode_leafNodeContradictionsWithParent_returnsContradictory() {
         //Arrange
         Set<Object> inputWhitelist = new HashSet<>(Arrays.asList(10, 20));
-        ConstraintNode tree = new TreeConstraintNode(new IsLessThanConstantConstraint(field, 5, Collections.emptySet()));
+        ConstraintNode tree = new ConstraintNode(new IsLessThanConstantConstraint(field, 5, Collections.emptySet()));
         FieldSpec inputFieldSpec = notNull.withSetRestrictions(
             SetRestrictions.fromWhitelist(inputWhitelist),
             FieldSpecSource.Empty);
@@ -67,7 +67,7 @@ class ReductiveTreePrunerTests {
     public void pruneConstraintNode_leafNodeNoContradictionsWithParent_returnsLeafNode() {
         //Arrange
         Set<Object> inputWhitelist = new HashSet<>(Arrays.asList(1, 2));
-        ConstraintNode tree = new TreeConstraintNode(new IsLessThanConstantConstraint(field, 5, Collections.emptySet()));
+        ConstraintNode tree = new ConstraintNode(new IsLessThanConstantConstraint(field, 5, Collections.emptySet()));
         FieldSpec inputFieldSpec = FieldSpec.Empty.withSetRestrictions(
             SetRestrictions.fromWhitelist(inputWhitelist),
             FieldSpecSource.Empty);

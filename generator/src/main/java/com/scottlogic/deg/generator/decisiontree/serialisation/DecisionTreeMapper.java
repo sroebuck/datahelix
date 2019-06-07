@@ -43,13 +43,13 @@ public class DecisionTreeMapper {
     private ConstraintNode fromDto(ConstraintNodeDto constraintNodeDto) {
         if (constraintNodeDto.decisions == null || constraintNodeDto.decisions.isEmpty()) {
             // Base case when no more decisions on a constraint node
-            return new TreeConstraintNode(getAtomicConstraints(constraintNodeDto), Collections.emptyList());
+            return new ConstraintNode(getAtomicConstraints(constraintNodeDto), Collections.emptyList());
         }
 
         List<DecisionNode> nodes = constraintNodeDto.decisions.stream()
                 .map(this::fromDto).collect(Collectors.toList());
 
-        return new TreeConstraintNode(getAtomicConstraints(constraintNodeDto), nodes);
+        return new ConstraintNode(getAtomicConstraints(constraintNodeDto), nodes);
     }
 
     // Pair B2 
@@ -97,7 +97,7 @@ public class DecisionTreeMapper {
                 .map(this::fromDto)
                 .collect(Collectors.toList());
 
-        return new TreeDecisionNode(options);
+        return new DecisionNode(options);
     }
     
     // Pair D2  

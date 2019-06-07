@@ -240,16 +240,16 @@ class ProfileDecisionTreeFactoryTests {
 
         Assert.assertThat("analyse() output is not null", outputRule, Is.is(IsNull.notNullValue()));
         Assert.assertTrue(isEquivalentTo(
-            new TreeConstraintNode(
+            new ConstraintNode(
                 Collections.emptySet(),
                 Arrays.asList(
-                    new TreeDecisionNode(
-                        new TreeConstraintNode(constraintA),
-                        new TreeConstraintNode(constraintB)
+                    new DecisionNode(
+                        new ConstraintNode(constraintA),
+                        new ConstraintNode(constraintB)
                     ),
-                    new TreeDecisionNode(
-                        new TreeConstraintNode(constraintC),
-                        new TreeConstraintNode(constraintD)
+                    new DecisionNode(
+                        new ConstraintNode(constraintC),
+                        new ConstraintNode(constraintD)
                     )
                 )
             ),
@@ -277,21 +277,21 @@ class ProfileDecisionTreeFactoryTests {
 
         Assert.assertThat("analyse() output is not null", outputRule, Is.is(IsNull.notNullValue()));
         Assert.assertTrue(isEquivalentTo(
-            new TreeConstraintNode(
+            new ConstraintNode(
                 Collections.emptySet(),
                 Arrays.asList(
-                    new TreeDecisionNode(
-                        new TreeConstraintNode(
+                    new DecisionNode(
+                        new ConstraintNode(
                             constraintA
                         ),
-                        new TreeConstraintNode(
+                        new ConstraintNode(
                             constraintC,
                             constraintB
                         )
                     ),
-                    new TreeDecisionNode(
-                        new TreeConstraintNode(constraintD),
-                        new TreeConstraintNode(constraintE)
+                    new DecisionNode(
+                        new ConstraintNode(constraintD),
+                        new ConstraintNode(constraintE)
                     )
                 )
             ),
@@ -315,17 +315,17 @@ class ProfileDecisionTreeFactoryTests {
 
         Assert.assertThat("analyse() output is not null", outputRule, Is.is(IsNull.notNullValue()));
         Assert.assertTrue(isEquivalentTo(
-            new TreeConstraintNode(
+            new ConstraintNode(
                 Collections.emptySet(),
                 Collections.singletonList(
-                    new TreeDecisionNode(
-                        new TreeConstraintNode(
+                    new DecisionNode(
+                        new ConstraintNode(
                             Arrays.asList(
                                 constraintA,
                                 constraintB),
                             Collections.emptySet()
                         ),
-                        new TreeConstraintNode(
+                        new ConstraintNode(
                             Arrays.asList(
                                 constraintA.negate(),
                                 constraintC
@@ -353,19 +353,19 @@ class ProfileDecisionTreeFactoryTests {
 
         Assert.assertTrue(
             isEquivalentTo(
-                getResultingRootOption(), new TreeConstraintNode(
+                getResultingRootOption(), new ConstraintNode(
                     Collections.emptyList(),
                     Collections.singletonList(
-                        new TreeDecisionNode(
+                        new DecisionNode(
                             /* OPTION 1: AND(C, OR(A, B))  */
-                            new TreeConstraintNode(
+                            new ConstraintNode(
                                 Collections.singletonList(bGreaterThan20),
                                 Collections.singleton(
-                                    new TreeDecisionNode(
-                                        new TreeConstraintNode(aEquals10),
-                                        new TreeConstraintNode(aGreaterThan10)))),
+                                    new DecisionNode(
+                                        new ConstraintNode(aEquals10),
+                                        new ConstraintNode(aGreaterThan10)))),
                             /* OPTION 2: AND(¬A, ¬B)  */
-                            new TreeConstraintNode(
+                            new ConstraintNode(
                                 aEquals10.negate(),
                                 aGreaterThan10.negate()
                             )
@@ -393,18 +393,18 @@ class ProfileDecisionTreeFactoryTests {
 
         Assert.assertThat("analyse() output is not null", outputRule, Is.is(IsNull.notNullValue()));
         Assert.assertTrue(isEquivalentTo(
-            new TreeConstraintNode(
+            new ConstraintNode(
                 Collections.emptySet(),
                 Collections.singletonList(
-                    new TreeDecisionNode(
-                        new TreeConstraintNode(
+                    new DecisionNode(
+                        new ConstraintNode(
                             Arrays.asList(
                                 constraintA,
                                 constraintB.negate()
                             ),
                             Collections.emptySet()
                         ),
-                        new TreeConstraintNode(
+                        new ConstraintNode(
                             Arrays.asList(
                                 constraintA.negate(),
                                 constraintC.negate()
@@ -430,7 +430,7 @@ class ProfileDecisionTreeFactoryTests {
 
         Constraint inputRule = new ConditionalConstraint(aEqualTo10, bGreaterThan20).negate();
 
-        ConstraintNode expectedOutput = new TreeConstraintNode(
+        ConstraintNode expectedOutput = new ConstraintNode(
             aEqualTo10,
             bGreaterThan20.negate());
 
@@ -482,15 +482,15 @@ class ProfileDecisionTreeFactoryTests {
         Assert.assertThat("analyse() output is not null", outputRule, Is.is(IsNull.notNullValue()));
         // Result should be (NOT A) OR (NOT B)
         Assert.assertTrue(isEquivalentTo(
-            new TreeConstraintNode(
+            new ConstraintNode(
                 Collections.emptySet(),
                 Collections.singletonList(
-                    new TreeDecisionNode(
-                        new TreeConstraintNode(
+                    new DecisionNode(
+                        new ConstraintNode(
                             Collections.singletonList(constraintA.negate()),
                             Collections.emptySet()
                         ),
-                        new TreeConstraintNode(
+                        new ConstraintNode(
                             Collections.singletonList(constraintB.negate()),
                             Collections.emptySet()
                         )
@@ -516,13 +516,13 @@ class ProfileDecisionTreeFactoryTests {
         Assert.assertTrue(
             isEquivalentTo(
                 getResultingRootOption(),
-                new TreeConstraintNode(
+                new ConstraintNode(
                     Collections.emptyList(),
                     Collections.singletonList(
-                        new TreeDecisionNode(
-                            new TreeConstraintNode(constraintA),
-                            new TreeConstraintNode(constraintB),
-                            new TreeConstraintNode(constraintC))
+                        new DecisionNode(
+                            new ConstraintNode(constraintA),
+                            new ConstraintNode(constraintB),
+                            new ConstraintNode(constraintC))
                     )
                 )
             )

@@ -16,15 +16,15 @@ class DecisionTreeSimplifierTests {
     @Test
     void simplify_decisionContainsSingleOptiontWithMatchingConstraintOnRootNode_doesNotSimplifyTree() {
         DecisionTree tree = new DecisionTree(
-            new TreeConstraintNode(
+            new ConstraintNode(
                 Arrays.asList(
                     new IsInSetConstraint(new Field("Field 1"), new HashSet<Object>() {{ add(1); add(2); }}, null),
                     new IsNullConstraint(new Field("Field 1"), null).negate()
                 ),
                 Collections.singletonList(
-                    new TreeDecisionNode(
+                    new DecisionNode(
                         Collections.singletonList(
-                            new TreeConstraintNode(
+                            new ConstraintNode(
                                 Collections.singletonList(
                                     new IsInSetConstraint(new Field("Field 1"), new HashSet<Object>() {{
                                         add(1);
@@ -53,15 +53,15 @@ class DecisionTreeSimplifierTests {
     @Test
     void simplify_decisionContainsSingleOptionWithDifferingConstraintOnRootNode_simplifiesDecision() {
         DecisionTree tree = new DecisionTree(
-            new TreeConstraintNode(
+            new ConstraintNode(
                 Arrays.asList(
                     new IsInSetConstraint(new Field("Field 1"), new HashSet<Object>() {{ add(1); add(2); }}, null),
                     new IsNullConstraint(new Field("Field 1"), null).negate()
                 ),
                 Collections.singletonList(
-                    new TreeDecisionNode(
+                    new DecisionNode(
                         Collections.singletonList(
-                            new TreeConstraintNode(
+                            new ConstraintNode(
                                 Collections.singletonList(
                                     new IsInSetConstraint(new Field("Field 2"), new HashSet<Object>() {{
                                         add("A");

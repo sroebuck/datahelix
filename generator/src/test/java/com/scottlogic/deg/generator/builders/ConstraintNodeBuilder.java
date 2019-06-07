@@ -4,8 +4,8 @@ import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionNode;
-import com.scottlogic.deg.generator.decisiontree.TreeConstraintNode;
-import com.scottlogic.deg.generator.decisiontree.TreeDecisionNode;
+import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.DecisionNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class ConstraintNodeBuilder {
     }
 
     public ConstraintNode build() {
-        return new TreeConstraintNode(constraints, decisionNodes);
+        return new ConstraintNode(constraints, decisionNodes);
     }
 
     public static ConstraintNodeBuilder constraintNode() {
@@ -34,7 +34,7 @@ public class ConstraintNodeBuilder {
         for (ConstraintNodeBuilder constraintNode : constraintNodes) {
             nodes.add(constraintNode.build());
         }
-        decisionNodes.add(new TreeDecisionNode(nodes));
+        decisionNodes.add(new DecisionNode(nodes));
         return this;
     }
 }

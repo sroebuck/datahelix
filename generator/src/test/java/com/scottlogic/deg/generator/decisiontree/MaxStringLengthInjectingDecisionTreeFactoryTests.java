@@ -27,7 +27,7 @@ class MaxStringLengthInjectingDecisionTreeFactoryTests {
         Profile profile = mock(Profile.class);
         ProfileFields fields = new ProfileFields(Collections.singletonList(new Field("field 1")));
         DecisionTree underlyingTree = new DecisionTree(
-            new TreeConstraintNode(Collections.emptySet(), Collections.emptySet()),
+            new ConstraintNode(Collections.emptySet(), Collections.emptySet()),
             fields,
             "description"
         );

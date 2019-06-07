@@ -4,17 +4,17 @@ import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.profile.constraints.atomic.IsInSetConstraint;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionNode;
-import com.scottlogic.deg.generator.decisiontree.TreeConstraintNode;
-import com.scottlogic.deg.generator.decisiontree.TreeDecisionNode;
+import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.DecisionNode;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 public class IteratorTestHelper {
     static ConstraintNode endConstraint(String name) { return constraint(name); }
-    static DecisionNode singleDecision() { return new TreeDecisionNode(endConstraint("single")); }
+    static DecisionNode singleDecision() { return new DecisionNode(endConstraint("single")); }
     static DecisionNode doubleDecision(String name) {
-        return new TreeDecisionNode(
+        return new DecisionNode(
             endConstraint(name + " left"), endConstraint(name + " right")); }
     static ConstraintNode constraintSingle() {
         return constraint("constraintSingle", singleDecision()); }
@@ -30,18 +30,18 @@ public class IteratorTestHelper {
         doubleDecision("left"), doubleDecision("middle"), doubleDecision("right")); }
 
     static ConstraintNode constraintDoubleLayered(){return constraint("constraintDoubleLayered",
-            doubleDecision("left"), new TreeDecisionNode(constraintDoubleDouble("right")));
+            doubleDecision("left"), new DecisionNode(constraintDoubleDouble("right")));
     }
 
     static ConstraintNode constraintBiggy(){ return constraint("constraintBiggy",
-            new TreeDecisionNode(constraintDoubleDouble("left left"), endConstraint("left right")),
-            new TreeDecisionNode(constraintDoubleDouble("right left"), endConstraint("right right")));
+            new DecisionNode(constraintDoubleDouble("left left"), endConstraint("left right")),
+            new DecisionNode(constraintDoubleDouble("right left"), endConstraint("right right")));
     }
 
 
 
     private static ConstraintNode constraint(String name, DecisionNode... decisions){
-        return new TreeConstraintNode(
+        return new ConstraintNode(
             Collections.singletonList(new IsInSetConstraint(new Field(name), Collections.singleton(name), Collections.emptySet())),
             Arrays.asList(decisions));
     }

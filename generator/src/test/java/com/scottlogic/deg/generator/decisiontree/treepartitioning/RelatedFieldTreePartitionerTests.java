@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class RelatedFieldTreePartitionerTests {
-    private static final TreeConstraintNode emptyConstraint
-        = new TreeConstraintNode(Collections.emptySet(), Collections.emptySet());
+    private static final ConstraintNode emptyConstraint
+        = new ConstraintNode(Collections.emptySet(), Collections.emptySet());
 
     @Test
     void shouldSplitTreeIntoPartitions() {
@@ -211,7 +211,7 @@ class RelatedFieldTreePartitionerTests {
     }
 
     private ConstraintNode constraint(String[] fieldNames, DecisionNode... decisions) {
-        return new TreeConstraintNode(
+        return new ConstraintNode(
             Stream.of(fieldNames)
                 .map(this::atomicConstraint)
                 .collect(Collectors.toList()),
@@ -230,7 +230,7 @@ class RelatedFieldTreePartitionerTests {
     }
 
     private DecisionNode decision(ConstraintNode... constraints) {
-        return new TreeDecisionNode(constraints);
+        return new DecisionNode(constraints);
     }
 
     private ProfileFields fields(String... fieldNames) {
