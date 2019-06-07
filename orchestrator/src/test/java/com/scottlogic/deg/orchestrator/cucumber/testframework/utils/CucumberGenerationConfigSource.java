@@ -13,7 +13,12 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class CucumberGenerationConfigSource implements AllConfigSource, ViolateConfigSource {
+
     private final CucumberTestState state;
+
+    private static final File MOCK_FILE = new File("mockFilePath");
+
+    private static final Path MOCK_PATH = MOCK_FILE.toPath();
 
     @Inject
     public CucumberGenerationConfigSource(CucumberTestState state) {
@@ -67,7 +72,7 @@ public class CucumberGenerationConfigSource implements AllConfigSource, ViolateC
 
     @Override
     public Path getOutputPath() {
-        return new File("mockFilePath").toPath();
+        return MOCK_PATH;
     }
 
     @Override
@@ -77,12 +82,22 @@ public class CucumberGenerationConfigSource implements AllConfigSource, ViolateC
 
     @Override
     public File getProfileFile() {
-        return new File("mockFilePath");
+        return MOCK_FILE;
     }
 
     @Override
     public boolean isSchemaValidationEnabled() {
         return false;
+    }
+
+    @Override
+    public Path getFirstNamePath() {
+        return MOCK_PATH;
+    }
+
+    @Override
+    public Path getLastNamePath() {
+        return MOCK_PATH;
     }
 
     @Override

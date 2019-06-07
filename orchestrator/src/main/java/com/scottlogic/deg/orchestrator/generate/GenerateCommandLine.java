@@ -127,6 +127,16 @@ public class GenerateCommandLine implements AllConfigSource, Runnable {
         description = "Remove the need for each field to have at least one compliant typing constraint applied")
     private boolean allowUntypedFields = false;
 
+    @CommandLine.Option(
+        names = {"--first-name-source"},
+        description = "The path of a first name CSV to override the default first names")
+    private Path firstNameSource;
+
+    @CommandLine.Option(
+        names = {"--lst-name-source"},
+        description = "The path of a first name CSV to override the default lst names")
+    private Path lastNameSource;
+
     public boolean shouldDoPartitioning() {
         return !this.dontPartitionTrees;
     }
@@ -144,6 +154,16 @@ public class GenerateCommandLine implements AllConfigSource, Runnable {
     @Override
     public boolean isSchemaValidationEnabled() {
         return this.enableSchemaValidation;
+    }
+
+    @Override
+    public Path getFirstNamePath() {
+        return firstNameSource;
+    }
+
+    @Override
+    public Path getLastNamePath() {
+        return lastNameSource;
     }
 
     @Override
