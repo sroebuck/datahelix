@@ -7,6 +7,8 @@ import com.scottlogic.deg.common.profile.ProfileFields;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.fieldspecs.RowSpecMerger;
 import com.scottlogic.deg.generator.generation.databags.DataBag;
@@ -21,15 +23,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CartesianProductDecisionTreeWalker implements DecisionTreeWalker {
-    private final ConstraintReducer constraintReducer;
     private final RowSpecMerger rowSpecMerger;
     private final RowSpecDataBagGenerator dataBagSourceFactory;
 
     @Inject
     public CartesianProductDecisionTreeWalker(
-        ConstraintReducer constraintReducer,
         RowSpecMerger rowSpecMerger, RowSpecDataBagGenerator dataBagSourceFactory) {
-        this.constraintReducer = constraintReducer;
         this.rowSpecMerger = rowSpecMerger;
         this.dataBagSourceFactory = dataBagSourceFactory;
     }
@@ -56,20 +55,14 @@ public class CartesianProductDecisionTreeWalker implements DecisionTreeWalker {
 
         }
 
-        public Stream<Map<Field, FieldSpec>> walk(ConstraintNode constraint) {
+        public Stream<Map<Field, FieldSpec>> walk(FSConstraintNode constraint) {
             return walk(constraint, getIdentityRowSpec());
         }
 
-        public Stream<Map<Field, FieldSpec>> walk(ConstraintNode option, Map<Field, FieldSpec> accumulatedSpec) {
-            final Optional<Map<Field, FieldSpec>> nominalRowSpec =  constraintReducer.reduceConstraintsToRowSpec(
-                    option.getAtomicConstraints());
-
-            if (!nominalRowSpec.isPresent()) {
-                return Stream.empty();
-            }
+        public Stream<Map<Field, FieldSpec>> walk(FSConstraintNode option, Map<Field, FieldSpec> accumulatedSpec) {
 
             final Optional<Map<Field, FieldSpec>> mergedRowSpecOpt = rowSpecMerger.merge(
-                            nominalRowSpec.get(),
+                            option.getFieldSpecs(),
                             accumulatedSpec);
 
             if (!mergedRowSpecOpt.isPresent()) {
@@ -92,7 +85,7 @@ public class CartesianProductDecisionTreeWalker implements DecisionTreeWalker {
                     Stream::concat);
         }
 
-        private Stream<Map<Field, FieldSpec>> walk(DecisionNode decision, Map<Field, FieldSpec> accumulatedSpec) {
+        private Stream<Map<Field, FieldSpec>> walk(FSDecisionNode decision, Map<Field, FieldSpec> accumulatedSpec) {
             return FlatMappingSpliterator.flatMap(decision
                     .getOptions()
                     .stream(),
