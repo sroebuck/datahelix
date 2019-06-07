@@ -1,7 +1,6 @@
 package com.scottlogic.deg.generator.walker.reductive.fieldselectionstrategy;
 
 import com.scottlogic.deg.common.profile.Field;
-import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
 import com.scottlogic.deg.generator.walker.reductive.ReductiveState;
 
@@ -14,7 +13,7 @@ public class FieldAppearanceFixingStrategy implements FixFieldStrategy {
 
     public FieldAppearanceFixingStrategy(FSConstraintNode rootNode) {
         FieldAppearanceAnalyser fieldAppearanceAnalyser = new FieldAppearanceAnalyser();
-        fieldAppearanceAnalyser.visit(rootNode);
+        fieldAppearanceAnalyser.count(rootNode);
 
         fieldsInFixingOrder = fieldAppearanceAnalyser.fieldAppearances.entrySet().stream()
             .sorted(highestToLowest())

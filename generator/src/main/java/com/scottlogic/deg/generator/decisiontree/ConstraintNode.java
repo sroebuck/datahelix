@@ -3,8 +3,6 @@ package com.scottlogic.deg.generator.decisiontree;
 import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ConstraintNode {
 
@@ -64,15 +62,6 @@ public class ConstraintNode {
 
     public int hashCode() {
         return Objects.hash(atomicConstraints, decisions);
-    }
-
-    public ConstraintNode accept(NodeVisitor visitor){
-        Stream<DecisionNode> decisionNodeStream = getDecisions().stream().map(d -> d.accept(visitor));
-
-        return visitor.visit(
-            new ConstraintNode(
-                new ArrayList<>(atomicConstraints),
-                decisionNodeStream.collect(Collectors.toSet())));
     }
 
     public static ConstraintNode merge(Iterator<ConstraintNode> constraintNodeIterator) {

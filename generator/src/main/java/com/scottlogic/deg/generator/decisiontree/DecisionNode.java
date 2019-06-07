@@ -1,10 +1,7 @@
 package com.scottlogic.deg.generator.decisiontree;
 
-import com.scottlogic.deg.common.util.FlatMappingSpliterator;
-
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DecisionNode {
     private final Collection<ConstraintNode> options;
@@ -42,13 +39,5 @@ public class DecisionNode {
         return Objects.hash(options);
     }
 
-    public DecisionNode accept(NodeVisitor visitor){
-        Stream<ConstraintNode> options = getOptions().stream().map(c->c.accept(visitor));
-        return visitor.visit(
-            new DecisionNode(
-                options.collect(Collectors.toSet())
-            )
-        );
-    }
 }
 
