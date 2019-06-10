@@ -5,6 +5,7 @@ import com.google.inject.name.Named;
 import com.scottlogic.deg.common.profile.ProfileFields;
 import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.visualisation.DecisionTreeVisualisationWriter;
 import com.scottlogic.deg.output.FileUtils;
 
@@ -43,7 +44,7 @@ public class ReductiveIterationVisualiser implements IterationVisualiser {
     }
 
     @Override
-    public void visualise(ConstraintNode rootNode, ReductiveState reductiveState) throws IOException {
+    public void visualise(FSConstraintNode rootNode, ReductiveState reductiveState) throws IOException {
         createVisualiseDirectoryIfAbsent();
 
         int iteration = currentIteration.getAndIncrement();

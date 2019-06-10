@@ -1,7 +1,11 @@
 package com.scottlogic.deg.generator.decisiontree.visualisation;
 
+import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.generator.decisiontree.*;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
+import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -60,7 +64,7 @@ public class DecisionTreeVisualisationWriter {
         writeLine("}");
     }
 
-    private TreeInfo visit(ConstraintNode constraintNode, String parentNodeId) throws IOException {
+    private TreeInfo visit(FSConstraintNode constraintNode, String parentNodeId) throws IOException {
         String nodeId = "c" + nextId++;
 
         TreeInfo treeInfo = new TreeInfo();
@@ -73,7 +77,7 @@ public class DecisionTreeVisualisationWriter {
             declareParenthood(parentNodeId, nodeId);
         }
 
-        for (DecisionNode decisionNode : constraintNode.getDecisions()) {
+        for (FSDecisionNode decisionNode : constraintNode.getDecisions()) {
             TreeInfo thisOptionTreeInfo = visit(decisionNode, nodeId);
 
             treeInfo.addExceptRowSpecCount(thisOptionTreeInfo);
@@ -87,7 +91,7 @@ public class DecisionTreeVisualisationWriter {
         return treeInfo;
     }
 
-    private TreeInfo visit(DecisionNode decisionNode, String parentNodeId) throws IOException {
+    private TreeInfo visit(FSDecisionNode decisionNode, String parentNodeId) throws IOException {
         String nodeId = "d" + nextId++;
 
         declareDecisionNode(decisionNode, nodeId);
@@ -95,7 +99,7 @@ public class DecisionTreeVisualisationWriter {
 
         TreeInfo treeInfo = new TreeInfo();
         treeInfo.decisions = 1;
-        for (ConstraintNode childNode : decisionNode.getOptions()) {
+        for (FSConstraintNode childNode : decisionNode.getOptions()) {
             TreeInfo thisConstraintTreeInfo = visit(childNode, nodeId);
 
             treeInfo.addExceptRowSpecCount(thisConstraintTreeInfo);
@@ -109,12 +113,12 @@ public class DecisionTreeVisualisationWriter {
         return treeInfo;
     }
 
-    private void declareDecisionNode(DecisionNode decisionNode, String id) throws IOException {
+    private void declareDecisionNode(FSDecisionNode decisionNode, String id) throws IOException {
         writeLine(nodeWriter.renderNode(id, decisionNode));
     }
 
-    private void declareConstraintNode(ConstraintNode constraintNode, String id, TreeInfo treeInfo) throws IOException {
-        treeInfo.atomicConstraints += constraintNode.getAtomicConstraints().size();
+    private void declareConstraintNode(FSConstraintNode constraintNode, String id, TreeInfo treeInfo) throws IOException {
+        treeInfo.atomicConstraints += constraintNode.getFieldSpecs().size();
         writeLine(nodeWriter.renderNode(id, constraintNode));
     }
 
@@ -174,15 +178,15 @@ class NodeVisualiser {
 
     private final int MAX_LENGTH_FOR_LABEL = 16816;
 
-    String renderNode(String id, DecisionNode node){
+    String renderNode(String id, FSDecisionNode node){
         return "  " + id + determineNodeColour() + "[bgcolor=\"white\"][label=\"\"][shape=invtriangle]";
     }
 
-    String renderNode(String id, ConstraintNode node){
-        String label = node.getAtomicConstraints()
+    String renderNode(String id, FSConstraintNode node){
+        String label = node.getFieldSpecs().entrySet()
             .stream()
-            .sorted(Comparator.comparing(ac -> ac.getField().name))
-            .map(AtomicConstraint::toDotLabel)
+            .sorted(Comparator.comparing(ac -> ac.getKey().name))
+            .map(Object::toString)
             .collect(Collectors.joining("\r\n"));
 
         if (label.length() > MAX_LENGTH_FOR_LABEL) {
