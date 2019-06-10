@@ -1,10 +1,8 @@
 package com.scottlogic.deg.generator.generation;
 
 import com.google.inject.Inject;
-import com.scottlogic.deg.common.profile.Field;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
 import com.scottlogic.deg.generator.config.detail.DataGenerationType;
-import com.scottlogic.deg.generator.generation.databags.DataBag;
 import com.scottlogic.deg.generator.generation.databags.DataBagValue;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.CombiningFieldValueSource;
 import com.scottlogic.deg.generator.generation.fieldvaluesources.FieldValueSource;
@@ -51,27 +49,20 @@ public class FieldSpecValueGenerator {
         Iterable<Object> iterable =  getDataValues(combinedFieldValueSource);
 
         return StreamSupport.stream(iterable.spliterator(), false)
-            .map(value -> {
-                DataBagValue dataBagValue = new DataBagValue(
+            .map(value -> new DataBagValue(
                     value,
-                    spec.getFormatRestrictions() != null
-                        ? spec.getFormatRestrictions().formatString
-                        : null,
-                    spec.getFieldSpecSource().toDataBagValueSource());
-
-                return dataBagValue;
-            });
+                    spec.getFormatting()));
     }
 
     private Iterable<Object> getDataValues(FieldValueSource source) {
         switch (dataType) {
             case FULL_SEQUENTIAL:
-            default:
-                return source.generateAllValues();
             case INTERESTING:
                 return source.generateInterestingValues();
             case RANDOM:
                 return source.generateRandomValues(randomNumberGenerator);
+            default:
+                return source.generateAllValues();
         }
     }
 }
