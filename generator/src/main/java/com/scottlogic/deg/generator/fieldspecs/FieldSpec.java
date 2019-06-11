@@ -114,7 +114,11 @@ public class FieldSpec {
             .collect(Collectors.toList());
 
         if (propertyStrings.isEmpty()) {
-            return "<empty>";
+            return "<all values>";
+        }
+
+        if (!nullable){
+            propertyStrings.add(0, "Not Null");
         }
 
         return String.join(" & ", propertyStrings);
