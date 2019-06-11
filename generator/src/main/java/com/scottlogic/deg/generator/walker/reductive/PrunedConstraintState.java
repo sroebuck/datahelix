@@ -27,19 +27,21 @@ class PrunedConstraintState {
     }
 
     boolean addPrunedDecision(FSDecisionNode prunedDecisionNode) {
-        if (onlyOneOption(prunedDecisionNode)) {
-            hasPulledUpDecisions = true;
-            FSConstraintNode remainingConstraintNode = getOnlyRemainingOption(prunedDecisionNode);
-
-            Optional<Map<Field, FieldSpec>> merged = rowSpecMerger.merge(remainingConstraintNode.getFieldSpecs(), fieldSpecs);
-            if (!merged.isPresent()){
-                return false;
-            }
-            fieldSpecs = merged.get();
-
-            newDecisionNodes.addAll(remainingConstraintNode.getDecisions());
+        if (!onlyOneOption(prunedDecisionNode)) {
+            newDecisionNodes.add(prunedDecisionNode);
+            return true;
         }
-        newDecisionNodes.add(prunedDecisionNode);
+
+        hasPulledUpDecisions = true;
+        FSConstraintNode remainingConstraintNode = getOnlyRemainingOption(prunedDecisionNode);
+
+        Optional<Map<Field, FieldSpec>> merged = rowSpecMerger.merge(remainingConstraintNode.getFieldSpecs(), fieldSpecs);
+        if (!merged.isPresent()){
+            return false;
+        }
+        fieldSpecs = merged.get();
+
+        newDecisionNodes.addAll(remainingConstraintNode.getDecisions());
         return true;
     }
 

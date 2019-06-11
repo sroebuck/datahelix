@@ -14,7 +14,7 @@ public class DecisionTreeMapper {
     // Pair A1
     public DecisionTree fromDto(DecisionTreeDto decisionTreeDto) {
         return new DecisionTree(
-            fromDto(decisionTreeDto.rootNode),
+            null,//fromDto(decisionTreeDto.rootNode),
             getMappedProfileFields(decisionTreeDto),
             decisionTreeDto.description);
     }
@@ -22,7 +22,7 @@ public class DecisionTreeMapper {
     // Pair A2
     public DecisionTreeDto toDto(DecisionTree tree) {
         DecisionTreeDto dto = new DecisionTreeDto();
-        dto.rootNode = toDto(tree.getRootNode());
+      //  dto.rootNode = toDto(tree.getRootNode());
         dto.fields = tree
             .fields.stream().map(f -> new FieldDto(f.name)).collect(Collectors.toList());
         dto.description = tree.description;

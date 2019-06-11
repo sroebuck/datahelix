@@ -2,14 +2,12 @@ package com.scottlogic.deg.generator.walker.reductive.fieldselectionstrategy;
 
 import com.scottlogic.deg.generator.ConstraintBuilder;
 import com.scottlogic.deg.common.profile.Field;
-import com.scottlogic.deg.common.profile.constraints.atomic.AtomicConstraint;
 import com.scottlogic.deg.generator.decisiontree.DecisionTree;
 import com.scottlogic.deg.common.profile.Profile;
 import com.scottlogic.deg.common.profile.Rule;
 import com.scottlogic.deg.common.profile.constraints.Constraint;
-import com.scottlogic.deg.generator.decisiontree.ProfileDecisionTreeFactory;
-import com.scottlogic.deg.generator.decisiontree.ConstraintNode;
 import com.scottlogic.deg.common.profile.RuleInformation;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.ProfileFSConstraintNodeFactory;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -180,11 +178,11 @@ public class TestHierarchicalDependencyFixFieldStrategy {
     private List<Field> getPriorities(List<Field> fields, List<Constraint> constraints) {
         List<Rule> rules = Collections.singletonList(new Rule(new RuleInformation(), constraints));
         Profile profile = new Profile(fields, rules);
-
-        DecisionTree tree = new ProfileDecisionTreeFactory().analyse(profile);
-
-        FieldAppearanceFixingStrategy strategy =
-            new FieldAppearanceFixingStrategy(tree.getRootNode());
-        return strategy.fieldsInFixingOrder;
+return null;
+//        DecisionTree tree = new ProfileFSConstraintNodeFactory().analyse(profile);
+//
+//        FieldAppearanceFixingStrategy strategy =
+//            new FieldAppearanceFixingStrategy(tree.getRootNode());
+//        return strategy.fieldsInFixingOrder;
     }
 }

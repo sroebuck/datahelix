@@ -11,8 +11,7 @@ import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSDecisionNode;
 import com.scottlogic.deg.generator.decisiontree.testutils.*;
 import com.scottlogic.deg.generator.decisiontree.testutils.EqualityComparer;
 import com.scottlogic.deg.generator.fieldspecs.FieldSpec;
-import com.scottlogic.deg.generator.fieldspecs.FieldSpecSource;
-import com.scottlogic.deg.generator.restrictions.set.SetRestrictions;
+import com.scottlogic.deg.generator.restrictions.SetRestrictions;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -224,8 +223,7 @@ class RelatedFieldTreePartitionerTests {
             Stream.of(fieldNames).collect(
                 Collectors.toMap(
                     Field::new,
-                    field->FieldSpec.Empty.withSetRestrictions(SetRestrictions.fromWhitelist(Collections.singleton(field)), FieldSpecSource.Empty)
-                )),
+                    field->FieldSpec.Empty.withSetRestrictions(SetRestrictions.fromWhitelist(Collections.singleton(field))))),
             Arrays.asList(decisions));
     }
 

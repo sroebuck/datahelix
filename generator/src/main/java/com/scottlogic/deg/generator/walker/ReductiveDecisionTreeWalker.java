@@ -57,6 +57,7 @@ public class ReductiveDecisionTreeWalker implements DecisionTreeWalker {
         Set<FieldSpec> nextFieldSpecs = reductiveFieldSpecBuilder.getDecisionFieldSpecs(tree, fieldToFix);
 
         if (nextFieldSpecs.isEmpty()){
+            //should this throw
             monitor.noValuesForField(reductiveState, fieldToFix);
             return Stream.empty();
         }

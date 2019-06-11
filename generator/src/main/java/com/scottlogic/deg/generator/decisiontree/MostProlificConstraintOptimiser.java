@@ -25,12 +25,13 @@ public class MostProlificConstraintOptimiser implements DecisionTreeOptimiser {
 
     @Override
     public DecisionTree optimiseTree(DecisionTree tree){
-        ConstraintNode newRootNode = optimiseLevelOfTree(tree.getRootNode(), 1);
-
-        if (newRootNode == null)
-            return tree;
-
-        return new DecisionTree(newRootNode, tree.getFields(), tree.getDescription());
+        return tree;
+//        ConstraintNode newRootNode = optimiseLevelOfTree(tree.getRootNode(), 1);
+//
+//        if (newRootNode == null)
+//            return tree;
+//
+//        return new DecisionTree(newRootNode, tree.getFields(), tree.getDescription());
     }
 
     private ConstraintNode optimiseLevelOfTree(ConstraintNode rootNode, int depth){
