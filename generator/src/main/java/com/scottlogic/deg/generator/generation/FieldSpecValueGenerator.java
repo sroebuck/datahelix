@@ -49,20 +49,19 @@ public class FieldSpecValueGenerator {
         Iterable<Object> iterable =  getDataValues(combinedFieldValueSource);
 
         return StreamSupport.stream(iterable.spliterator(), false)
-            .map(value -> new DataBagValue(
-                    value,
-                    spec.getFormatting()));
+            .map(value -> new DataBagValue(value, spec.getFormatting()));
     }
 
     private Iterable<Object> getDataValues(FieldValueSource source) {
         switch (dataType) {
             case FULL_SEQUENTIAL:
+                return source.generateAllValues();
             case INTERESTING:
                 return source.generateInterestingValues();
             case RANDOM:
                 return source.generateRandomValues(randomNumberGenerator);
             default:
-                return source.generateAllValues();
+                throw new UnsupportedOperationException("No data generation type set.");
         }
     }
 }

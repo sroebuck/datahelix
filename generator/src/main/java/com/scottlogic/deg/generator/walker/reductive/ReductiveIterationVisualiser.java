@@ -8,6 +8,7 @@ import com.scottlogic.deg.generator.decisiontree.DecisionTree;
 import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.FSConstraintNode;
 import com.scottlogic.deg.generator.decisiontree.visualisation.DecisionTreeVisualisationWriter;
 import com.scottlogic.deg.output.FileUtils;
+import com.scottlogic.deg.output.OutputPath;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,19 +26,20 @@ public class ReductiveIterationVisualiser implements IterationVisualiser {
 
     @Inject
     public ReductiveIterationVisualiser(
-        @Named("config:outputPath") Path outputPath,
+        OutputPath outputPath,
         FileUtils fileUtils) {
+        Path path = outputPath.getPath();
 
         this.fileUtils = fileUtils;
-        boolean outputPathIsADirectory = outputPath != null && outputPath.toFile().isDirectory();
+        boolean outputPathIsADirectory = path != null && path.toFile().isDirectory();
 
         Path directoryPath;
         if (outputPathIsADirectory) {
-            directoryPath = outputPath;
+            directoryPath = path;
         } else {
-            directoryPath = outputPath == null || outputPath.getParent() == null
+            directoryPath = path == null || path.getParent() == null
                 ? Paths.get(System.getProperty("user.dir"))
-                : outputPath.getParent();
+                : path.getParent();
         }
 
         this.visualiseDirectoryPath = directoryPath.resolve("reductive-walker");
