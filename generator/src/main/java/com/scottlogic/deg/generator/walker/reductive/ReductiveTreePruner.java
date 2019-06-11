@@ -40,8 +40,8 @@ public class ReductiveTreePruner {
     }
 
     private Merged<FSConstraintNode> pruneFSConstraintNode(FSConstraintNode constraintNode, Map<Field, FieldSpec> parentFieldSpecs) {
-        Merged<Map<Field, FieldSpec>> newFieldSpecs = combineConstraintsWithParent(constraintNode, parentFieldSpecs);
-        if (newFieldSpecs.isContradictory()){
+        Optional<Map<Field, FieldSpec>> newFieldSpecs = rowSpecMerger.merge(constraintNode.getFieldSpecs(), parentFieldSpecs);
+        if (!newFieldSpecs.isPresent()){
             return Merged.contradictory();
         }
 
@@ -67,11 +67,12 @@ public class ReductiveTreePruner {
         return Merged.of(state.getNewFSConstraintNode());
     }
 
-    private Merged<FSDecisionNode> pruneFSDecisionNode(FSDecisionNode decisionNode,  Map<Field, FieldSpec> fieldSpecs) {
+    private Merged<FSDecisionNode> pruneFSDecisionNode(FSDecisionNode decisionNode,  Map<Field, FieldSpec> parentFieldSpecs) {
         Collection<FSConstraintNode> newFSConstraintNodes = new ArrayList<>();
 
         for (FSConstraintNode FSConstraintNode : decisionNode.getOptions()) {
-            pruneFSConstraintNode(FSConstraintNode, fieldSpecs).ifPresent(newFSConstraintNodes::add);
+            pruneFSConstraintNode(FSConstraintNode, parentFieldSpecs)
+                .ifPresent(newFSConstraintNodes::add);
         }
 
         if (newFSConstraintNodes.isEmpty()) {
@@ -79,21 +80,5 @@ public class ReductiveTreePruner {
         }
 
         return Merged.of(new FSDecisionNode(newFSConstraintNodes));
-    }
-
-    private Merged<Map<Field, FieldSpec>> combineConstraintsWithParent(FSConstraintNode constraintNode, Map<Field, FieldSpec> parentFieldSpecs) {
-        Map<Field, FieldSpec> relevantConstraints = getRelevantConstraints(constraintNode.getFieldSpecs(), parentFieldSpecs.keySet());
-
-        Optional<Map<Field, FieldSpec>> merged = rowSpecMerger.merge(relevantConstraints, parentFieldSpecs);
-
-        return merged.map(Merged::of).orElseGet(Merged::contradictory);
-    }
-
-    private Map<Field, FieldSpec> getRelevantConstraints(Map<Field, FieldSpec> fieldSpecs, Set<Field> relevantFields) {
-        return fieldSpecs.entrySet().stream()
-            .filter(e->relevantFields.contains(e.getKey()))
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue));
     }
 }

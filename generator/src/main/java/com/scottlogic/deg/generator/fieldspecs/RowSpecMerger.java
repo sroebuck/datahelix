@@ -16,11 +16,11 @@ public class RowSpecMerger {
         this.fieldSpecMerger = fieldSpecMerger;
     }
 
-    public Optional<Map<Field, FieldSpec>> merge(Map<Field, FieldSpec> rowSpec1, Map<Field, FieldSpec> rowSpec2) {
+    public Optional<Map<Field, FieldSpec>> merge(Map<Field, FieldSpec> row1, Map<Field, FieldSpec> row2) {
 
-        Map<Field, FieldSpec> merged = new HashMap<>(rowSpec1);
+        Map<Field, FieldSpec> merged = new HashMap<>(row1);
 
-        for (Map.Entry<Field, FieldSpec> entry : rowSpec2.entrySet()) {
+        for (Map.Entry<Field, FieldSpec> entry : row2.entrySet()) {
             if (!merged.containsKey(entry.getKey())){
                 merged.put(entry.getKey(), entry.getValue());
             }

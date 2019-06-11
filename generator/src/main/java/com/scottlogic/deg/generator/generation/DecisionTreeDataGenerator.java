@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class DecisionTreeDataGenerator implements DataGenerator {
     private final DecisionTreeWalker treeWalker;
     private final DataGeneratorMonitor monitor;
-    private final ProfileFSConstraintNodeFactory nodeFactory;
+    private final DecisionTreeFactory nodeFactory;
     private final TreePartitioner treePartitioner;
     private final DecisionTreeOptimiser treeOptimiser;
     private final CombinationStrategy partitionCombiner;
@@ -27,7 +27,7 @@ public class DecisionTreeDataGenerator implements DataGenerator {
 
     @Inject
     public DecisionTreeDataGenerator(
-        ProfileFSConstraintNodeFactory nodeFactory,
+        DecisionTreeFactory nodeFactory,
         DecisionTreeWalker treeWalker,
         TreePartitioner treePartitioner,
         DecisionTreeOptimiser optimiser,

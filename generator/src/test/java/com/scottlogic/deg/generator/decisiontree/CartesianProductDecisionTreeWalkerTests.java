@@ -7,6 +7,7 @@ import com.scottlogic.deg.common.profile.Rule;
 import com.scottlogic.deg.common.profile.RuleInformation;
 import com.scottlogic.deg.common.profile.constraints.grammatical.ConditionalConstraint;
 import com.scottlogic.deg.common.profile.constraints.atomic.IsInSetConstraint;
+import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.ProfileFSConstraintNodeFactory;
 import com.scottlogic.deg.generator.generation.databags.DataBag;
 import com.scottlogic.deg.generator.generation.databags.RowSpecDataBagGenerator;
 import com.scottlogic.deg.generator.reducer.ConstraintReducer;
@@ -30,16 +31,10 @@ import static org.mockito.Mockito.when;
 class CartesianProductDecisionTreeWalkerTests {
     private final FieldSpecMerger fieldSpecMerger = new FieldSpecMerger();
     private RowSpecDataBagGenerator dataBagSourceFactory = mock(RowSpecDataBagGenerator.class);
-    private final CartesianProductDecisionTreeWalker dTreeWalker = new CartesianProductDecisionTreeWalker(
-            new ConstraintReducer(
-                    new FieldSpecFactory(new StringRestrictionsFactory()),
-                    fieldSpecMerger
-            ),
-            new RowSpecMerger(
-                    fieldSpecMerger
-            ),
-        dataBagSourceFactory);
-    private final ProfileDecisionTreeFactory dTreeGenerator = new ProfileDecisionTreeFactory();
+    private RowSpecMerger rowSpecMerger = new RowSpecMerger(fieldSpecMerger);
+    private final CartesianProductDecisionTreeWalker dTreeWalker = new CartesianProductDecisionTreeWalker(rowSpecMerger, dataBagSourceFactory);
+    ConstraintReducer constraintReducer = new ConstraintReducer(new FieldSpecFactory(new StringRestrictionsFactory()),fieldSpecMerger);
+    private final ProfileFSConstraintNodeFactory dTreeGenerator = new ProfileFSConstraintNodeFactory(constraintReducer, rowSpecMerger);
 
     @Test
     void test() {

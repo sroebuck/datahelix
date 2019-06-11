@@ -11,10 +11,7 @@ import com.scottlogic.deg.common.util.Defaults;
 import com.scottlogic.deg.common.profile.RuleInformation;
 import com.scottlogic.deg.generator.decisiontree.FieldSpecTree.ProfileFSConstraintNodeFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,13 +38,9 @@ public class MaxStringLengthInjectingDecisionTreeFactory implements DecisionTree
             .map(field -> new IsStringShorterThanConstraint(field, maxLength + 1, Collections.emptySet()))
             .collect(Collectors.toList());
 
-        profile.getRules().add(new Rule(new RuleInformation("max Lengths"), shorterThan));
+        ArrayList<Rule> newRules = new ArrayList<>(Arrays.asList(new Rule(new RuleInformation("max Lengths"), shorterThan)));
+        newRules.addAll(profile.getRules());
 
-        return underlyingFactory.create(profile);
-
-    }
-
-    private RuleInformation createRule() {
-        return new RuleInformation("Auto-injected: String-max-length");
+        return underlyingFactory.create(new Profile(profile.getFields(), newRules));
     }
 }

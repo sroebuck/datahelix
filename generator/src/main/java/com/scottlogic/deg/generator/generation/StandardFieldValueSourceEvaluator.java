@@ -85,10 +85,6 @@ public class StandardFieldValueSourceEvaluator implements FieldValueSourceEvalua
     private FieldValueSource getStringSource(FieldSpec fieldSpec) {
         StringRestrictions stringRestrictions = fieldSpec.getStringRestrictions();
 
-        if (stringRestrictions == null) {
-            return new CannedValuesFieldValueSource(Collections.emptyList());
-        }
-
         Set<Object> blacklist = getBlacklist(fieldSpec);
 
         StringGenerator generator = stringRestrictions.createGenerator();

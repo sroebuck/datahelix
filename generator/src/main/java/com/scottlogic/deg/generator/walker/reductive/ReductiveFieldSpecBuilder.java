@@ -23,7 +23,7 @@ public class ReductiveFieldSpecBuilder {
     public Set<FieldSpec> getSpecsForConstraint(FSConstraintNode rootNode, Field field, Set<FieldSpec> set){
         FieldSpec fieldSpec = rootNode.getFieldSpecs().get(field);
 
-        if (field != null) {
+        if (fieldSpec != null) {
             set.add(fieldSpec);
             if (hasSet(fieldSpec)) {
                 return set;
